@@ -222,14 +222,21 @@ a:hover {
   gap: 22px;
   transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-/* Sized to the gap between the nav and the text below it, and across to the
-   panel mark (--video-room); dropped on short screens. */
+/* Centred on the panel mark's height (--mark-y) and lined up with the text's
+   left edge. Its half-height is capped by the smaller of the room up to the
+   nav (~96px) and down to the expanded text (~344px from the bottom); its
+   width by the room across to the mark (--video-room). Dropped on short screens. */
 .panel__video {
-  width: min(var(--video-room, 100%), calc((100vh - 450px) * 16 / 9));
+  --half: min(var(--mark-y) * 100vh - 96px, (1 - var(--mark-y)) * 100vh - 344px);
+  position: absolute;
+  left: 56px;
+  top: calc(var(--mark-y) * 100%);
+  translate: 0 -50%;
+  width: min(var(--video-room, min(600px, 72vw)), calc(var(--half) * 2 * 16 / 9));
   aspect-ratio: 16 / 9;
-  margin-bottom: 10px;
   background: rgba(0, 0, 0, 0.35);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.6s ease;
 }
 .panel__video iframe {
   display: block;
@@ -280,7 +287,7 @@ a:hover {
   background: rgba(7, 8, 10, 0.8);
   scale: 1.06;
 }
-@media (max-height: 700px) {
+@media (max-height: 799px) {
   .panel__video {
     display: none;
   }

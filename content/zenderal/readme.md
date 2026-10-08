@@ -1,21 +1,7 @@
-Zenderal is a Wabbajack modlist for Enderal: Forgotten Stories (Special Edition). It delivers modern combat, graphics and gameplay with room for rich build crafting, and it's a welcoming way into Enderal for new players.
+Everything you need to know to install, run and update Zenderal, a Wabbajack modlist for Enderal: Forgotten Stories (Special Edition). Read it before you install.
 
 > **Alpha build**
 > Zenderal is in testing. Expect bugs and breaking changes between updates. Report anything you find in the [Discord](https://discord.com/invite/aunT9MdevX).
-
-## What Zenderal is
-
-Zenderal's goal is to deliver a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.
-
-| Goal              | What it means                                                                           |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| Modern combat     | Combat that feels current and responsive, built around Enderal's talents and progression |
-| Modern graphics   | A current-generation look through ENB, textures and meshes that suit Enderal's art direction |
-| Modern gameplay   | Deeper systems, new spells, gear and traits, and the fixes that keep it all running      |
-| Rich build crafting | Room to plan and experiment with characters that play very differently                 |
-| New to Enderal    | A great first playthrough, with the story and world kept intact                         |
-
-You don't need to have played Enderal before. The [Quest Guides](#quests) cover how Zenderal's changes affect each quest.
 
 ## Requirements
 

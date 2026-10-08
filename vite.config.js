@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         home: resolve(import.meta.dirname, 'index.html'),
         zenderal: resolve(import.meta.dirname, 'zenderal/index.html'),
+        zenderalDocs: resolve(import.meta.dirname, 'zenderal/docs/index.html'),
       },
     },
   },

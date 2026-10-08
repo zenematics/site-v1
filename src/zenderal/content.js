@@ -1,5 +1,6 @@
 // Markdown-driven docs content. Edit the files under /content/zenderal — no code changes needed.
-//   readme.md            → Readme page
+//   overview.md          → overview section on the Zenderal home page
+//   readme.md            → Readme doc
 //   quests/_intro.md     → intro paragraph above the quest guide cards
 //   quests/<slug>.md     → one quest guide; frontmatter: title, status, order.
 //                          A guide with body text becomes a readable page; an empty one is a "coming soon" card.
@@ -28,6 +29,7 @@ function parse(src) {
 
 const get = (path) => (files[PREFIX + path] != null ? parse(files[PREFIX + path]) : { data: {}, body: '' });
 
+export const overview = get('overview.md').body;
 export const readme = get('readme.md').body;
 
 // Heading text → anchor id, shared by the markdown renderer and the sidebar.

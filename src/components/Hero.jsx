@@ -90,25 +90,35 @@ function Expanded({ s, children }) {
   );
 }
 
-// Fills the space above the expanded text. YouTube's own embed poster is a
+// Fills the space above the expanded text, centred on the panel mark's height
+// (`y`, the mark's `top` as a fraction). YouTube's own embed poster is a
 // low-res 480px frame, so until play is clicked we show the full-HD thumbnail
 // with our own play button, then swap in the player. Nothing loads until the
 // panel opens, and closing it resets to the thumbnail. Skipped on short
 // screens, where the CSS hides the slot.
-function PanelVideo({ s, id, title, room }) {
+function PanelVideo({ s, id, title, y, room }) {
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     if (!s.on) setPlaying(false);
   }, [s.on]);
   if (!id) return null;
-  const show = s.on && matchMedia('(min-height: 701px)').matches;
+  const show = s.on && matchMedia('(min-height: 800px)').matches;
   // Not every video has a maxres thumbnail; YouTube serves a 120px placeholder instead.
   const fallback = (e) => {
     const img = e.currentTarget;
     if (img.naturalWidth <= 120 && !img.src.includes('hqdefault')) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
   };
   return (
-    <div className="panel__video" style={room ? { '--video-room': room } : undefined}>
+    <div
+      className="panel__video"
+      style={{
+        '--mark-y': y,
+        ...(room && { '--video-room': room }),
+        opacity: s.fullOp,
+        pointerEvents: s.events,
+        transitionDelay: s.delay,
+      }}
+    >
       {show &&
         (playing ? (
           <iframe
@@ -236,8 +246,8 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           ruleColor="#9b968d"
         />
         <VerticalLabel s={p0} label="Content" color="#1a1a1d" accent={ACCENT.contentText} />
+        {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" y={0.44} room={videoRoom('min(46vh, 34cqw)')} />}
         <Expanded s={p0}>
-          {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" room={videoRoom('min(46vh, 34cqw)')} />}
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
           <h2 className="panel__title" style={{ color: '#0b0c0f' }}>Watch Zen</h2>
           <p className="panel__desc" style={{ color: '#3a3833' }}>
@@ -315,8 +325,8 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           ruleColor="#6f6a62"
         />
         <VerticalLabel s={p2} label="Zenderal" color="#d9d6d0" accent={ACCENT.zenderal} />
+        {!stacked && <PanelVideo s={p2} id={PANEL_VIDEOS.zenderal} title="Zenderal video" y={0.42} room={videoRoom('min(52vh, 36cqw)')} />}
         <Expanded s={p2}>
-          {!stacked && <PanelVideo s={p2} id={PANEL_VIDEOS.zenderal} title="Zenderal video" room={videoRoom('min(52vh, 36cqw)')} />}
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
             <span className="stage-badge">{stageLabel}</span>
