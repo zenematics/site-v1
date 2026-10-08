@@ -207,9 +207,9 @@ export default function Zenderal() {
       <Nav />
 
       <header className="zhero">
-        <img src="/uploads/zenderal-bg.png" alt="" className="zhero__bg" />
+        <img src={`${import.meta.env.BASE_URL}uploads/zenderal-bg.png`} alt="" className="zhero__bg" />
         <div className="zhero__shade" />
-        <img src="/uploads/zenderal-emblem.png" alt="" className="zhero__emblem" />
+        <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`} alt="" className="zhero__emblem" />
         <div className="zhero__inner">
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: '#c9c5bd' }}>Wabbajack Modlist · Enderal SE</span>

@@ -169,7 +169,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           style={{ filter: p0.on || active == null ? 'brightness(1)' : 'brightness(.85)' }}
         >
           <img
-            src="/uploads/zen-logo-black.png"
+            src={`${import.meta.env.BASE_URL}uploads/zen-logo-black.png`}
             alt=""
             className="panel__mark"
             style={{
@@ -209,7 +209,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
 
       {/* ---- Guides ---- */}
       <Panel s={p1} enter="bottom" onActivate={activate(1)}>
-        <PhotoLayers s={p1} src="/uploads/guides-bg-home.png" showcase />
+        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.png`} showcase />
         <Bar s={p1} color={ACCENT.guides} />
         <IdleLabel
           s={p1}
@@ -245,9 +245,9 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
 
       {/* ---- Zenderal ---- */}
       <Panel s={p2} enter={stacked ? 'bottom' : 'right'} onActivate={activate(2)}>
-        <PhotoLayers s={p2} src="/uploads/zenderal-bg.png" />
+        <PhotoLayers s={p2} src={`${import.meta.env.BASE_URL}uploads/zenderal-bg.png`} />
         <img
-          src="/uploads/zenderal-emblem.png"
+          src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`}
           alt=""
           className="panel__mark"
           style={{
@@ -282,8 +282,8 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
             quest guides.
           </p>
           <div className="actions">
-            <a href="/zenderal/" className="btn btn--light-solid">Read the docs</a>
-            <a href="/zenderal/#readme/installation" className="btn btn--light-outline">Install guide</a>
+            <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Read the docs</a>
+            <a href={`${import.meta.env.BASE_URL}zenderal/#readme/installation`} className="btn btn--light-outline">Install guide</a>
           </div>
         </Expanded>
       </Panel>

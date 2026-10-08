@@ -15,8 +15,8 @@ export default function Nav({ blend = false, intro = false }) {
   return (
     <nav className={`nav${intro ? ' nav--intro' : ''}`} style={{ mixBlendMode: blend && !scrolled ? 'difference' : 'normal' }}>
       <div className="nav__bg" style={{ opacity: scrolled ? 1 : 0 }} />
-      <a href="/" className="nav__brand">
-        <img src="/uploads/zen-logo-white.png" alt="Zenematics" className="nav__logo" />
+      <a href={import.meta.env.BASE_URL} className="nav__brand">
+        <img src={`${import.meta.env.BASE_URL}uploads/zen-logo-white.png`} alt="Zenematics" className="nav__logo" />
         <span className="nav__name">Zenematics</span>
       </a>
     </nav>
