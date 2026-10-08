@@ -48,10 +48,10 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 ## Installation
 
-During alpha, the `.wabbajack` file is shared through the [Zenderal Discord](https://discord.com/invite/aunT9MdevX). A Wabbajack gallery release is coming soon.
+Zenderal is listed in the Wabbajack gallery as a non-featured list, so it's hidden until you turn on unofficial lists.
 
-1. Download the latest `Zenderal.wabbajack` from the Discord.
-2. Open Wabbajack and choose **Install from disk**, then select the file.
+1. Open Wabbajack and go to **Browse Modlists**.
+2. Enable the filter to show unofficial (non-featured) lists, search for **Zenderal**, and choose it.
 3. Log in to Nexus when Wabbajack asks.
 4. Set the **download location** and the **install location** (on an SSD), then start the install.
 5. When it finishes, Wabbajack gives you a link to the install folder. Open it and run **ModOrganizer.exe**.
@@ -73,7 +73,7 @@ Whether saves carry over is decided **per release**. Each update says whether it
 
 1. Read the release notes in the Discord before you update.
 2. Back up your saves. They live in your install folder under `profiles\<profile name>\saves`. Copy them somewhere outside the Zenderal folder.
-3. Run the new `.wabbajack` file with the **same** download and install locations, and tick **Overwrite installation**.
+3. Install the latest Zenderal from the Wabbajack gallery with the **same** download and install locations, and tick **Overwrite installation**.
 4. If the release keeps saves, copy them back.
 
 Updating wipes anything in the install folder that isn't part of the list, including mods you added yourself.
