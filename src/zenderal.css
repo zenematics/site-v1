@@ -1,0 +1,609 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.zen-page {
+  background: #07080a;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ---------- Hero ---------- */
+.zhero {
+  position: relative;
+  min-height: 62vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 120px 56px 72px;
+  overflow: hidden;
+}
+.zhero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  filter: brightness(0.7);
+}
+.zhero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.94) 0%, rgba(7, 8, 10, 0.7) 45%, rgba(7, 8, 10, 0.2) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, 0.4) 0%, transparent 30%, rgba(7, 8, 10, 0.85) 80%, #07080a 100%);
+}
+.zhero__emblem {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  translate: 0 -50%;
+  width: min(44vh, 34%);
+  aspect-ratio: 1378 / 1141;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+}
+.zhero__inner {
+  position: relative;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.zhero__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(52px, 8vw, 108px);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #f4f2ee 0%, #c9c5bd 45%, #8d887f 60%, #e4e1da 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.zhero__desc {
+  margin: 0;
+  max-width: 560px;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #c2beb6;
+  text-wrap: pretty;
+}
+
+/* ---------- Docs layout ---------- */
+.docs {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 40px 56px 120px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 64px;
+  align-items: flex-start;
+}
+.docs__label {
+  font-size: 12px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: #9b968d;
+}
+
+.side {
+  flex: 0 0 240px;
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.side__group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.side__group-name {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6f6a62;
+  margin-bottom: 6px;
+}
+.side__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0 8px;
+  font-family: inherit;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: #9b968d;
+  transition: color 0.2s;
+}
+.side__link:hover,
+.side__link.is-active {
+  color: #ffffff;
+}
+.side__dot {
+  width: 6px;
+  height: 6px;
+  border: 1px solid #c9c5bd;
+  transform: rotate(45deg);
+  background: transparent;
+  transition: background 0.2s;
+}
+.side__link.is-active .side__dot {
+  background: #c9c5bd;
+}
+
+/* Readme headings, listed under the Readme link. */
+.side__subs {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px 2px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+.side__sub {
+  padding: 6px 0;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: #6f6a62;
+  transition: color 0.2s;
+}
+.side__sub:hover,
+.side__sub.is-active {
+  color: #ece9e2;
+}
+.md h2 {
+  scroll-margin-top: 100px;
+}
+
+.doc {
+  flex: 1 1 480px;
+  min-width: 0;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #c2beb6;
+}
+.doc p {
+  margin: 0;
+  text-wrap: pretty;
+}
+.doc__head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.doc__back {
+  font-size: 12px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: #9b968d;
+}
+.doc__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  line-height: 1.1;
+}
+.doc-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.doc-h3 {
+  margin: 16px 0 0;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  color: #ece9e2;
+}
+
+/* ---------- Markdown ---------- */
+.md {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.md > * {
+  margin: 0;
+}
+.md h2,
+.md h3,
+.md h4 {
+  margin: 16px 0 0;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #ece9e2;
+}
+.md h2 {
+  font-size: 22px;
+}
+.md h3 {
+  font-size: 19px;
+  letter-spacing: 0.06em;
+}
+.md h4 {
+  font-size: 16px;
+  letter-spacing: 0.06em;
+}
+.md a {
+  color: #ece9e2;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.md a:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+.md strong {
+  color: #ece9e2;
+  font-weight: 500;
+}
+.md code {
+  font-size: 0.88em;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.md pre {
+  padding: 18px 20px;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.md pre code {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.md hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.md img {
+  max-width: 100%;
+}
+
+/* Lists use the diamond bullet from the design. */
+.md ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.md ul > li {
+  position: relative;
+  padding-left: 20px;
+}
+.md ul > li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #c9c5bd;
+  transform: rotate(45deg);
+}
+.md ol {
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Blockquote → callout box. A leading **bold** line becomes its label. */
+.md blockquote {
+  padding: 21px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 15px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.md blockquote p {
+  margin: 0;
+}
+.md blockquote > p:first-child > strong:first-child {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #ece9e2;
+}
+
+/* Tables → ruled key/value rows. */
+.md table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.md th,
+.md td {
+  text-align: left;
+  vertical-align: top;
+  padding: 13px 24px 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.md th {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #6f6a62;
+}
+.md td:first-child {
+  width: 200px;
+  color: #ece9e2;
+  font-weight: 400;
+}
+
+/* ---------- Controller ---------- */
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bullet {
+  display: flex;
+  gap: 14px;
+}
+.bullet__dot {
+  margin-top: 10px;
+  flex: 0 0 6px;
+  height: 6px;
+  border: 1px solid #c9c5bd;
+  transform: rotate(45deg);
+}
+
+/* ---------- FAQ ---------- */
+.faq {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.faq__item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.faq__q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0 18px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  color: #ece9e2;
+}
+.faq__q:hover {
+  color: #ffffff;
+}
+.faq__chev {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid #c9c5bd;
+  border-bottom: 1px solid #c9c5bd;
+  transition: transform 0.3s ease;
+}
+.faq__a {
+  display: grid;
+  transition: grid-template-rows 0.35s ease;
+}
+.faq__a > div {
+  overflow: hidden;
+}
+.faq__a p {
+  margin: 0 0 22px;
+  font-size: 16px;
+}
+
+/* ---------- Quest guides ---------- */
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.quest-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 22px;
+  background: #07080a;
+  transition: background 0.2s;
+}
+.quest-card--link:hover {
+  background: #101114;
+}
+.quest-card__title {
+  font-family: inherit;
+  font-size: 17px;
+  color: #ece9e2;
+  letter-spacing: 0.06em;
+}
+.quest-card__status {
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #6f6a62;
+}
+.quest-card--link .quest-card__status {
+  color: #c9c5bd;
+}
+
+/* ---------- Prev / next ---------- */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pager__link--next {
+  align-items: flex-end;
+}
+.pager__dir {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6f6a62;
+}
+.pager__title {
+  font-family: inherit;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  color: #ece9e2;
+  transition: color 0.2s;
+}
+.pager__link:hover .pager__title {
+  color: #ffffff;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 40px 56px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer__logo {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+.footer__name {
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #9b968d;
+}
+.footer__note {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #6f6a62;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 860px) {
+  .zhero,
+  .docs,
+  .footer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .zhero__emblem {
+    opacity: 0.3;
+  }
+  .side {
+    position: static;
+    flex-basis: 100%;
+  }
+  .docs {
+    gap: 40px;
+  }
+  .md td:first-child {
+    width: auto;
+  }
+}
+
+/* Phones: the sidebar becomes a sticky, horizontally scrolling tab row. */
+@media (max-width: 759px) {
+  .docs {
+    padding-top: 0;
+    gap: 32px;
+  }
+  .side {
+    position: sticky;
+    top: 60px;
+    z-index: 5;
+    flex-direction: row;
+    gap: 0;
+    flex-basis: auto;
+    width: calc(100% + 48px);
+    margin: 0 -24px;
+    padding: 0 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: #07080a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .side::-webkit-scrollbar {
+    display: none;
+  }
+  .side > .docs__label,
+  .side__group-name {
+    display: none;
+  }
+  .side__group {
+    flex-direction: row;
+    gap: 0;
+  }
+  .side__subs {
+    display: none;
+  }
+  .md h2 {
+    scroll-margin-top: 124px;
+  }
+  .side__link {
+    padding: 14px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+    gap: 8px;
+  }
+  .zhero__title {
+    font-size: clamp(40px, 13vw, 64px);
+  }
+  .zhero .eyebrow {
+    letter-spacing: 0.26em;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}

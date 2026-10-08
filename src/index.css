@@ -1,0 +1,491 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #07080a;
+  color: #d9d6d0;
+  font-family: futura-pt, Futura, 'Trebuchet MS', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: #e8e5df;
+  text-decoration: none;
+}
+a:hover {
+  color: #ffffff;
+}
+
+/* ---------- Nav ---------- */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  padding: 18px 40px;
+}
+.nav__bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 8, 10, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.nav__brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.nav__logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+.nav__name {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.32em;
+  color: #ece9e2;
+  text-transform: uppercase;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  display: flex;
+  height: 100vh;
+  min-height: 640px;
+  background: #07080a;
+}
+
+.panel {
+  position: relative;
+  flex-shrink: 1;
+  flex-basis: 0px;
+  min-width: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: flex-grow 0.9s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.panel + .panel {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.panel__white {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  transition: filter 0.9s ease;
+}
+.panel__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.9s ease;
+}
+.panel__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 8, 10, 0.55) 0%, transparent 30%, rgba(7, 8, 10, 0.35) 55%, rgba(7, 8, 10, 0.95) 100%),
+    linear-gradient(90deg, rgba(7, 8, 10, 0.7), transparent 70%);
+}
+.panel__shade {
+  transition: opacity 0.9s ease;
+}
+.panel__scrim {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.9s ease;
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.94) 0%, rgba(7, 8, 10, 0.75) 40%, rgba(7, 8, 10, 0.35) 65%, transparent 85%),
+    linear-gradient(180deg, transparent 30%, rgba(7, 8, 10, 0.7) 60%, rgba(7, 8, 10, 0.97) 100%);
+}
+.panel__mark {
+  position: absolute;
+  translate: 0 -50%;
+  object-fit: contain;
+  transition:
+    left 0.9s cubic-bezier(0.7, 0, 0.2, 1),
+    width 0.9s cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 0.6s ease,
+    filter 0.9s ease;
+}
+.panel__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  transform-origin: left;
+  transition: transform 0.9s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* showcase panels: a shadow rising from the bottom-left corner behind the text,
+   leaving the rest of the artwork bright */
+.panel__scrim--light {
+  background: radial-gradient(
+    ellipse 88% 72% at 0% 100%,
+    rgba(7, 8, 10, 0.96) 0%,
+    rgba(7, 8, 10, 0.92) 50%,
+    rgba(7, 8, 10, 0.6) 78%,
+    transparent 100%
+  );
+}
+
+/* idle (all panels equal) */
+.panel__idle {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+.panel__idle-title {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: clamp(24px, 2.6vw, 36px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.panel__idle-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.panel__idle-rule {
+  width: 28px;
+  height: 1px;
+}
+
+/* collapsed (another panel is active) */
+.panel__vert {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 22px;
+  padding-bottom: 48px;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+.panel__vert-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: inherit;
+  font-size: 20px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.panel__diamond {
+  width: 7px;
+  height: 7px;
+  border: 1px solid;
+  transform: rotate(45deg);
+}
+
+/* expanded (this panel is active) */
+.panel__full {
+  position: absolute;
+  left: 56px;
+  bottom: 64px;
+  width: min(600px, 72vw);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.panel__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(40px, 5.5vw, 76px);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.panel__title--metal {
+  background: linear-gradient(180deg, #f4f2ee 0%, #c9c5bd 45%, #8d887f 60%, #e4e1da 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.panel__desc {
+  margin: 0;
+  max-width: 520px;
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 300;
+  text-wrap: pretty;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.stage-badge {
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #d9d6d0;
+}
+
+/* ---------- Buttons ---------- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+.btn {
+  padding: 13px 26px;
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn--dark-outline {
+  border: 1px solid rgba(11, 12, 15, 0.35);
+  color: #0b0c0f;
+}
+.btn--dark-outline:hover {
+  border-color: #0b0c0f;
+  background: rgba(11, 12, 15, 0.05);
+  color: #0b0c0f;
+}
+.btn--dark-solid {
+  background: #0b0c0f;
+  color: #ffffff;
+}
+.btn--dark-solid:hover {
+  background: #2a2930;
+  color: #ffffff;
+}
+
+.btn--light-solid {
+  background: #e8e5df;
+  color: #07080a;
+}
+.btn--light-solid:hover {
+  background: #ffffff;
+  color: #07080a;
+}
+.btn--light-outline {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #e8e5df;
+}
+.btn--light-outline:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btn--disabled {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #8d887f;
+  cursor: not-allowed;
+}
+.btn__divider {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ---------- Phones ---------- */
+/* Panels stack and each shows its expanded content (see `stacked` in Hero). */
+@media (max-width: 759px) {
+  .nav {
+    padding: 14px 20px;
+  }
+  .nav__logo {
+    width: 32px;
+    height: 32px;
+  }
+  .nav__name {
+    font-size: 15px;
+    letter-spacing: 0.26em;
+  }
+}
+
+.hero--stacked {
+  flex-direction: column;
+  height: auto;
+  min-height: 0;
+}
+.hero--stacked .panel {
+  --mark-top: 104px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100svh;
+  padding-top: calc(var(--mark-top) + min(52vw, 240px) + 32px);
+  cursor: default;
+}
+.hero--stacked .panel + .panel {
+  border-left: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.hero--stacked .panel__idle,
+.hero--stacked .panel__vert {
+  display: none;
+}
+.hero--stacked .panel__full {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  width: auto;
+  gap: 18px;
+  padding: 0 24px 56px;
+}
+.hero--stacked .panel__title {
+  font-size: clamp(30px, 10vw, 44px);
+  white-space: normal;
+}
+.hero--stacked .panel__desc {
+  font-size: 16px;
+}
+.hero--stacked .panel__scrim--light {
+  background: linear-gradient(
+    to top,
+    rgba(7, 8, 10, 0.96) 0%,
+    rgba(7, 8, 10, 0.9) 42%,
+    rgba(7, 8, 10, 0.5) 64%,
+    transparent 82%
+  );
+}
+.hero--stacked .btn {
+  padding: 12px 20px;
+}
+
+/* ---------- Hero intro ---------- */
+/* Panels slide in from their own edge; labels rise in once they land.
+   fill-mode `backwards` holds the start frame during the delay, then hands
+   transform/opacity back to the hover states. */
+.panel--enter-left,
+.panel--enter-bottom,
+.panel--enter-right {
+  animation: 1.25s cubic-bezier(0.7, 0, 0.2, 1) backwards;
+}
+.panel--enter-left {
+  animation-name: panel-from-left;
+}
+.panel--enter-bottom {
+  animation-name: panel-from-bottom;
+  animation-delay: 0.15s;
+}
+.panel--enter-right {
+  animation-name: panel-from-right;
+  animation-delay: 0.3s;
+}
+
+@keyframes panel-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes panel-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes panel-from-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+.panel .panel__idle,
+.panel .panel__mark {
+  animation: label-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+.panel--enter-left .panel__idle,
+.panel--enter-left .panel__mark {
+  animation-delay: 1s;
+}
+.panel--enter-bottom .panel__idle {
+  animation-delay: 1.15s;
+}
+.panel--enter-right .panel__idle,
+.panel--enter-right .panel__mark {
+  animation-delay: 1.3s;
+}
+
+@keyframes label-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.nav--intro {
+  animation: nav-fade 0.8s ease 1.2s backwards;
+}
+@keyframes nav-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel .panel__idle,
+  .panel .panel__mark,
+  .nav--intro {
+    animation: none;
+  }
+}
