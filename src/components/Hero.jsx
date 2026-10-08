@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { LINKS, PANEL_VIDEOS } from '../config.js';
 
 const ACCENT = { content: '#a975ff', contentText: '#6a2fd6', guides: '#e0953d', zenderal: '#c9c5bd' };
 
@@ -89,6 +90,43 @@ function Expanded({ s, children }) {
   );
 }
 
+// Fills the space above the expanded text. YouTube's own embed poster is a
+// low-res 480px frame, so until play is clicked we show the full-HD thumbnail
+// with our own play button, then swap in the player. Nothing loads until the
+// panel opens, and closing it resets to the thumbnail. Skipped on short
+// screens, where the CSS hides the slot.
+function PanelVideo({ s, id, title, room }) {
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    if (!s.on) setPlaying(false);
+  }, [s.on]);
+  if (!id) return null;
+  const show = s.on && matchMedia('(min-height: 701px)').matches;
+  // Not every video has a maxres thumbnail; YouTube serves a 120px placeholder instead.
+  const fallback = (e) => {
+    const img = e.currentTarget;
+    if (img.naturalWidth <= 120 && !img.src.includes('hqdefault')) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  };
+  return (
+    <div className="panel__video" style={room ? { '--video-room': room } : undefined}>
+      {show &&
+        (playing ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`}
+            title={title}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+          />
+        ) : (
+          <button type="button" className="panel__video-poster" aria-label={`Play ${title}`} onClick={() => setPlaying(true)}>
+            <img src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`} alt="" onLoad={fallback} onError={fallback} />
+            <span className="panel__video-play" />
+          </button>
+        ))}
+    </div>
+  );
+}
+
 function Bar({ s, color }) {
   return <div className="panel__bar" style={{ background: color, transform: `scaleX(${s.bar})` }} />;
 }
@@ -150,6 +188,11 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
   const activate = (i) => () => !stacked && setActive((cur) => (cur === i ? cur : i));
   const [p0, p1, p2] = [0, 1, 2].map((i) => panelState(i, stacked ? i : active));
 
+  // Widest a panel video can get before reaching the expanded mark: from the
+  // text's 56px inset to the mark's left edge (see markLeft), less a gutter.
+  // Below `wide` the mark fades to a watermark, so the video keeps the text width.
+  const videoRoom = (markW) => (wide ? `calc(94cqw - ${markW} - 56px - 40px)` : null);
+
   const stageLabel = zenderalStage + (zenderalStage === 'Release' ? '' : ' · In testing');
 
   const logoW = stacked ? 'min(44vw,200px)' : p0.on ? 'min(46vh,34%)' : 'min(70vh,90%)';
@@ -194,15 +237,16 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
         />
         <VerticalLabel s={p0} label="Content" color="#1a1a1d" accent={ACCENT.contentText} />
         <Expanded s={p0}>
+          {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" room={videoRoom('min(46vh, 34cqw)')} />}
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
           <h2 className="panel__title" style={{ color: '#0b0c0f' }}>Watch Zen</h2>
           <p className="panel__desc" style={{ color: '#3a3833' }}>
             Live modded playthroughs on Twitch, edited guides and showcases on YouTube, and a community on Discord.
           </p>
           <div className="actions">
-            <a href="#content" className="btn btn--dark-outline">Twitch</a>
-            <a href="#content" className="btn btn--dark-outline">YouTube</a>
-            <a href="#content" className="btn btn--dark-solid">Discord</a>
+            <a href={LINKS.twitch} target="_blank" rel="noopener noreferrer" className="btn btn--dark-outline">Twitch</a>
+            <a href={LINKS.youtube} target="_blank" rel="noopener noreferrer" className="btn btn--dark-outline">YouTube</a>
+            <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--dark-solid">Discord</a>
           </div>
         </Expanded>
       </Panel>
@@ -272,6 +316,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
         />
         <VerticalLabel s={p2} label="Zenderal" color="#d9d6d0" accent={ACCENT.zenderal} />
         <Expanded s={p2}>
+          {!stacked && <PanelVideo s={p2} id={PANEL_VIDEOS.zenderal} title="Zenderal video" room={videoRoom('min(52vh, 36cqw)')} />}
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
             <span className="stage-badge">{stageLabel}</span>
@@ -283,7 +328,11 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           </p>
           <div className="actions">
             <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Read the docs</a>
-            <a href={`${import.meta.env.BASE_URL}zenderal/#readme/installation`} className="btn btn--light-outline">Install guide</a>
+            <span aria-disabled="true" className="btn btn--disabled">
+              Zenderal guides
+              <span className="btn__divider" />
+              <span style={{ color: ACCENT.zenderal }}>Coming soon</span>
+            </span>
           </div>
         </Expanded>
       </Panel>

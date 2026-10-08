@@ -1,7 +1,7 @@
 Zenderal is a Wabbajack modlist for Enderal: Forgotten Stories (Special Edition). It delivers modern combat, graphics and gameplay with room for rich build crafting, and it's a welcoming way into Enderal for new players.
 
 > **Alpha build**
-> Zenderal is in testing. Expect bugs and breaking changes between updates. Report anything you find in the Discord.
+> Zenderal is in testing. Expect bugs and breaking changes between updates. Report anything you find in the [Discord](https://discord.com/invite/aunT9MdevX).
 
 ## What Zenderal is
 
@@ -62,7 +62,7 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 ## Installation
 
-During alpha, the `.wabbajack` file is shared through the Zenderal Discord. A Wabbajack gallery release is coming soon.
+During alpha, the `.wabbajack` file is shared through the [Zenderal Discord](https://discord.com/invite/aunT9MdevX). A Wabbajack gallery release is coming soon.
 
 1. Download the latest `Zenderal.wabbajack` from the Discord.
 2. Open Wabbajack and choose **Install from disk**, then select the file.

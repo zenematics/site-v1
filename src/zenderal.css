@@ -8,6 +8,32 @@ html {
   position: relative;
 }
 
+/* ---------- Transitions ---------- */
+/* The page fades in on load; each doc fades up when you switch to it. */
+.zen-page > * {
+  animation: zen-fade 0.6s ease backwards;
+}
+.doc {
+  animation: zen-fade-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+@keyframes zen-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes zen-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zen-page > *,
+  .doc {
+    animation: none;
+  }
+}
+
 /* ---------- Hero ---------- */
 .zhero {
   position: relative;
@@ -521,6 +547,20 @@ html {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #9b968d;
+}
+.footer__links {
+  display: flex;
+  gap: 28px;
+}
+.footer__links a {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #9b968d;
+  transition: color 0.2s;
+}
+.footer__links a:hover {
+  color: #ffffff;
 }
 .footer__note {
   font-size: 12px;

@@ -3,7 +3,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Nav from '../components/Nav.jsx';
 import Footer from '../components/Footer.jsx';
-import { ZENDERAL_STAGE, stageLabel } from '../config.js';
+import { ZENDERAL_STAGE, LINKS, stageLabel } from '../config.js';
 import { DOCS, GROUPS, CONTROLLER_SETUP, FAQ } from '../zenderal/data.js';
 import { readme, readmeSections, slugify, questIntro, quests } from '../zenderal/content.js';
 
@@ -25,8 +25,14 @@ function scrollToDocs() {
 const textOf = (node) =>
   typeof node === 'string' ? node : Array.isArray(node) ? node.map(textOf).join('') : textOf(node?.props?.children ?? '');
 
-// `## ` headings get ids so the sidebar can link to them.
+// `## ` headings get ids so the sidebar can link to them; external links open in a new tab.
 const mdComponents = {
+  a: ({ node, href, ...props }) =>
+    /^https?:/.test(href ?? '') ? (
+      <a href={href} target="_blank" rel="noopener noreferrer" {...props} />
+    ) : (
+      <a href={href} {...props} />
+    ),
   h2: ({ node, children, ...props }) => (
     <h2 id={slugify(textOf(children))} {...props}>
       {children}
@@ -190,8 +196,12 @@ export default function Zenderal() {
   // Scroll to a readme heading once it has rendered (also on first load, and
   // again when the same link is clicked twice — each click is a new route object).
   useEffect(() => {
-    if (!section) return;
-    document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const el = section && document.getElementById(section);
+    if (!el) return;
+    // Measure past the doc's fade-up offset so a freshly mounted doc doesn't overshoot.
+    const lift = new DOMMatrix(getComputedStyle(el.closest('.doc')).transform).m42;
+    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    scrollTo({ top: el.getBoundingClientRect().top + scrollY - lift - margin, behavior: 'smooth' });
   }, [route, section]);
 
   const reading = useReadingSection(doc === 'readme');
@@ -222,7 +232,7 @@ export default function Zenderal() {
           </p>
           <div className="actions">
             <a href="#readme/installation" onClick={pickSection('installation')} className="btn btn--light-solid">Install guide</a>
-            <a href="#" className="btn btn--light-outline">Alpha support on Discord</a>
+            <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--light-outline">Alpha support on Discord</a>
           </div>
         </div>
       </header>
@@ -243,7 +253,8 @@ export default function Zenderal() {
           ))}
         </aside>
 
-        <article className="doc">
+        {/* Keyed so switching docs remounts it and replays the fade-in. */}
+        <article key={`${doc}/${quest ?? ""}`} className="doc">
           <div className="doc__head">
             {questDoc ? (
               <a href="#quests" onClick={pick('quests')} className="doc__back">← All quest guides</a>
