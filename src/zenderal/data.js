@@ -7,12 +7,6 @@ export const DOCS = [
 
 export const GROUPS = ['Getting Started', 'Playing', 'Help'];
 
-export const CONTROLLER_SETUP = [
-  'Xbox and PlayStation controllers work out of the box.',
-  'If inputs double up, disable Steam Input for Enderal SE.',
-  'Enable Gamepad in the in-game Controls menu.',
-];
-
 export const FAQ = [
   { q: 'Do I need Nexus Premium?', a: 'No. Without Premium, Wabbajack opens each download page and you click through them manually. Premium makes it fully automatic.' },
   { q: 'Can I add my own mods?', a: "Not during alpha. Adding or removing mods is unsupported and bug reports from modified installs can't be investigated." },

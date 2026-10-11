@@ -398,21 +398,18 @@ html {
 }
 
 /* ---------- Controller ---------- */
-.bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.md .doc-shot {
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: border-color 0.2s ease;
 }
-.bullet {
-  display: flex;
-  gap: 14px;
+.md .doc-shot:hover {
+  border-color: rgba(255, 255, 255, 0.35);
 }
-.bullet__dot {
-  margin-top: 10px;
-  flex: 0 0 6px;
-  height: 6px;
-  border: 1px solid #c9c5bd;
-  transform: rotate(45deg);
+.doc-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* ---------- FAQ ---------- */
