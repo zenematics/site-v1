@@ -432,6 +432,11 @@ a:hover {
   }
 }
 
+/* One panel per screen: the page snaps to each panel like a carousel, and
+   `scroll-snap-stop` keeps a hard fling from skipping past one. */
+html:has(.hero--stacked) {
+  scroll-snap-type: y mandatory;
+}
 .hero--stacked {
   flex-direction: column;
   height: auto;
@@ -446,6 +451,8 @@ a:hover {
   min-height: 100svh;
   padding-top: calc(var(--mark-top) + min(52vw, 240px) + 32px);
   cursor: default;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 .hero--stacked .panel + .panel {
   border-left: 0;
