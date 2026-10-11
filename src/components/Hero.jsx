@@ -137,18 +137,31 @@ function PanelVideo({ s, id, title, y, room }) {
   );
 }
 
+// Phones: fills the panel between the nav and the text, centring the mark in it.
+function MarkSlot({ children }) {
+  return <div className="panel__mark-slot">{children}</div>;
+}
+
 function Bar({ s, color }) {
   return <div className="panel__bar" style={{ background: color, transform: `scaleX(${s.bar})` }} />;
 }
 
-// While active, drift the image top ↔ bottom on a loop. On leave, pick the pan up
-// from wherever it is and ease it back to the top instead of snapping.
-function usePan(ref, on, enabled) {
+// Pan endpoints. Wide panels crop the image top and bottom, so it drifts
+// vertically; tall phone panels crop the sides, so it drifts horizontally.
+const PAN = {
+  y: ['center 0%', 'center 100%'],
+  x: ['0% center', '100% center'],
+};
+
+// While active, drift the image between its crop edges on a loop. On leave, pick
+// the pan up from wherever it is and ease it back to the start instead of snapping.
+function usePan(ref, on, enabled, axis) {
   useEffect(() => {
     const img = ref.current;
     if (!enabled || !img || !on || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    img.style.objectPosition = 'center 0%';
-    const anim = img.animate([{ objectPosition: 'center 0%' }, { objectPosition: 'center 100%' }], {
+    const [from, to] = PAN[axis];
+    img.style.objectPosition = from;
+    const anim = img.animate([{ objectPosition: from }, { objectPosition: to }], {
       duration: 9000,
       delay: 400,
       iterations: Infinity,
@@ -159,22 +172,23 @@ function usePan(ref, on, enabled) {
       img.style.objectPosition = getComputedStyle(img).objectPosition;
       anim.cancel();
       void img.offsetWidth; // commit the frozen position so the return trip transitions
-      img.style.objectPosition = 'center 0%';
+      img.style.objectPosition = from;
     };
-  }, [ref, on, enabled]);
+  }, [ref, on, enabled, axis]);
 }
 
 // `showcase`: for artwork meant to be seen. No zoom, brighter when active, a scrim
 // that only shadows the bottom-left corner behind the text, and the image pans up
-// and down to reveal what the wide panel crops off.
-function PhotoLayers({ s, src, showcase = false }) {
+// and down (side to side when `stacked`) to reveal what the panel crops off.
+function PhotoLayers({ s, src, showcase = false, stacked = false }) {
   const ref = useRef(null);
-  usePan(ref, s.on, showcase);
+  const axis = stacked ? 'x' : 'y';
+  usePan(ref, s.on, showcase, axis);
   const img = showcase
     ? {
         transform: 'scale(1)',
         filter: s.on ? 'brightness(.9) saturate(1.05)' : s.filter,
-        objectPosition: 'center 0%',
+        objectPosition: PAN[axis][0],
         transition: 'object-position .9s cubic-bezier(.7,0,.2,1), filter .9s ease',
       }
     : { transform: `scale(${s.scale})`, filter: s.filter };
@@ -207,11 +221,37 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
 
   const logoW = stacked ? 'min(44vw,200px)' : p0.on ? 'min(46vh,34%)' : 'min(70vh,90%)';
   const emblemW = stacked ? 'min(56vw,260px)' : p2.on ? 'min(52vh,36%)' : 'min(60vh,86%)';
-  // Stacked marks sit centred in the space the panel reserves above the text.
-  const markPos = (w, ratio, expanded) =>
-    stacked
-      ? { top: `calc(var(--mark-top) + ${w} * ${ratio / 2})`, left: markLeft(false, w), opacity: 1 }
-      : { left: markLeft(expanded, w) };
+  // Desktop marks are placed absolutely and slide right when their panel expands.
+  // Stacked marks sit in a slot that fills the space above the text (MarkSlot).
+  const markPos = (top, w, expanded) => (stacked ? { opacity: 1 } : { top, left: markLeft(expanded, w) });
+
+  const logo = (
+    <img
+      src={`${import.meta.env.BASE_URL}uploads/zen-logo-black.png`}
+      alt=""
+      className="panel__mark"
+      style={{
+        width: logoW,
+        aspectRatio: '1',
+        opacity: p0.on && !wide ? 0.14 : 1,
+        ...markPos('44%', logoW, p0.on),
+      }}
+    />
+  );
+  const emblem = (
+    <img
+      src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`}
+      alt=""
+      className="panel__mark"
+      style={{
+        width: emblemW,
+        aspectRatio: '1378 / 1141',
+        opacity: p2.on && !wide ? 0.3 : 1,
+        ...markPos('42%', emblemW, p2.on),
+        filter: 'drop-shadow(0 20px 40px rgba(0,0,0,.6)) brightness(1)',
+      }}
+    />
+  );
 
   return (
     <header id="top" className={`hero${stacked ? ' hero--stacked' : ''}`} onMouseLeave={() => setActive(null)}>
@@ -221,19 +261,9 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           className="panel__white"
           style={{ filter: p0.on || active == null ? 'brightness(1)' : 'brightness(.85)' }}
         >
-          <img
-            src={`${import.meta.env.BASE_URL}uploads/zen-logo-black.png`}
-            alt=""
-            className="panel__mark"
-            style={{
-              top: '44%',
-              width: logoW,
-              aspectRatio: '1',
-              opacity: p0.on && !wide ? 0.14 : 1,
-              ...markPos(logoW, 1, p0.on),
-            }}
-          />
+          {!stacked && logo}
         </div>
+        {stacked && <MarkSlot>{logo}</MarkSlot>}
         <Bar s={p0} color={ACCENT.content} />
         <IdleLabel
           s={p0}
@@ -263,7 +293,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
 
       {/* ---- Guides ---- */}
       <Panel s={p1} enter="bottom" onActivate={activate(1)}>
-        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.png`} showcase />
+        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.png`} showcase stacked={stacked} />
         <Bar s={p1} color={ACCENT.guides} />
         <IdleLabel
           s={p1}
@@ -300,19 +330,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
       {/* ---- Zenderal ---- */}
       <Panel s={p2} enter={stacked ? 'bottom' : 'right'} onActivate={activate(2)}>
         <PhotoLayers s={p2} src={`${import.meta.env.BASE_URL}uploads/zenderal-bg.png`} />
-        <img
-          src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`}
-          alt=""
-          className="panel__mark"
-          style={{
-            top: '42%',
-            width: emblemW,
-            aspectRatio: '1378 / 1141',
-            opacity: p2.on && !wide ? 0.3 : 1,
-            ...markPos(emblemW, 1141 / 1378, p2.on),
-            filter: 'drop-shadow(0 20px 40px rgba(0,0,0,.6)) brightness(1)',
-          }}
-        />
+        {stacked ? <MarkSlot>{emblem}</MarkSlot> : emblem}
         <Bar s={p2} color={ACCENT.zenderal} />
         <IdleLabel
           s={p2}

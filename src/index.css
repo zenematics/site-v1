@@ -443,13 +443,12 @@ html:has(.hero--stacked) {
   min-height: 0;
 }
 .hero--stacked .panel {
-  --mark-top: 104px;
   flex: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   min-height: 100svh;
-  padding-top: calc(var(--mark-top) + min(52vw, 240px) + 32px);
+  padding-top: 60px; /* clears the nav */
   cursor: default;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -457,6 +456,18 @@ html:has(.hero--stacked) {
 .hero--stacked .panel + .panel {
   border-left: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.hero--stacked .panel__mark-slot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(min(52vw, 240px) + 32px);
+}
+.hero--stacked .panel__mark {
+  position: relative;
+  translate: none;
 }
 .hero--stacked .panel__idle,
 .hero--stacked .panel__vert {
