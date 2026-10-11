@@ -63,10 +63,6 @@ When you start a new game, Zenderal runs a few setup tasks in the background. **
 
 Always launch the game through Mod Organizer 2. Starting Enderal from Steam runs the unmodded game.
 
-## Controller support
-
-Zenderal supports Xbox controllers, but controller support is **off by default**. Follow the [Controller Support](#controller) guide to turn it on.
-
 ## Updating
 
 Whether saves carry over is decided **per release**. Each update says whether it keeps your saves or needs a new game.
