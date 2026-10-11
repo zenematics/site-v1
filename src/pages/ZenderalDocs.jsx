@@ -43,6 +43,12 @@ function Controller() {
 
       <h2>Button layout</h2>
       <Shot file="zenderal-controller-mapping.png" alt="Zenderal controller layout: buttons, D-pad stances, wheeler menu and combo inputs" />
+      <blockquote>
+        <p>
+          <strong>Character creation</strong>
+          Character creation needs a mouse and keyboard. Once your character is made, you can switch to the controller.
+        </p>
+      </blockquote>
 
       <h2>Before you play</h2>
       <h3>1. Enable Steam Input for Enderal</h3>
