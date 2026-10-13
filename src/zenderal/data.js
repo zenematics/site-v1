@@ -3,6 +3,7 @@ export const DOCS = [
   { id: 'controller', title: 'Controller Support', group: 'Playing' },
   { id: 'quests', title: 'Quest Guides', group: 'Playing' },
   { id: 'spells', title: 'Spells', group: 'Playing' },
+  { id: 'perks', title: 'Perk Trees', group: 'Playing' },
   { id: 'faq', title: 'FAQ', group: 'Help' },
 ];
 

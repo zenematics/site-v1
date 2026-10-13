@@ -725,6 +725,183 @@ html {
   color: #9b968d;
 }
 
+/* ---------- Perk trees ---------- */
+.perks {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+/* Tree picker: sticks under the site nav while you scroll through the trees. */
+.perks__nav {
+  position: sticky;
+  top: 76px;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0;
+  background: #07080a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ptree {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 24px;
+  scroll-margin-top: 150px;
+}
+.ptree__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+}
+.ptree__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.ptree__meta {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6f6a62;
+}
+.ptree__map {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: radial-gradient(ellipse at 50% 70%, rgba(150, 170, 210, 0.07), transparent 70%), #0a0b0e;
+}
+.ptree__map svg {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+}
+.ptree__edge {
+  fill: none;
+  stroke: rgba(236, 233, 226, 0.18);
+  stroke-width: 1.5;
+  transition: stroke 0.25s;
+}
+.ptree__edge--any {
+  stroke-dasharray: 4 5;
+}
+.ptree__edge.is-on {
+  stroke: rgba(236, 233, 226, 0.75);
+}
+.ptree__star {
+  cursor: pointer;
+  outline: none;
+}
+.ptree__hit {
+  fill: transparent;
+}
+.ptree__halo {
+  fill: none;
+  stroke: rgba(236, 233, 226, 0);
+  stroke-width: 1;
+  transition: stroke 0.25s;
+}
+.ptree__dot {
+  fill: #6f6a62;
+  stroke: #07080a;
+  stroke-width: 2;
+  transition: fill 0.25s;
+}
+.ptree__star--talent .ptree__dot {
+  fill: #07080a;
+  stroke: #9b968d;
+  stroke-width: 2;
+}
+.ptree__star.is-chain .ptree__dot {
+  fill: #ece9e2;
+}
+.ptree__star--talent.is-chain .ptree__dot {
+  fill: #c9c5bd;
+  stroke: #ffffff;
+}
+.ptree__star:hover .ptree__halo,
+.ptree__star:focus-visible .ptree__halo {
+  stroke: rgba(236, 233, 226, 0.35);
+}
+.ptree__star.is-selected .ptree__halo {
+  stroke: #ece9e2;
+}
+.ptree__star.is-selected .ptree__dot {
+  filter: drop-shadow(0 0 6px rgba(236, 233, 226, 0.8));
+}
+.ptree__label {
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  fill: #8d887f;
+  paint-order: stroke;
+  stroke: #0a0b0e;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  transition: fill 0.25s;
+}
+.ptree__ranks {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  fill: #6f6a62;
+}
+.ptree__star.is-chain .ptree__label,
+.ptree__star:hover .ptree__label {
+  fill: #ece9e2;
+}
+.ptree__star.is-selected .ptree__label {
+  fill: #ffffff;
+  font-weight: 500;
+}
+.ptree__detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+.ptree__name {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: #ece9e2;
+}
+.ptree__desc {
+  white-space: pre-line;
+  font-size: 16px;
+}
+.doc .ptree__note,
+.ptree__none {
+  font-size: 14px;
+  color: #6f6a62;
+}
+.ptree__links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 4px;
+}
+.ptree__any {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ptree__any-label {
+  font-size: 12px;
+  color: #6f6a62;
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 860px) {
   .zhero,
@@ -806,5 +983,27 @@ html {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
+  }
+}
+
+/* Phones: the perk tree picker scrolls sideways below the docs tab row. */
+@media (max-width: 759px) {
+  .perks__nav {
+    top: 106px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .perks__nav::-webkit-scrollbar {
+    display: none;
+  }
+  .perks__nav .chip {
+    white-space: nowrap;
+  }
+  .ptree {
+    scroll-margin-top: 170px;
+  }
+  .ptree__detail {
+    padding: 18px;
   }
 }
