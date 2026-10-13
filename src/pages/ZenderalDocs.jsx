@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import Footer from '../components/Footer.jsx';
 import { DOCS, FAQ } from '../zenderal/data.js';
-import { readme, readmeSections, questIntro, quests } from '../zenderal/content.js';
+import { readme, readmeSections, renderPipeline, questIntro, quests } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
 import Spells from '../zenderal/Spells.jsx';
 import Perks from '../zenderal/Perks.jsx';
@@ -228,6 +228,7 @@ export default function ZenderalDocs() {
           {doc === 'quests' && (questDoc ? <Md>{questDoc.body}</Md> : <QuestIndex onOpen={openQuest} />)}
           {doc === 'spells' && <Spells />}
           {doc === 'perks' && <Perks />}
+          {doc === 'dlss' && <Md>{renderPipeline}</Md>}
           {doc === 'faq' && <Faq key={doc} />}
 
           <div className="pager">
