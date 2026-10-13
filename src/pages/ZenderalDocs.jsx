@@ -79,7 +79,8 @@ function Controller() {
   );
 }
 
-function Faq() {
+// An answer's optional `link` points at another doc and ends the answer.
+function Faq({ onPick }) {
   const [open, setOpen] = useState(0);
   return (
     <div className="faq">
@@ -93,7 +94,15 @@ function Faq() {
             </button>
             <div className="faq__a" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
               <div>
-                <p>{f.a}</p>
+                <p>
+                  {f.a}
+                  {f.link && (
+                    <>
+                      {' '}
+                      <a href={`#${f.link.doc}`} onClick={onPick(f.link.doc)}>{f.link.label}</a>.
+                    </>
+                  )}
+                </p>
               </div>
             </div>
           </div>
@@ -229,7 +238,7 @@ export default function ZenderalDocs() {
           {doc === 'spells' && <Spells />}
           {doc === 'perks' && <Perks />}
           {doc === 'dlss' && <Md>{renderPipeline}</Md>}
-          {doc === 'faq' && <Faq key={doc} />}
+          {doc === 'faq' && <Faq key={doc} onPick={pick} />}
 
           <div className="pager">
             {prev ? (
