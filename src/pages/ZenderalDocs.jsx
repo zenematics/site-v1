@@ -4,6 +4,7 @@ import Footer from '../components/Footer.jsx';
 import { DOCS, FAQ } from '../zenderal/data.js';
 import { readme, readmeSections, questIntro, quests } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
+import Spells from '../zenderal/Spells.jsx';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Sidebar, { OVERVIEW_URL } from '../zenderal/Sidebar.jsx';
 
@@ -224,6 +225,7 @@ export default function ZenderalDocs() {
           {doc === 'readme' && <Md>{readme}</Md>}
           {doc === 'controller' && <Controller />}
           {doc === 'quests' && (questDoc ? <Md>{questDoc.body}</Md> : <QuestIndex onOpen={openQuest} />)}
+          {doc === 'spells' && <Spells />}
           {doc === 'faq' && <Faq key={doc} />}
 
           <div className="pager">

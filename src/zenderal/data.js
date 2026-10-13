@@ -2,6 +2,7 @@ export const DOCS = [
   { id: 'readme', title: 'Readme', group: 'Getting Started' },
   { id: 'controller', title: 'Controller Support', group: 'Playing' },
   { id: 'quests', title: 'Quest Guides', group: 'Playing' },
+  { id: 'spells', title: 'Spells', group: 'Playing' },
   { id: 'faq', title: 'FAQ', group: 'Help' },
 ];
 

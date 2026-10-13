@@ -577,6 +577,154 @@ html {
   color: #6f6a62;
 }
 
+/* ---------- Spells ---------- */
+.spells {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.spells__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.spells__search {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 300;
+  color: #ece9e2;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.spells__search::placeholder {
+  color: #6f6a62;
+}
+.spells__search:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.spells__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.spells__filter-name {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6f6a62;
+}
+.spells__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 12px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: #9b968d;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+.chip:hover {
+  color: #ece9e2;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.chip.is-on {
+  color: #07080a;
+  background: #ece9e2;
+  border-color: #ece9e2;
+}
+.chip__count {
+  font-size: 11px;
+  opacity: 0.6;
+}
+.spells__count {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #9b968d;
+}
+.spells__scroll {
+  overflow-x: auto;
+}
+.spells__table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.spells__table th {
+  text-align: left;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+.spells__table th button {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  padding: 12px 16px 12px 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #6f6a62;
+}
+.spells__table th button:hover,
+.spells__table th[aria-sort] button {
+  color: #ece9e2;
+}
+.spells__arrow {
+  letter-spacing: 0;
+}
+.spells__table td {
+  vertical-align: top;
+  padding: 12px 16px 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+.spells__table td:first-child {
+  width: 100%;
+  white-space: normal;
+}
+.spells__name {
+  display: block;
+  color: #ece9e2;
+  font-weight: 400;
+}
+.spells__desc {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: #6f6a62;
+}
+.spells__num {
+  font-variant-numeric: tabular-nums;
+}
+.spells__empty {
+  padding: 24px 0;
+  color: #9b968d;
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 860px) {
   .zhero,
