@@ -14,10 +14,13 @@ const data = JSON.parse(readFileSync(src, 'utf8'));
 // Enderal's English title for those, but keep EGO's English renames ("Battle Mage").
 const GERMAN =
   /[äöüß]|^(Hüter|Klingentänzer|Elementarist|Sinistr?op|Thaumaturg|Vandale|Gauner|Vagabund|Lycantrop):|: (Fokus|Schatten|Eiserne|Klingentanz|Blutrausch|Arktiswind|Blattschuss|Kehlenschnitt|Krieger|Taschendieb|Blitzpulver|Geisterlauf|Psionischer|Seele|Archaische|Auge des|Feuerpfeil|Sternlings|Netz der|Entgiftung|Tragbares)/;
+// Typos in the winning in-game titles.
+const TYPOS = { 'Splintet Limbs': 'Splinted Limbs' };
 const title = (p) => {
   const name = p.tree === 'root' || (p.nameInBaseEnderal && GERMAN.test(p.name)) ? p.nameInBaseEnderal : p.name;
   // "Keeper: Iron Will" → "Iron Will"; the tree is already the heading.
-  return name.replace(/^[^:]+:\s*/, '');
+  const short = name.replace(/^[^:]+:\s*/, '');
+  return TYPOS[short] ?? short;
 };
 
 const clean = (s) => s?.replace(/%%/g, '%').replace(/\r\n/g, '\n').trim() || undefined;
