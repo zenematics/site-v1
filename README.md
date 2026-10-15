@@ -2,6 +2,8 @@
 
 Website for [Zenematics](https://www.youtube.com/@Zenematics) and **Zenderal**, an Enderal SE modlist. Live at **[zenematics.com](https://zenematics.com/)**. It's a static React 19 + Vite multi-page site, deployed to GitHub Pages.
 
+![Zenematics home page: Watch Zen, Build Guides and Zenderal panels](docs/screenshot.png)
+
 ## Pages
 
 | URL | What it is |
