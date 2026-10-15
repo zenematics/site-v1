@@ -43,8 +43,9 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install.
 2. **Set the language to English** for both Enderal SE and Skyrim SE in Steam (Properties → Language).
-3. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
-4. **Pause your antivirus** while Wabbajack runs, or add exclusions for those folders. Some antivirus programs block or quarantine files mid-install.
+3. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
+4. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
+5. **Pause your antivirus** while Wabbajack runs, or add exclusions for those folders. Some antivirus programs block or quarantine files mid-install.
 
 ## Installation
 
