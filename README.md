@@ -1,6 +1,6 @@
 # Zenematics site
 
-Website for [Zenematics](https://www.youtube.com/@Zenematics) and **Zenderal**, an Enderal SE modlist. It's a static React 19 + Vite multi-page site, deployed to GitHub Pages.
+Website for [Zenematics](https://www.youtube.com/@Zenematics) and **Zenderal**, an Enderal SE modlist. Live at **[zenematics.com](https://zenematics.com/)**. It's a static React 19 + Vite multi-page site, deployed to GitHub Pages.
 
 ## Pages
 
@@ -60,7 +60,7 @@ index.html, zenderal/ HTML entry points (registered in vite.config.js)
 
 ### Links and assets
 
-The site is served from a sub-path on GitHub Pages, so build internal links and asset URLs from `import.meta.env.BASE_URL`, never hard-coded absolute paths:
+The base path comes from the Pages config at build time (it is a sub-path when there is no custom domain), so build internal links and asset URLs from `import.meta.env.BASE_URL`, never hard-coded absolute paths:
 
 ```jsx
 <img src={`${import.meta.env.BASE_URL}uploads/foo.png`} />
