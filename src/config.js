@@ -14,5 +14,5 @@ export const stageLabel = (stage) => stage + (stage === 'Release' ? '' : ' · In
 // while hovered. Leave one empty to show no video on that panel.
 export const PANEL_VIDEOS = {
   content: 'eQ3oREWl7yM',
-  zenderal: 'a4TFt0I1m80',
+  zenderal: 'cEvT3NjZgRw',
 };
