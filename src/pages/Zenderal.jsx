@@ -1,6 +1,5 @@
 import Nav from '../components/Nav.jsx';
 import Footer from '../components/Footer.jsx';
-import { LINKS } from '../config.js';
 import { DOCS } from '../zenderal/data.js';
 import { overview } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
@@ -21,12 +20,7 @@ export default function Zenderal() {
       <ZenHero
         eyebrow="Wabbajack Modlist · Enderal SE"
         desc="A Wabbajack modlist for Enderal: Forgotten Stories — installed in one click and playable on keyboard or controller."
-      >
-        <div className="actions">
-          <a href={DOCS_URL} className="btn btn--light-solid">Install guide</a>
-          <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--light-outline">Alpha support on Discord</a>
-        </div>
-      </ZenHero>
+      />
 
       <section className="docs">
         <Sidebar active="overview" href={(hash) => DOCS_URL + '#' + hash} />
