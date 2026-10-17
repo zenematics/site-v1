@@ -36,11 +36,9 @@ function chainOf(id, byId) {
   return seen;
 }
 
-// Soft S-curve between two stars so the paths wind up the tree.
-function curve(a, b) {
-  const [x1, y1, x2, y2] = [px(a), py(a), px(b), py(b)];
-  const my = (y1 + y2) / 2;
-  return `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`;
+// Straight line between two stars.
+function line(a, b) {
+  return `M${px(a)},${py(a)} L${px(b)},${py(b)}`;
 }
 
 function anchor(p) {
@@ -130,7 +128,7 @@ function Tree({ tree }) {
             return (
               <path
                 key={`${e.from}>${e.to}`}
-                d={curve(byId[e.from], byId[e.to])}
+                d={line(byId[e.from], byId[e.to])}
                 className={`ptree__edge${e.any ? ' ptree__edge--any' : ''}${on ? ' is-on' : ''}`}
               />
             );
