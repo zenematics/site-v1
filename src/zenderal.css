@@ -39,8 +39,9 @@ html {
   position: relative;
   min-height: 62vh;
   display: flex;
-  align-items: flex-end;
-  padding: 120px 56px 72px;
+  /* Centred with equal top/bottom padding so the text lines up with the emblem. */
+  align-items: center;
+  padding: 120px 56px;
   overflow: hidden;
 }
 .zhero__bg {
