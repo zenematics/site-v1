@@ -2,20 +2,20 @@ import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import Footer from '../components/Footer.jsx';
 import { DOCS, FAQ } from '../zenderal/data.js';
-import { readme, readmeSections, renderPipeline, questIntro, quests } from '../zenderal/content.js';
+import { readme, docSections, renderPipeline, questIntro, quests } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
 import Spells from '../zenderal/Spells.jsx';
 import Perks from '../zenderal/Perks.jsx';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Sidebar, { OVERVIEW_URL } from '../zenderal/Sidebar.jsx';
 
-// Hash routes: #<doc-id>, #readme/<section> for a readme heading, or
+// Hash routes: #<doc-id>, #<doc-id>/<section> for a heading in a sectioned doc, or
 // #quests/<slug> for a single quest guide.
 function readHash() {
   const [doc, sub] = decodeURIComponent(location.hash.slice(1)).split('/');
   if (!DOCS.some((d) => d.id === doc)) return { doc: 'readme', quest: null, section: null };
   const q = doc === 'quests' && quests.find((g) => g.slug === sub && g.body);
-  const section = doc === 'readme' && readmeSections.some((s) => s.id === sub) ? sub : null;
+  const section = docSections[doc]?.some((s) => s.id === sub) ? sub : null;
   return { doc, quest: q ? q.slug : null, section };
 }
 
@@ -135,16 +135,16 @@ function QuestIndex({ onOpen }) {
   );
 }
 
-// Scroll spy: the readme heading currently being read — the last one scrolled
+// Scroll spy: the doc heading currently being read — the last one scrolled
 // past the top of the viewport, or the final one once the page bottoms out.
-function useReadingSection(enabled) {
+function useReadingSection(sections) {
   const [current, setCurrent] = useState(null);
   useEffect(() => {
-    if (!enabled) return setCurrent(null);
+    if (!sections) return setCurrent(null);
     let frame = 0;
     const update = () => {
       frame = 0;
-      const heads = readmeSections.map((s) => document.getElementById(s.id)).filter(Boolean);
+      const heads = sections.map((s) => document.getElementById(s.id)).filter(Boolean);
       const atBottom = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
       const line = innerHeight * 0.3;
       const passed = heads.filter((h) => h.getBoundingClientRect().top <= line);
@@ -159,7 +159,7 @@ function useReadingSection(enabled) {
       removeEventListener('scroll', onScroll);
       removeEventListener('resize', onScroll);
     };
-  }, [enabled]);
+  }, [sections]);
   return current;
 }
 
@@ -181,13 +181,15 @@ export default function ZenderalDocs() {
   };
   const pick = (id) => go(id, { doc: id, quest: null, section: null });
   const openQuest = (slug) => go(`quests/${slug}`, { doc: 'quests', quest: slug, section: null });
-  const pickSection = (id) => (e) => {
+  // `path` is `<doc-id>/<section-id>`.
+  const pickSection = (path) => (e) => {
     e.preventDefault();
-    setRoute({ doc: 'readme', quest: null, section: id });
-    history.replaceState(null, '', `#readme/${id}`);
+    const [id, sub] = path.split('/');
+    setRoute({ doc: id, quest: null, section: sub });
+    history.replaceState(null, '', `#${path}`);
   };
 
-  // Scroll to a readme heading once it has rendered (also on first load, and
+  // Scroll to a doc heading once it has rendered (also on first load, and
   // again when the same link is clicked twice — each click is a new route object).
   useEffect(() => {
     const el = section && document.getElementById(section);
@@ -198,7 +200,7 @@ export default function ZenderalDocs() {
     scrollTo({ top: el.getBoundingClientRect().top + scrollY - lift - margin, behavior: 'smooth' });
   }, [route, section]);
 
-  const reading = useReadingSection(doc === 'readme');
+  const reading = useReadingSection(docSections[doc]);
 
   const i = DOCS.findIndex((d) => d.id === doc);
   const cur = DOCS[i];

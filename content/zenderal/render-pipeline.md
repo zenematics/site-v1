@@ -5,6 +5,8 @@ It's installed and set up already, so you don't need the download or DLL steps f
 > **Early release**
 > TRP is an early test release and some of its features are still experimental. If something on this page doesn't fix your problem, see **Reporting a problem** at the bottom.
 
+---
+
 ## What your GPU can run
 
 DLSS, frame generation and Neural Rendering need an **NVIDIA RTX** card. Zenderal installs both TRP editions, Standard and Universal, so each card gets the best route it supports.
@@ -21,6 +23,8 @@ DLSS, frame generation and Neural Rendering need an **NVIDIA RTX** card. Zendera
 On an **AMD or Intel GPU**, TRP switches to Intel's experimental XeSS upscaling and XeFG frame generation by itself. You don't need to change anything.
 
 Our [recommended specs](#readme/recommended-specs) still apply. Frame generation can't make up for a GPU that's too weak to run the list.
+
+---
 
 ## Before you start
 
@@ -55,9 +59,21 @@ Only one thing can generate frames. Close or disable **Lossless Scaling**, **AMD
 
 Zenderal ships set to borderless. Frame generation doesn't work in exclusive fullscreen, so don't switch to it in the launcher or SSE Display Tweaks.
 
-### 6. Laptops: run the game on the NVIDIA GPU
+### 6. Let the game handle display scaling
+
+If Windows display scaling is above 100% (**Settings → System → Display → Scale**), Windows can stretch the game window. DLSS and frame generation then get the wrong output size, so the image looks soft or offset, the HUD sits in the wrong place, or frame generation won't start.
+
+1. In Zenderal's `Stock game` folder, right-click `SkyrimSE.exe` and open **Properties → Compatibility → Change high DPI settings**.
+2. Tick **Override high DPI scaling behavior** and set **Scaling performed by** to **Application**.
+3. Make sure the game's resolution matches your monitor's native resolution. In borderless mode a lower resolution is stretched, which has the same effect. Use the DLSS render scale to lower the cost instead.
+
+You can keep your desktop scaling as it is. This only changes how Windows treats the game.
+
+### 7. Laptops: run the game on the NVIDIA GPU
 
 On a laptop with two GPUs, open **Settings → System → Display → Graphics**, add `SkyrimSE.exe` from Zenderal's `Stock game` folder and set it to **High performance**.
+
+---
 
 ## Checking it works
 
@@ -70,6 +86,8 @@ Zenderal starts with **DLSS at 67% render scale**, **frame generation at x2** an
 - **Changing the DLSS/DLAA mode or the render scale needs a restart** of the game. Everything else applies straight away.
 
 If **End** clashes with another mod, change the key under **Advanced → Menu key**.
+
+---
 
 ## Common problems
 
@@ -114,6 +132,8 @@ If the screen goes black or the game stops responding after a loading screen, re
 ### Starting over with the default settings
 
 Your TRP settings are saved to `SKSE\Plugins\TheosRenderPipeline.User.ini` in MO2's **Overwrite** folder. Delete that file to go back to Zenderal's defaults.
+
+---
 
 ## Reporting a problem
 

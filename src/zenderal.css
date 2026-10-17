@@ -269,7 +269,11 @@ html {
   font-family: inherit;
   font-weight: 500;
   letter-spacing: 0.1em;
-  color: #ece9e2;
+  color: #c9ab76;
+}
+.md h3,
+.md h4 {
+  color: #d8c8a6;
 }
 .md h2 {
   font-size: 22px;

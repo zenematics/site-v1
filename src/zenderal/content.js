@@ -38,11 +38,14 @@ export const renderPipeline = get('render-pipeline.md').body;
 export const slugify = (text) =>
   text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-// The readme's `## ` headings, listed under Readme in the sidebar.
-export const readmeSections = [...readme.matchAll(/^## +(.+)$/gm)].map(([, title]) => ({
-  id: slugify(title),
-  title: title.trim(),
-}));
+const sectionsOf = (body) =>
+  [...body.matchAll(/^## +(.+)$/gm)].map(([, title]) => ({ id: slugify(title), title: title.trim() }));
+
+// Each markdown doc's `## ` headings, listed under it in the sidebar. Keyed by doc id.
+export const docSections = {
+  readme: sectionsOf(readme),
+  dlss: sectionsOf(renderPipeline),
+};
 
 export const questIntro = get('quests/_intro.md').body;
 

@@ -3,6 +3,8 @@ Everything you need to know to install, run and update Zenderal, a Wabbajack mod
 > **Alpha build**
 > Zenderal is in testing. Expect bugs and breaking changes between updates. Report anything you find in the [Discord](https://discord.com/invite/aunT9MdevX).
 
+---
+
 ## Requirements
 
 | Requirement   | Details                                                                     |
@@ -17,6 +19,8 @@ Everything you need to know to install, run and update Zenderal, a Wabbajack mod
 
 **Nexus Premium** lets Wabbajack download everything automatically. On a free account, Wabbajack opens each mod's download page and you click through them one by one. It works, it just takes much longer.
 
+---
+
 ## Recommended specs
 
 Zenderal runs an ENB, so the GPU matters most. These figures are a starting point while we gather data from testers.
@@ -29,6 +33,8 @@ Zenderal runs an ENB, so the GPU matters most. These figures are a starting poin
 
 A performance profile for lower-end hardware is planned.
 
+---
+
 ## Disk space
 
 | Folder    | Size     | Notes                                       |
@@ -39,6 +45,8 @@ A performance profile for lower-end hardware is planned.
 
 You can delete the downloads folder once the game runs, but Wabbajack will then download everything again on the next update.
 
+---
+
 ## Before you install
 
 1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install.
@@ -46,6 +54,8 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 3. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
 4. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
 5. **Pause your antivirus** while Wabbajack runs, or add exclusions for those folders. Some antivirus programs block or quarantine files mid-install.
+
+---
 
 ## Installation
 
@@ -58,11 +68,30 @@ Zenderal is listed in the Wabbajack gallery as a non-featured list, so it's hidd
 5. When it finishes, Wabbajack gives you a link to the install folder. Open it and run **ModOrganizer.exe**.
 6. In Mod Organizer 2, launch Zenderal from the executable dropdown at the top right.
 
+---
+
 ## First launch
 
 When you start a new game, Zenderal runs a few setup tasks in the background. **Let them finish before you enter a new cell**, meaning before you go through a door or into a new area. Moving on too early can leave parts of the list unconfigured.
 
 Always launch the game through Mod Organizer 2. Starting Enderal from Steam runs the unmodded game.
+
+---
+
+## DLSS and frame generation
+
+Zenderal comes with [Theo's Render Pipeline](#dlss) set up for DLSS and frame generation. It needs a few things from your PC that Wabbajack can't set for you. Check these before your first launch:
+
+- **Update your GPU driver.** Install the latest NVIDIA Game Ready or Studio driver. Older drivers are the most common reason frame generation doesn't start.
+- **Stop the NVIDIA App overriding the game.** Set every **DLSS Override** for `SkyrimSE.exe` to **Use the 3D application setting** and turn **Smooth Motion** off, in both its program and global settings.
+- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools, and don't turn on ENB's own anti-aliasing or frame generation.
+- **Stay in borderless windowed mode.** Zenderal ships set to borderless. Frame generation doesn't work in exclusive fullscreen.
+- **Let the game handle display scaling.** If Windows scaling is above 100%, set `SkyrimSE.exe` in the `Stock game` folder to override high DPI scaling with **Application**, and run the game at your monitor's native resolution.
+- **Turn on hardware-accelerated GPU scheduling** in Windows graphics settings, then restart your PC.
+
+Press **End** in game to open its settings. Step-by-step instructions, error messages and fixes are on the [DLSS & Frame Gen](#dlss) page.
+
+---
 
 ## Updating
 
@@ -75,9 +104,13 @@ Whether saves carry over is decided **per release**. Each update says whether it
 
 Updating wipes anything in the install folder that isn't part of the list, including mods you added yourself.
 
+---
+
 ## Known issues
 
 Nothing listed yet. The current list lives in the Discord's alpha channel and is updated with every release.
+
+---
 
 ## Credits
 
