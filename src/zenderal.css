@@ -1515,6 +1515,187 @@ html {
   white-space: nowrap;
 }
 
+/* Controller: an SVG pad whose callouts change with the selected layer. */
+.pad__btn--move {
+  --kc: #7fa7c9;
+}
+.pad__btn--combat {
+  --kc: #d0805a;
+}
+.pad__btn--menu {
+  --kc: #c9ab76;
+}
+.pad__btn--mod {
+  --kc: #a58fd6;
+}
+.pad__scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.pad {
+  display: block;
+  width: 100%;
+  min-width: 600px;
+  height: auto;
+  background: #0d0e11;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: inherit;
+}
+.pad__body {
+  fill: #141519;
+  stroke: rgba(201, 171, 118, 0.45);
+  stroke-width: 1.5;
+}
+.pad__logo,
+.pad__dpad {
+  fill: #0d0e11;
+  stroke: rgba(255, 255, 255, 0.08);
+}
+.pad__btn > rect,
+.pad__btn > circle {
+  fill: #1d1e23;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1.5;
+  transition:
+    fill 0.15s,
+    stroke 0.15s,
+    opacity 0.2s;
+}
+.pad__btn[class*='pad__btn--'] {
+  cursor: pointer;
+}
+.pad__btn[class*='pad__btn--'] > rect,
+.pad__btn[class*='pad__btn--'] > circle {
+  fill: color-mix(in srgb, var(--kc) 22%, #1d1e23);
+  stroke: color-mix(in srgb, var(--kc) 70%, transparent);
+}
+.pad__btn[class*='pad__btn--']:hover > rect,
+.pad__btn[class*='pad__btn--']:hover > circle,
+.pad__btn.is-focus > rect,
+.pad__btn.is-focus > circle {
+  fill: color-mix(in srgb, var(--kc) 45%, #1d1e23);
+  stroke: var(--kc);
+  stroke-width: 2.5;
+}
+.pad__btn:focus {
+  outline: none;
+}
+.pad__btn.is-dim {
+  opacity: 0.35;
+}
+.pad__btn.is-held > rect,
+.pad__btn.is-held > circle {
+  fill: #ece9e2;
+  stroke: #ece9e2;
+  animation: pad-held 1.6s ease-in-out infinite;
+}
+.pad__btn.is-held .pad__face {
+  fill: #07080a;
+}
+@keyframes pad-held {
+  50% {
+    stroke-width: 7;
+    stroke-opacity: 0.35;
+  }
+}
+.pad .pad__btn > circle.pad__stick {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+}
+.pad__glyph {
+  fill: #ece9e2;
+  pointer-events: none;
+}
+.pad__tag,
+.pad__face {
+  text-anchor: middle;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  fill: #ece9e2;
+  pointer-events: none;
+}
+.pad__face {
+  font-size: 17px;
+}
+.pad__face--A {
+  fill: #7cc46a;
+}
+.pad__face--B {
+  fill: #e0614f;
+}
+.pad__face--X {
+  fill: #5a9ee0;
+}
+.pad__face--Y {
+  fill: #e6c34a;
+}
+.pad__lead {
+  fill: none;
+  stroke: rgba(201, 171, 118, 0.4);
+  stroke-width: 1;
+}
+.pad__dot {
+  fill: rgba(201, 171, 118, 0.8);
+}
+.pad__act {
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  fill: #ece9e2;
+}
+.pad__sub {
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  fill: #c9ab76;
+}
+.pad__sub--alt {
+  letter-spacing: 0.08em;
+  text-transform: none;
+  fill: #9b968d;
+}
+.pad__inputs {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pad__inputs li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+}
+.pad__inputs .g-note {
+  flex-basis: auto;
+}
+.pad__how {
+  min-width: 84px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9b968d;
+}
+.pad__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 13px;
+  color: #9b968d;
+}
+.pad__lists {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+.pad__lists li {
+  grid-template-columns: 140px 1fr;
+}
+.pad__lists .g-kbd {
+  white-space: normal;
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 860px) {
   .zhero,

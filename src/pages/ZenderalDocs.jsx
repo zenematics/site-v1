@@ -6,6 +6,7 @@ import { readme, docSections, renderPipeline, questIntro, quests } from '../zend
 import Md from '../zenderal/Md.jsx';
 import Spells from '../zenderal/Spells.jsx';
 import Perks from '../zenderal/Perks.jsx';
+import Gamepad, { GamepadLists } from '../zenderal/Gamepad.jsx';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Sidebar, { OVERVIEW_URL } from '../zenderal/Sidebar.jsx';
 
@@ -34,47 +35,68 @@ function Shot({ file, alt }) {
   );
 }
 
-// Uses the markdown styles so it reads like the readme.
+// Uses the markdown styles so it reads like the readme; the interactive pad and
+// binding lists sit outside .md so its list styles don't reach them.
 function Controller() {
   return (
-    <div className="md">
-      <p>
-        Zenderal supports controllers <strong>out of the box</strong>. There's nothing extra to install, just two
-        things to check before you play.
-      </p>
-
-      <h2>Button layout</h2>
-      <Shot file="zenderal-controller-mapping.png" alt="Zenderal controller layout: buttons, D-pad stances, wheeler menu and combo inputs" />
-      <blockquote>
+    <div className="g-stack">
+      <div className="md">
         <p>
-          <strong>Character creation</strong>
-          Character creation needs a mouse and keyboard. Once your character is made, you can switch to the controller.
+          Zenderal supports controllers <strong>out of the box</strong>. There's nothing extra to install, just two
+          things to check before you play.
         </p>
-      </blockquote>
 
-      <h2>Before you play</h2>
-      <h3>1. Enable Steam Input for Enderal</h3>
-      <p>
-        In your Steam library, open the controller settings for <strong>Enderal: Forgotten Stories (Special
-        Edition)</strong>. The top should read <strong>Using Steam Input Translation</strong>. If it offers to enable
-        Steam Input instead, turn it on.
-      </p>
-      <Shot file="zenderal-steam-input.png" alt="Enderal SE controller settings in Steam showing Using Steam Input Translation" />
-      <blockquote>
+        <h2>Button layout</h2>
+      </div>
+      <Gamepad />
+      <div className="md">
+        <blockquote>
+          <p>
+            <strong>Character creation</strong>
+            Character creation needs a mouse and keyboard. Once your character is made, you can switch to the controller.
+          </p>
+        </blockquote>
+
+        <h2>Before you play</h2>
+        <h3>1. Enable Steam Input for Enderal</h3>
         <p>
-          <strong>Set it per game</strong>
-          Steam Input should be on for Enderal only, not across Steam. In Steam's <strong>Settings → Controller</strong>,
-          under the advanced options, turn off the global toggles such as <strong>Enable Steam Input for Xbox
-          controllers</strong>, then enable it for Enderal from the game's own controller settings as above.
+          In your Steam library, open the controller settings for <strong>Enderal: Forgotten Stories (Special
+          Edition)</strong>. The top should read <strong>Using Steam Input Translation</strong>. If it offers to enable
+          Steam Input instead, turn it on.
         </p>
-      </blockquote>
+        <Shot file="zenderal-steam-input.png" alt="Enderal SE controller settings in Steam showing Using Steam Input Translation" />
+        <blockquote>
+          <p>
+            <strong>Set it per game</strong>
+            Steam Input should be on for Enderal only, not across Steam. In Steam's <strong>Settings → Controller</strong>,
+            under the advanced options, turn off the global toggles such as <strong>Enable Steam Input for Xbox
+            controllers</strong>, then enable it for Enderal from the game's own controller settings as above.
+          </p>
+        </blockquote>
 
-      <h3>2. Keep the controller mods enabled</h3>
-      <p>
-        In Mod Organizer 2, the <strong>Controller Support</strong> section holds the mods that make it work. They're
-        enabled by default, so just make sure all four are still ticked.
-      </p>
-      <Shot file="zenderal-controller-mods.png" alt="Controller Support mods in Mod Organizer 2: Auto Input Switch, Gamepad++, Complete Controller Setup, Zenderal - Controller Tweaks" />
+        <h3>2. Keep the controller mods enabled</h3>
+        <p>
+          In Mod Organizer 2, the <strong>Controller Support</strong> section holds the mods that make it work. They're
+          enabled by default, so just make sure all four are still ticked.
+        </p>
+        <Shot file="zenderal-controller-mods.png" alt="Controller Support mods in Mod Organizer 2: Auto Input Switch, Gamepad++, Complete Controller Setup, Zenderal - Controller Tweaks" />
+
+        <h2>Every binding</h2>
+      </div>
+      <GamepadLists />
+      <div className="md">
+        <p>
+          Prefer one image?{' '}
+          <a
+            href={`${import.meta.env.BASE_URL}uploads/controller/zenderal-controller-mapping.png`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open the full controller sheet
+          </a>
+          .
+        </p>
+      </div>
     </div>
   );
 }
