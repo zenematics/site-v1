@@ -322,6 +322,11 @@ html {
 .md img {
   max-width: 100%;
 }
+.md p > img:only-child {
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
 
 /* Lists use the diamond bullet from the design. */
 .md ul {

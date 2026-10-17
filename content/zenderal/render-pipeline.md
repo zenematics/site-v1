@@ -107,6 +107,22 @@ TRP explains startup problems in its error message, under **Likely causes and wh
 | The driver did not identify the GPU                   | Update your NVIDIA driver. On a laptop, set the game to use the NVIDIA GPU                                                                          |
 | The runtime files differ from the supported version   | Something replaced TRP's NVIDIA files, such as DLSS Swapper or a DLL copied in by hand. Undo that, or reinstall Zenderal                           |
 
+### "nvngx_dlssg.dll was not loaded"
+
+This is the most common startup error. A box titled **TheosRenderPipeline.dll** says TRP **could not start rendering**, then the game closes when you click OK.
+
+![TRP's startup error: nvngx_dlssg.dll was not loaded from the configured Streamline directory, because NVIDIA reported a DLSS Frame Generation override](uploads/trp-dlssg-error.png)
+
+`nvngx_dlssg.dll` is NVIDIA's frame-generation file. TRP ships its own copy, but the NVIDIA App has a **DLSS Frame Generation override** turned on for Skyrim, so the driver tries to swap in a different version. TRP can't load its file and stops rather than run with the wrong one. The `HRESULT 0x80004005` codes just mean the load failed.
+
+To fix it:
+
+1. Follow [step 3 of Before you start](#dlss/before-you-start): in the NVIDIA App, set **DLSS Override - Model Presets** and **DLSS Override - Frame Generation** to **Use the 3D application setting** for `SkyrimSE.exe` in Zenderal's `Stock game` folder. Check **Global Settings** too.
+2. Fully close the game, then launch it again from Mod Organizer 2.
+3. If it still appears, check that **TheosRenderPipeline Standard** and **TheosRenderPipeline Universal** are both ticked in MO2, with Universal below Standard. Make sure nothing else, such as DLSS Swapper or a DLL you copied in by hand, has replaced TRP's NVIDIA files.
+
+If none of that helps, send `TheosRenderPipeline.log` as described in **Reporting a problem**. It lists every folder TRP tried to load the file from.
+
 ### Frame generation multipliers are greyed out
 
 The multipliers you can pick depend on your card. See **What your GPU can run** above. On RTX 20 and 30-series cards frame generation is experimental and may not work on every card.

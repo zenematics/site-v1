@@ -72,9 +72,28 @@ Zenderal is listed in the Wabbajack gallery as a non-featured list, so it's hidd
 
 ## First launch
 
-When you start a new game, Zenderal runs a few setup tasks in the background. **Let them finish before you enter a new cell**, meaning before you go through a door or into a new area. Moving on too early can leave parts of the list unconfigured.
-
 Always launch the game through Mod Organizer 2. Starting Enderal from Steam runs the unmodded game.
+
+### The CRDW cache prompt
+
+The first time you start the game, a window titled **Cache Recursive Directory Walk** asks whether to generate CRDW cache files. **Click Yes.**
+
+![The Cache Recursive Directory Walk prompt, asking "Do you want to generate CRDW cache files?" with Yes and No buttons](uploads/crdw-prompt.png)
+
+On every launch the game scans the whole `Data` folder to find its files. With a list as large as Zenderal that takes a long time. CRDW saves the results of that scan to a cache so later launches can skip it and start much faster.
+
+The cache only helps if it matches what's actually installed. There's no cache yet on a fresh install, so **Yes** builds one from your files. Pressing **No** leaves the game without an up-to-date list of its files, which can mean missing content or a broken start.
+
+Click **Yes** again whenever your files change:
+
+- the first launch after installing or updating Zenderal
+- after adding, removing or changing mods, or changing their order in Mod Organizer 2
+
+Click **No** only when nothing has changed since the last time you clicked Yes. The game then reuses the cache and starts faster. If you're unsure, click **Yes**. It only costs a slower start that one time.
+
+### Starting a new game
+
+When you start a new game, Zenderal runs a few setup tasks in the background. **Let them finish before you enter a new cell**, meaning before you go through a door or into a new area. Moving on too early can leave parts of the list unconfigured.
 
 ---
 
