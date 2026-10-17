@@ -1,11 +1,11 @@
 export const DOCS = [
   { id: 'readme', title: 'Readme', group: 'Getting Started' },
-  { id: 'controller', title: 'Controller Support', group: 'Playing' },
+  { id: 'controller', title: 'Controller Support', group: 'Help' },
   { id: 'dlss', title: 'DLSS & Frame Gen', group: 'Help' },
   { id: 'faq', title: 'FAQ', group: 'Help' },
 ];
 
-export const GROUPS = ['Getting Started', 'Playing', 'Help'];
+export const GROUPS = ['Getting Started', 'Help'];
 
 export const FAQ = [
   { q: 'Do I need Nexus Premium?', a: 'No. Without Premium, Wabbajack opens each download page and you click through them manually. Premium makes it fully automatic.' },

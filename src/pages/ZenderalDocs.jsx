@@ -208,7 +208,7 @@ export default function ZenderalDocs() {
 
   return (
     <div className="zen-page">
-      <Nav zenderal />
+      <Nav zenderal="install" />
 
       <ZenHero eyebrow="Documentation" desc="Everything you need to install, set up and play Zenderal." compact />
 
