@@ -65,7 +65,7 @@ export default function Magic() {
           Zenderal's spellbook comes from Enderal plus four spell packs. Every spell is learned from a{' '}
           <strong>spell tome</strong>, and every tome has a tier from Novice to Master, the same tier as the perk that
           halves its cost. Pick a pack and a tier to see what it adds and where to buy it. The full searchable list is
-          on the <a href={`${import.meta.env.BASE_URL}zenderal/docs/#spells`}>Spells</a> page.
+          on the <a href="#spells">Spells</a> page.
         </p>
       </div>
 

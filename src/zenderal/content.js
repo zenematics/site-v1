@@ -2,9 +2,6 @@
 //   overview.md          → overview section on the Zenderal home page
 //   readme.md            → Readme doc
 //   render-pipeline.md   → DLSS & Frame Gen doc (Theo's Render Pipeline troubleshooting)
-//   quests/_intro.md     → intro paragraph above the quest guide cards
-//   quests/<slug>.md     → one quest guide; frontmatter: title, status, order.
-//                          A guide with body text becomes a readable page; an empty one is a "coming soon" card.
 
 const files = import.meta.glob('../../content/zenderal/**/*.md', {
   query: '?raw',
@@ -46,20 +43,3 @@ export const docSections = {
   readme: sectionsOf(readme),
   dlss: sectionsOf(renderPipeline),
 };
-
-export const questIntro = get('quests/_intro.md').body;
-
-export const quests = Object.entries(files)
-  .filter(([path]) => path.startsWith(PREFIX + 'quests/') && !path.endsWith('/_intro.md'))
-  .map(([path, src]) => {
-    const slug = path.slice((PREFIX + 'quests/').length, -'.md'.length);
-    const { data, body } = parse(src);
-    return {
-      slug,
-      title: data.title || slug,
-      status: data.status || '',
-      order: Number(data.order ?? Infinity),
-      body,
-    };
-  })
-  .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));

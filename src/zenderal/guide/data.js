@@ -6,9 +6,11 @@ export const SECTIONS = [
   { id: 'race', title: 'Races', group: 'Character' },
   { id: 'affinities', title: 'Affinities', group: 'Character' },
   { id: 'books', title: 'Learning Books', group: 'Character' },
+  { id: 'perks', title: 'Perk Trees', group: 'Character' },
   { id: 'combat', title: 'For Honor Reforged', group: 'Combat' },
   { id: 'firearms', title: 'Firearms', group: 'Combat' },
   { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat' },
+  { id: 'spells', title: 'Spells', group: 'Combat' },
   { id: 'armor', title: 'Armor Sets', group: 'Gear' },
   { id: 'keys', title: 'Keybindings', group: 'Controls' },
 ];

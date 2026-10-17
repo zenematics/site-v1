@@ -10,4 +10,4 @@ Zenderal's goal is to deliver a modern combat, graphics and gameplay experience 
 | Rich build crafting | Room to plan and experiment with characters that play very differently                 |
 | New to Enderal    | A great first playthrough, with the story and world kept intact                         |
 
-You don't need to have played Enderal before. The [Quest Guides](docs/#quests) cover how Zenderal's changes affect each quest.
+You don't need to have played Enderal before.

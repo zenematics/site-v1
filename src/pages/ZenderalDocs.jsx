@@ -2,22 +2,23 @@ import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import Footer from '../components/Footer.jsx';
 import { DOCS, FAQ } from '../zenderal/data.js';
-import { readme, docSections, renderPipeline, questIntro, quests } from '../zenderal/content.js';
+import { readme, docSections, renderPipeline } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
-import Spells from '../zenderal/Spells.jsx';
-import Perks from '../zenderal/Perks.jsx';
 import Gamepad, { GamepadLists } from '../zenderal/Gamepad.jsx';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Sidebar, { OVERVIEW_URL } from '../zenderal/Sidebar.jsx';
 
-// Hash routes: #<doc-id>, #<doc-id>/<section> for a heading in a sectioned doc, or
-// #quests/<slug> for a single quest guide.
+// Docs that moved to the gameplay guide; old links are sent on to it.
+const MOVED = ['spells', 'perks'];
+const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/`;
+
+// Hash routes: #<doc-id>, or #<doc-id>/<section> for a heading in a sectioned doc.
 function readHash() {
   const [doc, sub] = decodeURIComponent(location.hash.slice(1)).split('/');
-  if (!DOCS.some((d) => d.id === doc)) return { doc: 'readme', quest: null, section: null };
-  const q = doc === 'quests' && quests.find((g) => g.slug === sub && g.body);
+  if (MOVED.includes(doc)) location.replace(`${GUIDE_URL}#${doc}`);
+  if (!DOCS.some((d) => d.id === doc)) return { doc: 'readme', section: null };
   const section = docSections[doc]?.some((s) => s.id === sub) ? sub : null;
-  return { doc, quest: q ? q.slug : null, section };
+  return { doc, section };
 }
 
 function scrollToDocs() {
@@ -134,29 +135,6 @@ function Faq({ onPick }) {
   );
 }
 
-function QuestIndex({ onOpen }) {
-  return (
-    <div className="doc-stack">
-      {questIntro && <Md>{questIntro}</Md>}
-      <div className="quest-grid">
-        {quests.map((q) =>
-          q.body ? (
-            <a key={q.slug} href={`#quests/${q.slug}`} className="quest-card quest-card--link" onClick={onOpen(q.slug)}>
-              <span className="quest-card__title">{q.title}</span>
-              <span className="quest-card__status">{q.status || 'Read guide'}</span>
-            </a>
-          ) : (
-            <div key={q.slug} className="quest-card">
-              <span className="quest-card__title">{q.title}</span>
-              <span className="quest-card__status">{q.status}</span>
-            </div>
-          )
-        )}
-      </div>
-    </div>
-  );
-}
-
 // Scroll spy: the doc heading currently being read — the last one scrolled
 // past the top of the viewport, or the final one once the page bottoms out.
 function useReadingSection(sections) {
@@ -187,7 +165,7 @@ function useReadingSection(sections) {
 
 export default function ZenderalDocs() {
   const [route, setRoute] = useState(readHash);
-  const { doc, quest, section } = route;
+  const { doc, section } = route;
 
   useEffect(() => {
     const onHash = () => setRoute(readHash());
@@ -201,13 +179,12 @@ export default function ZenderalDocs() {
     history.replaceState(null, '', `#${hash}`);
     scrollToDocs();
   };
-  const pick = (id) => go(id, { doc: id, quest: null, section: null });
-  const openQuest = (slug) => go(`quests/${slug}`, { doc: 'quests', quest: slug, section: null });
+  const pick = (id) => go(id, { doc: id, section: null });
   // `path` is `<doc-id>/<section-id>`.
   const pickSection = (path) => (e) => {
     e.preventDefault();
     const [id, sub] = path.split('/');
-    setRoute({ doc: id, quest: null, section: sub });
+    setRoute({ doc: id, section: sub });
     history.replaceState(null, '', `#${path}`);
   };
 
@@ -228,7 +205,6 @@ export default function ZenderalDocs() {
   const cur = DOCS[i];
   const prev = i > 0 ? DOCS[i - 1] : null;
   const next = i < DOCS.length - 1 ? DOCS[i + 1] : null;
-  const questDoc = quest ? quests.find((q) => q.slug === quest) : null;
 
   return (
     <div className="zen-page">
@@ -246,21 +222,14 @@ export default function ZenderalDocs() {
         />
 
         {/* Keyed so switching docs remounts it and replays the fade-in. */}
-        <article key={`${doc}/${quest ?? ""}`} className="doc">
+        <article key={doc} className="doc">
           <div className="doc__head">
-            {questDoc ? (
-              <a href="#quests" onClick={pick('quests')} className="doc__back">← All quest guides</a>
-            ) : (
-              <span className="docs__label">Zenderal · {cur.group}</span>
-            )}
-            <h2 className="doc__title">{questDoc ? questDoc.title : cur.title}</h2>
+            <span className="docs__label">Zenderal · {cur.group}</span>
+            <h2 className="doc__title">{cur.title}</h2>
           </div>
 
           {doc === 'readme' && <Md>{readme}</Md>}
           {doc === 'controller' && <Controller />}
-          {doc === 'quests' && (questDoc ? <Md>{questDoc.body}</Md> : <QuestIndex onOpen={openQuest} />)}
-          {doc === 'spells' && <Spells />}
-          {doc === 'perks' && <Perks />}
           {doc === 'dlss' && <Md>{renderPipeline}</Md>}
           {doc === 'faq' && <Faq key={doc} onPick={pick} />}
 

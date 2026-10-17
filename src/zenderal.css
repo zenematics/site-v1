@@ -223,12 +223,6 @@ html {
   padding-bottom: 28px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-.doc__back {
-  font-size: 12px;
-  letter-spacing: 0.36em;
-  text-transform: uppercase;
-  color: #9b968d;
-}
 .doc__title {
   margin: 0;
   font-family: inherit;
@@ -238,11 +232,6 @@ html {
   text-transform: uppercase;
   color: #ece9e2;
   line-height: 1.1;
-}
-.doc-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 .doc-h3 {
   margin: 16px 0 0;
@@ -475,41 +464,6 @@ html {
 .faq__a a:hover {
   color: #ffffff;
   border-color: #ffffff;
-}
-
-/* ---------- Quest guides ---------- */
-.quest-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-.quest-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 24px 22px;
-  background: #07080a;
-  transition: background 0.2s;
-}
-.quest-card--link:hover {
-  background: #101114;
-}
-.quest-card__title {
-  font-family: inherit;
-  font-size: 17px;
-  color: #ece9e2;
-  letter-spacing: 0.06em;
-}
-.quest-card__status {
-  font-size: 11px;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: #6f6a62;
-}
-.quest-card--link .quest-card__status {
-  color: #c9c5bd;
 }
 
 /* ---------- Prev / next ---------- */

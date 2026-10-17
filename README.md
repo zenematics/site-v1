@@ -10,7 +10,7 @@ Website for [Zenematics](https://www.youtube.com/@Zenematics) and **Zenderal**, 
 | --- | --- |
 | `/` | Home: hero panels, socials |
 | `/zenderal/` | Zenderal modlist overview |
-| `/zenderal/docs/` | Docs: readme, controller support, quest guides, spells, perk trees, DLSS & Frame Gen, FAQ |
+| `/zenderal/docs/` | Docs: readme, controller support, DLSS & Frame Gen, FAQ |
 
 ## Getting started
 
@@ -34,7 +34,7 @@ Without it the site falls back to Futura / Trebuchet MS.
 ## Project layout
 
 ```
-content/zenderal/     Markdown docs, quest guides, generated spells.json / perks.json
+content/zenderal/     Markdown docs, generated spells.json / perks.json
 public/uploads/       Static images and other assets
 scripts/              Importers for spell and perk data
 src/pages/            Page components (Home, Zenderal, ZenderalDocs)
@@ -45,7 +45,7 @@ index.html, zenderal/ HTML entry points (registered in vite.config.js)
 
 ## Editing content
 
-- **Docs and guides:** edit the Markdown in `content/zenderal/`. It's loaded at build time. Quest guides live in `content/zenderal/quests/<slug>.md` with `title`, `status` and `order` frontmatter; an empty body shows as "coming soon".
+- **Docs and guides:** edit the Markdown in `content/zenderal/`. It's loaded at build time.
 - **FAQ, controller setup, doc list:** `src/zenderal/data.js`. A new entry in `DOCS` also needs rendering in `src/pages/ZenderalDocs.jsx`.
 - **Release stage, socials, hero videos:** `src/config.js`.
 - **Spells and perk trees:** generated from the sibling `zenderal-patches` repo:
