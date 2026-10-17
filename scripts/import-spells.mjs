@@ -34,6 +34,10 @@ const spells = records
     cost: r.cost.baseCost,
     cast: r.castType,
     target: r.targetType,
+    // "Apprentice Restoration" → "Apprentice": the casting perk names the spell's tier.
+    tier: r.halfCostPerk?.name?.split(' ')[0],
+    // Triumvirate's mage archetype (TVR_<Archetype>_…), which decides who sells its tome.
+    archetype: r.editorId?.match(/^TVR_([A-Za-z]+)_/)?.[1],
     desc: clean(r.description),
     // Arcane Fever rides along on nearly every Enderal spell, so it's just noise here.
     effects: [...new Set(r.effects.map((e) => e.baseEffect?.name))].filter((n) => n && n !== 'Arcane Fever'),

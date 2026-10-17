@@ -49,7 +49,7 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 ## Before you install
 
-1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install.
+1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install, such as the [Dismembering Framework error](#readme/troubleshooting).
 2. **Set the language to English** for both Enderal SE and Skyrim SE in Steam (Properties → Language).
 3. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
 4. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
@@ -122,6 +122,30 @@ Whether saves carry over is decided **per release**. Each update says whether it
 4. If the release keeps saves, copy them back.
 
 Updating wipes anything in the install folder that isn't part of the list, including mods you added yourself.
+
+---
+
+## Troubleshooting
+
+### "Dismembering Framework.esm is missing"
+
+The game closes on startup with a **DismemberingFramework: Fatal Error** saying the required plugin `Dismembering Framework.esm` is missing.
+
+![DismemberingFramework fatal error: the required plugin "Dismembering Framework.esm" is missing, with details saying form "limbKeyword" was not found](uploads/dismembering-framework-error.png)
+
+Despite what the message says, the mod is part of Zenderal and you don't need to install it by hand. Ignore the advice to redo a manual installation, and don't report it to the mod's author. The error means Zenderal was installed onto an Enderal SE setup that wasn't ready for it. There are two usual causes:
+
+- **Enderal SE wasn't a clean install.** Leftover files from earlier mods in the game folder get mixed in with Zenderal's and break its plugins.
+- **Enderal SE was never launched before installing.** Without that first run, the game's settings files and registry entries don't exist yet, so Wabbajack can't set the list up properly.
+
+To fix it, redo the setup in order:
+
+1. Uninstall Enderal SE in Steam, delete whatever is left in its game folder, and reinstall it.
+2. Launch Enderal SE from Steam, let it reach the main menu, then quit.
+3. Reinstall Zenderal in Wabbajack with the **same** download and install locations, and tick **Overwrite installation**. Your downloads are reused, so nothing is downloaded again.
+4. Launch the game from Mod Organizer 2.
+
+These are steps 1 and 3 of [Before you install](#readme/before-you-install).
 
 ---
 
