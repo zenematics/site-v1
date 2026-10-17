@@ -41,9 +41,10 @@ export default function Firearms() {
       <div className="md">
         <h2>Why Zenderal has them</h2>
         <p>
-          Enderal's ranged combat is bows, crossbows and magic. Firearms add a slower, heavier option: one loud shot that
-          hits hard, then a reload. They give archers a second playstyle that still runs on the Archery skill and its
-          talents. Bandits and soldiers carry them too, so expect to be shot at.
+          To make Enderal more distinct, Zen has chosen to include basic firearms, to further reinforce that you are not
+          playing Skyrim, but something set in its own time period and world. In Enderal lore, civilizations reach a
+          certain point in technology and are wiped out by something. Firearms technology exists and has done before.
+          Zenderal just makes that playable.
         </p>
         <p>
           Two mods supply them: <strong>Ordo Legionis</strong> adds muskets and <strong>A Gentleman's Flintlock
