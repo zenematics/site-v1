@@ -355,8 +355,9 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
             quest guides.
           </p>
           <div className="actions">
-            <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Read the docs</a>
-            <a href={`${import.meta.env.BASE_URL}zenderal/guide/`} className="btn btn--light-outline">Zenderal guides</a>
+            <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Install</a>
+            <a href={`${import.meta.env.BASE_URL}zenderal/guide/`} className="btn btn--light-outline">Guides</a>
+            <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--light-outline">Support</a>
           </div>
         </Expanded>
       </Panel>
