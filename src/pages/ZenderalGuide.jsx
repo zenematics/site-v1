@@ -61,7 +61,7 @@ export default function ZenderalGuide() {
 
   return (
     <div className="zen-page">
-      <Nav />
+      <Nav zenderal />
 
       <ZenHero
         eyebrow="Gameplay Guide"

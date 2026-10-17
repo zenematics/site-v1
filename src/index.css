@@ -60,6 +60,16 @@ a:hover {
   color: #ece9e2;
   text-transform: uppercase;
 }
+.nav__links {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+.nav__btn {
+  padding: 9px 18px;
+  font-size: 11px;
+}
 
 /* ---------- Hero ---------- */
 .hero {
@@ -429,6 +439,16 @@ a:hover {
   .nav__name {
     font-size: 15px;
     letter-spacing: 0.26em;
+  }
+  .nav:has(.nav__links) .nav__name {
+    display: none;
+  }
+  .nav__links {
+    gap: 6px;
+  }
+  .nav__btn {
+    padding: 8px 11px;
+    letter-spacing: 0.16em;
   }
 }
 

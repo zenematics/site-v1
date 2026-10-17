@@ -16,7 +16,7 @@ export default function Zenderal() {
   const first = DOCS[0];
   return (
     <div className="zen-page">
-      <Nav />
+      <Nav zenderal />
 
       <ZenHero
         eyebrow="Wabbajack Modlist · Enderal SE"

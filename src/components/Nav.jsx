@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { LINKS } from '../config.js';
 
 // `blend`: invert against the content behind it until the page is scrolled (home hero).
 // `intro`: fade in after the home hero panels have landed.
-export default function Nav({ blend = false, intro = false }) {
+// `zenderal`: show the Zenderal Install / Guides / Support links.
+export default function Nav({ blend = false, intro = false, zenderal = false }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -19,6 +21,13 @@ export default function Nav({ blend = false, intro = false }) {
         <img src={`${import.meta.env.BASE_URL}uploads/zen-logo-white.png`} alt="Zenematics" className="nav__logo" />
         <span className="nav__name">Zenematics</span>
       </a>
+      {zenderal && (
+        <div className="nav__links">
+          <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid nav__btn">Install</a>
+          <a href={`${import.meta.env.BASE_URL}zenderal/guide/`} className="btn btn--light-outline nav__btn">Guides</a>
+          <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--light-outline nav__btn">Support</a>
+        </div>
+      )}
     </nav>
   );
 }
