@@ -23,6 +23,9 @@ Each page is a separate HTML entry registered in `vite.config.js` `rollupOptions
 | `/` | `index.html` | `src/main.jsx` | `src/pages/Home.jsx` |
 | `/zenderal/` | `zenderal/index.html` | `src/zenderal.jsx` | `src/pages/Zenderal.jsx` (overview) |
 | `/zenderal/docs/` | `zenderal/docs/index.html` | `src/zenderal-docs.jsx` | `src/pages/ZenderalDocs.jsx` |
+| `/zenderal/guide/` | `zenderal/guide/index.html` | `src/zenderal-guide.jsx` | `src/pages/ZenderalGuide.jsx` (gameplay guide) |
+
+The guide page uses hash routing (`#<section-id>`). Its sections live in `src/zenderal/guide/` (one component each) and all their data (races, affinities, firearms, armor sets, For Honor Reforged, keybindings) is in `src/zenderal/guide/data.js`, taken from the list's winning plugin records. Its Magic section reads `spells.json`'s `tier`/`archetype` fields; FHR status icons are in `public/uploads/guide/fhr/`.
 
 The docs page uses hash routing (`#<doc-id>`, `#<doc-id>/<section>` for docs listed in `docSections`, `#quests/<slug>`) parsed in `readHash()`. `src/zenderal/Sidebar.jsx` is shared by the overview and docs pages: on the overview it renders plain links into the docs page; on the docs page it switches docs in place via `onPick`/`onPickSection`.
 

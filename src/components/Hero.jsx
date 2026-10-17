@@ -356,11 +356,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           </p>
           <div className="actions">
             <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Read the docs</a>
-            <span aria-disabled="true" className="btn btn--disabled">
-              Zenderal guides
-              <span className="btn__divider" />
-              <span style={{ color: ACCENT.zenderal }}>Coming soon</span>
-            </span>
+            <a href={`${import.meta.env.BASE_URL}zenderal/guide/`} className="btn btn--light-outline">Zenderal guides</a>
           </div>
         </Expanded>
       </Panel>
