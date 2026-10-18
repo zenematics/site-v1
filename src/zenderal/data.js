@@ -34,7 +34,7 @@ export const PAD = {
     RT: { cat: 'combat', in: [['Press', 'Power attack', 'Mouse 4']] },
     RB: { cat: 'combat', in: [['Press', 'Right attack', 'Left click']] },
     LS: { cat: 'move', in: [['Click', 'Sneak', 'Left Ctrl']] },
-    RS: { cat: 'combat', in: [['Click', 'Lock on to target', 'Middle click'], ['Hold', 'Change POV', 'ISO key']] },
+    RS: { cat: 'combat', in: [['Click', 'Lock on to target', 'Middle click'], ['Hold', 'Change POV', 'Z']] },
     A: { cat: 'move', in: [['Press', 'Activate / interact', 'E']] },
     B: {
       cat: 'combat',

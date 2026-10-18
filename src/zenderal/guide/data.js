@@ -525,7 +525,7 @@ export const KEYS = {
   J: { cat: 'menu', action: 'Journal' },
   L: { cat: 'mod', action: 'Lantern on / off' },
   LShift: { cat: 'move', action: 'Sprint' },
-  ISO: { cat: 'mod', action: 'Toggle first / third person', note: 'The extra key beside Left Shift on ISO keyboards. On other layouts, scroll the mouse wheel to zoom in and out of first person.' },
+  Z: { cat: 'mod', action: 'Toggle first / third person' },
   X: { cat: 'combat', action: 'Talents and powers' },
   C: { cat: 'combat', action: 'Dual power attack' },
   V: { cat: 'mod', action: 'Hide / show the HUD' },
