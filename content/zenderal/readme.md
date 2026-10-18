@@ -50,10 +50,16 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 ## Before you install
 
 1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install, such as the [Dismembering Framework error](#readme/troubleshooting).
-2. **Set the language to English** for both Enderal SE and Skyrim SE in Steam (Properties → Language).
-3. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
-4. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
-5. **Pause your antivirus** while Wabbajack runs, or add exclusions for those folders. Some antivirus programs block or quarantine files mid-install.
+2. **Switch Enderal SE to version 2.0.12.4.** Zenderal currently runs on this older version, not the newer 2.1.4 that Steam installs by default. In your Steam library, right-click **Enderal: Forgotten Stories (Special Edition)**, open **Properties → Game Versions & Betas** and select **enderal_2.0.12.4**. Steam then downloads that version. Let it finish before you go on.
+
+   ![Steam's Game Versions & Betas page for Enderal SE, with enderal_2.0.12.4 selected](uploads/steam-enderal-version.png)
+
+   Steam lists this version as unsupported and pending removal in 2027. That's expected. Keep it selected until a Zenderal release tells you to switch.
+
+3. **Set the language to English** for both Enderal SE and Skyrim SE in Steam (Properties → Language).
+4. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
+5. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
+6. **Pause your antivirus** while Wabbajack runs, or add exclusions for those folders. Some antivirus programs block or quarantine files mid-install.
 
 ---
 
@@ -141,11 +147,12 @@ Despite what the message says, the mod is part of Zenderal and you don't need to
 To fix it, redo the setup in order:
 
 1. Uninstall Enderal SE in Steam, delete whatever is left in its game folder, and reinstall it.
-2. Launch Enderal SE from Steam, let it reach the main menu, then quit.
-3. Reinstall Zenderal in Wabbajack with the **same** download and install locations, and tick **Overwrite installation**. Your downloads are reused, so nothing is downloaded again.
-4. Launch the game from Mod Organizer 2.
+2. Switch it to **enderal_2.0.12.4** under **Properties → Game Versions & Betas**.
+3. Launch Enderal SE from Steam, let it reach the main menu, then quit.
+4. Reinstall Zenderal in Wabbajack with the **same** download and install locations, and tick **Overwrite installation**. Your downloads are reused, so nothing is downloaded again.
+5. Launch the game from Mod Organizer 2.
 
-These are steps 1 and 3 of [Before you install](#readme/before-you-install).
+These are steps 1, 2 and 4 of [Before you install](#readme/before-you-install).
 
 ---
 
