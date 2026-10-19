@@ -351,8 +351,8 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
           </div>
           <h2 className="panel__title panel__title--metal">Zenderal</h2>
           <p className="panel__desc" style={{ color: '#c2beb6' }}>
-            A Wabbajack modlist for Enderal: Forgotten Stories. Install steps, controller support and FAQs, plus
-            gameplay guides for races, perks, spells and combat.
+            A Wabbajack modlist for Enderal: Forgotten Stories. Install steps and FAQs, plus gameplay guides for
+            races, perks, spells, combat and controller support.
           </p>
           <div className="actions">
             <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Install</a>

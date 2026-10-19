@@ -1,6 +1,5 @@
 export const DOCS = [
   { id: 'readme', title: 'Readme', group: 'Getting Started' },
-  { id: 'controller', title: 'Controller Support', group: 'Help' },
   { id: 'dlss', title: 'DLSS & Frame Gen', group: 'Help' },
   { id: 'faq', title: 'FAQ', group: 'Help' },
 ];

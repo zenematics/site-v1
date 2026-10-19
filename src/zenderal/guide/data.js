@@ -13,6 +13,7 @@ export const SECTIONS = [
   { id: 'spells', title: 'Spells', group: 'Combat' },
   { id: 'armor', title: 'Armor Sets', group: 'Gear' },
   { id: 'keys', title: 'Keybindings', group: 'Controls' },
+  { id: 'controller', title: 'Controller Support', group: 'Controls' },
 ];
 
 export const SECTION_GROUPS = ['Character', 'Combat', 'Gear', 'Controls'];

@@ -12,6 +12,7 @@ import Firearms from '../zenderal/guide/Firearms.jsx';
 import Magic from '../zenderal/guide/Magic.jsx';
 import ArmorSets from '../zenderal/guide/ArmorSets.jsx';
 import Keybinds from '../zenderal/guide/Keybinds.jsx';
+import Controller from '../zenderal/guide/Controller.jsx';
 import Spells from '../zenderal/Spells.jsx';
 import Perks from '../zenderal/Perks.jsx';
 
@@ -28,6 +29,7 @@ const BODY = {
   spells: Spells,
   armor: ArmorSets,
   keys: Keybinds,
+  controller: Controller,
 };
 
 // Hash routes: #<section-id>.
