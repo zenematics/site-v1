@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { KEYBOARD, KEYS, KEY_CATS, MOUSE, NAV_CLUSTER } from './data.js';
+import { KEYBOARD, KEYS, KEY_CATS, NAV_CLUSTER } from './data.js';
+import Mouse from './Mouse.jsx';
 
 // A row of keys; widths are in key units (--u), so the whole board scales with its container.
 function Row({ row, focus, setFocus, cat }) {
@@ -94,17 +95,10 @@ export default function Keybinds() {
 
       <div className="md">
         <h2>Mouse</h2>
-        <table>
-          <tbody>
-            {MOUSE.map((m) => (
-              <tr key={m.input}>
-                <td>{m.input}</td>
-                <td>{m.action}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      </div>
+      <Mouse cat={cat} />
 
+      <div className="md">
         <h2>Every binding</h2>
       </div>
       <div className="g-keylists">

@@ -540,14 +540,15 @@ export const KEYS = {
   Arrows: { cat: 'mod', action: 'Wheeler: move entries', note: 'Reorder slots and wheels while the wheel is open.' },
 };
 
+// `part` is the button on the mouse diagram it lights up.
 export const MOUSE = [
-  { input: 'Left click', action: 'Right-hand attack', cat: 'combat' },
-  { input: 'Right click', action: 'Left-hand attack / block', cat: 'combat' },
-  { input: 'Middle click', action: 'Lock on to target', cat: 'combat' },
-  { input: 'Mouse 4', action: 'Power attack', cat: 'combat' },
-  { input: 'Mouse 5', action: 'Dual-wield parry', cat: 'combat' },
-  { input: 'Wheel', action: 'Zoom camera · cycle wheel items', cat: 'move' },
-  { input: 'Shift + wheel', action: 'Cycle what you\'re about to activate', cat: 'mod' },
+  { input: 'Left click', action: 'Right-hand attack', cat: 'combat', part: 'left' },
+  { input: 'Right click', action: 'Left-hand attack / block', cat: 'combat', part: 'right' },
+  { input: 'Middle click', action: 'Lock on to target', cat: 'combat', part: 'wheel', note: 'Follow-up attacks only work while you are locked on.' },
+  { input: 'Mouse 4', action: 'Power attack', cat: 'combat', part: 'm4', note: 'The rear side button. Combine it with a direction for side and back power attacks (guard break).' },
+  { input: 'Mouse 5', action: 'Dual-wield parry', cat: 'combat', part: 'm5', note: 'The front side button. Only with a weapon in each hand.' },
+  { input: 'Wheel', action: 'Zoom camera · cycle wheel items', cat: 'move', part: 'wheel', note: 'Scroll all the way in for first person. While the Wheeler wheel is open it cycles items instead.' },
+  { input: 'Shift + wheel', action: 'Cycle what you\'re about to activate', cat: 'mod', part: 'wheel', note: 'Better Third Person Selection: picks between several nearby things you could activate.' },
 ];
 
 // Keyboard rows: [label, width in key units, KEYS id when it differs from the label].

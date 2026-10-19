@@ -1432,6 +1432,110 @@ html {
   letter-spacing: 0.04em;
   color: #ece9e2;
 }
+/* Mouse diagram: same category colours (--kc) as the keyboard. */
+.ms {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.ms__svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.ms__body {
+  fill: #121317;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1.5;
+}
+.ms__part {
+  cursor: pointer;
+  outline: none;
+  fill: color-mix(in srgb, var(--kc) 18%, #17181c);
+  stroke: color-mix(in srgb, var(--kc) 55%, transparent);
+  stroke-width: 1.5;
+  transition:
+    fill 0.15s,
+    stroke 0.15s,
+    opacity 0.2s;
+}
+.ms__part:hover,
+.ms__part:focus-visible,
+.ms__part.is-focus {
+  fill: color-mix(in srgb, var(--kc) 40%, #17181c);
+  stroke: var(--kc);
+}
+.ms__part.is-dim {
+  opacity: 0.25;
+}
+.ms__ridge {
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+.ms__tag {
+  font-family: inherit;
+  font-size: 11px;
+  fill: #9b968d;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.ms__side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ms__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ms__row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 9px 110px 1fr;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 8px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: #9b968d;
+  transition:
+    background 0.15s,
+    opacity 0.2s;
+}
+.ms__row:hover,
+.ms__row.is-focus {
+  background: color-mix(in srgb, var(--kc) 10%, transparent);
+}
+.ms__row.is-dim {
+  opacity: 0.3;
+}
+.ms__input {
+  color: #ece9e2;
+}
+@media (max-width: 600px) {
+  .ms {
+    grid-template-columns: 1fr;
+  }
+  .ms__svg {
+    max-width: 170px;
+    justify-self: center;
+  }
+  .ms__row {
+    grid-template-columns: 9px 96px 1fr;
+  }
+}
+
 .g-keylists {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
