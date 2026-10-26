@@ -53,6 +53,48 @@ html {
   object-position: center 40%;
   filter: brightness(0.7);
 }
+/* Overview: the background as depth layers that move at different rates.
+   --s is the scroll offset in px (ZenHero.jsx); at 0 the layers line up as the
+   original shot. Far layers sink with the page (look slower), near ones push in. */
+.zhero--parallax {
+  --s: 0;
+  --fade: calc(1 - var(--s) / 700);
+}
+.zhero__layer {
+  /* Taller than the hero so sinking layers never show an edge; all share one box so they line up. */
+  top: -20%;
+  height: 120%;
+  bottom: auto;
+  transform-origin: 50% 85%;
+  translate: 0 calc(var(--s) * var(--sink) * 1px);
+  scale: calc(1 + var(--s) * var(--push) * 0.0001);
+  will-change: translate, scale;
+}
+.zhero__layer--back {
+  --sink: 0.5;
+  --push: 0;
+}
+.zhero__layer--mid {
+  --sink: 0.32;
+  --push: 0.6;
+}
+.zhero__layer--front {
+  --sink: 0.12;
+  --push: 1.6;
+}
+/* The text rises out faster than the page and fades as the hero scrolls away.
+   Moved with `top` and faded per element: a translate or opacity on .zhero__inner would
+   make it a stacking context and stop the logo video's screen blend reaching the background. */
+.zhero--parallax .zhero__inner {
+  top: calc(var(--s) * -0.25px);
+}
+.zhero--parallax .eyebrow-row,
+.zhero--parallax .zhero__desc,
+.zhero--parallax .zhero__logo video,
+.zhero--parallax .zhero__logo.is-done img {
+  opacity: var(--fade);
+}
+
 .zhero__shade {
   position: absolute;
   inset: 0;
