@@ -45,3 +45,14 @@ GitHub Pages serves under `/<repo>/`, so the deploy sets `BASE_PATH` and Vite's 
 ### Styling and fonts
 
 Plain CSS: `src/index.css` (global + home) and `src/zenderal.css` (Zenderal pages), BEM-ish class names. Futura PT is loaded from Adobe Fonts using `VITE_TYPEKIT_ID`, substituted into each HTML file via `%VITE_TYPEKIT_ID%` — set locally in `.env` (gitignored) and in CI via the repo variable `vars.VITE_TYPEKIT_ID`.
+
+### AI-generated assets (Higgsfield / Artlist connector)
+
+Some Zenderal visuals were made with the Higgsfield (Artlist) MCP connector. Always quote the cost with `get_generation_cost` and get the user's explicit OK before generating — credits are real money.
+
+- **Style kit "Zenderal"** (find it with `list_style_kits`): the site palette (Void `#07080a`, Night `#0d0e11`, Slate `#17181c`, Bone `#ece9e2`, Ash `#c9c5bd`, Stone `#9b968d`, Dust `#6f6a62`, Muted gold `#c9ab76`, Cold blue `#7fa7c9`), a "Treatment" guideline (dark fantasy, painterly realism, desaturated with muted gold highlights, cold blue only as an accent, keep the input image's location and lighting) and an "Exclusions" guideline (no text/logos/sigils, nothing modern, no saturated or neon colours). Pass it as `styleKitId` for any Zenderal image or video.
+- **3D emblem** (`public/uploads/zenderal-emblem.glb`, ~1.8 MB): image-to-3D from the flat emblem, then hand-fixed (spiked arc moved in line with and slightly in front of the sphere, body tilted so the bottom point faces straight down) and optimised with `@gltf-transform` (simplify to ~72k tris, meshopt). sharp/libvips is broken on this machine, so textures are converted to WebP with ffmpeg instead (normal map 2048, others 1024). The model node is rotated 90° about X, so in raw vertex positions up is −Z and depth is +Y. Rendered by `src/zenderal/emblem3d.js` (three.js, lazy-loaded by `Emblem.jsx` with `live`; the flat PNG shows for reduced motion and until the model loads). The home page keeps the flat PNG — the 3D version was tried there and rejected.
+- **Growing-vines logo** (`public/uploads/zenderal/logo-grow.webm`/`.mp4`): an image-to-video from an AI start frame (the Z alone, prompted to keep its exact strokes) to `logo-white.png` as the end frame. It is white on black and overlaid with `mix-blend-mode: screen`; `Logo.jsx` plays it once then swaps to the PNG, which matches the last frame. Re-encodes must keep the same crop/size as the PNG and crush the blacks to pure black.
+- Check visual changes with headless `puppeteer-core` driving the system Chrome (`--use-angle=swiftshader` so WebGL works) when the Chrome extension is unavailable.
+
+Images: photo/screenshot backgrounds are WebP (~2560px wide, quality 85 — lower bands the dark gradients); hero backgrounds live in `public/uploads/zenderal/screenshots/backgrounds/`.
