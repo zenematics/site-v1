@@ -6,6 +6,8 @@ html {
   background: #07080a;
   min-height: 100vh;
   position: relative;
+  /* Full-width backdrops span 100vw, which includes the scrollbar. */
+  overflow-x: clip;
 }
 
 /* ---------- Transitions ---------- */
@@ -61,8 +63,9 @@ html {
   --fade: calc(1 - var(--s) / 700);
 }
 .zhero__layer {
-  /* Taller than the hero so sinking layers never show an edge; all share one box so they line up. */
-  top: -20%;
+  /* Taller than the hero so sinking layers never show an edge; all share one box so they line up.
+     Set low enough that the shot's waterline falls in the crossfade into the next section. */
+  top: -8%;
   height: 120%;
   bottom: auto;
   transform-origin: 50% 85%;
@@ -217,15 +220,151 @@ html {
   color: #c2beb6;
   text-wrap: pretty;
 }
-.zintro .zshot {
-  margin-top: 32px;
+.zintro__body {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zintro__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 40px;
+  max-width: 660px;
+  margin: 24px 0 0;
+}
+.zintro__fact {
+  padding-top: 16px;
+  border-top: 1px solid rgba(201, 171, 118, 0.35);
+}
+.zintro__fact dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zintro__fact dd {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #c2beb6;
+}
+
+/* Parallax backdrops (the intro and goals): a shot split into depth layers, far to near.
+   --p is the backdrop's distance from the viewport centre in px (Zenderal.jsx); at 0 the
+   layers line up as the original shot. Far layers sink with the page (look slower), near
+   ones push in. */
+.zparallax {
+  --p: 0;
+}
+.zlayer {
+  /* Taller than the backdrop so drifting layers never show an edge; one shared box keeps them lined up. */
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  filter: brightness(0.9) saturate(0.75);
+  transform-origin: 50% 85%;
+  translate: 0 calc(var(--p) * var(--drift) * 1px);
+  scale: calc(1.04 + min(1, max(-1, var(--p) / 800)) * var(--push) * 0.04);
+  will-change: translate, scale;
+}
+.zlayer--back {
+  --drift: 0.08;
+  --push: 0;
+}
+.zlayer--mid {
+  --drift: 0.045;
+  --push: 0.5;
+}
+.zlayer--front {
+  --drift: 0.01;
+  --push: 1;
+}
+
+/* The intro's full-bleed backdrop. Like the hero, its bottom --blend fades out over the
+   first goal's backdrop, which starts that far up under it (.zgoals below). */
+.zstage {
+  --blend: 260px;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding: 120px 0 calc(40px + var(--blend));
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--blend)), transparent);
+}
+/* Crossfade from the hero: the stage starts --blend higher, under the hero,
+   and the hero's bottom fades out over it instead of to solid black. */
+.zhero--parallax {
+  --blend: 260px;
+  /* Taller by the fade, so the full shot shows before it crossfades away; the extra
+     height goes below the content so the text and emblem stay where they were. */
+  min-height: calc(62vh + var(--blend));
+  padding-bottom: calc(120px + var(--blend));
+  z-index: 2;
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--blend)), transparent);
+}
+.zhero--parallax .zhero__emblem {
+  top: calc(50% - var(--blend) / 2);
+}
+.zhero--parallax .zhero__shade {
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.94) 0%, rgba(7, 8, 10, 0.7) 45%, rgba(7, 8, 10, 0.2) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, 0.4) 0%, transparent 30%, rgba(7, 8, 10, 0.5) 100%);
+}
+.zhero--parallax + .zstage {
+  margin-top: -260px;
+  padding-top: 320px;
+}
+/* The intro is tall, so it has room for a stronger drift (and a taller box to match). */
+.zstage .zlayer {
+  top: -18%;
+  height: 136%;
+  object-position: center 60%;
+}
+.zstage .zlayer--back {
+  --drift: 0.2;
+}
+.zstage .zlayer--mid {
+  --drift: 0.11;
+}
+.zstage .zlayer--front {
+  --drift: 0.02;
+}
+.zstage__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.92) 0%, rgba(7, 8, 10, 0.6) 40%, rgba(7, 8, 10, 0.05) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, 0.5) 0%, transparent 22%, transparent 72%, rgba(7, 8, 10, 0.5) 100%);
+}
+.zstage .zintro {
+  position: relative;
 }
 
 .zgoals {
-  padding-top: 140px;
+  /* Starts --blend up, under the intro's fade; --lead is the distance from here to the
+     first goal, whose backdrop reaches back up to the top so the two crossfade. */
+  --blend: 260px;
+  --lead: 422px;
+  margin-top: calc(-1 * var(--blend));
+  padding-top: calc(100px + var(--blend));
   gap: 120px;
 }
+.zgoal:first-of-type .zgoal__backdrop {
+  top: calc(-1 * var(--lead));
+  mask-image: linear-gradient(180deg, transparent, #000 var(--blend), #000 70%, transparent);
+}
 .zgoals > .docs__label {
+  /* Above the first goal's backdrop, which reaches up behind it. */
+  position: relative;
+  z-index: 1;
   margin-bottom: -72px;
 }
 .zgoal {
@@ -236,6 +375,35 @@ html {
 }
 .zgoal--flip .zgoal__body {
   order: 2;
+}
+/* A goal's full-width parallax backdrop: breaks out of the content column to the viewport
+   edges and fades into the page above and below. */
+.zgoal {
+  position: relative;
+  isolation: isolate;
+}
+.zgoal__backdrop {
+  position: absolute;
+  z-index: -1;
+  top: -140px;
+  bottom: -140px;
+  left: 50%;
+  width: 100vw;
+  translate: -50% 0;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+}
+.zgoal__backdrop .zlayer {
+  object-position: 40% center;
+}
+.zgoal__backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(7, 8, 10, 0.9) 0%, rgba(7, 8, 10, 0.55) 45%, rgba(7, 8, 10, 0.25) 100%);
+}
+.zgoal--flip .zgoal__backdrop::after {
+  scale: -1 1;
 }
 .zgoal__body {
   display: flex;
@@ -291,9 +459,6 @@ html {
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.zshot--wide {
-  aspect-ratio: 21 / 9;
 }
 .zshot--empty {
   display: flex;
@@ -1902,7 +2067,9 @@ html {
     width: auto;
   }
   .zgoals {
-    padding-top: 96px;
+    --blend: 160px;
+    --lead: 262px;
+    padding-top: calc(56px + var(--blend));
     gap: 80px;
   }
   .zgoals > .docs__label {
@@ -1915,8 +2082,25 @@ html {
   .zgoal--flip .zgoal__body {
     order: 0;
   }
-  .zshot--wide {
-    aspect-ratio: 16 / 9;
+  .zstage {
+    --blend: 160px;
+    padding: 72px 0 calc(32px + var(--blend));
+  }
+  .zhero--parallax {
+    --blend: 160px;
+  }
+  .zhero--parallax + .zstage {
+    margin-top: -160px;
+    padding-top: 208px;
+  }
+  .zstage__shade {
+    background:
+      linear-gradient(90deg, rgba(7, 8, 10, 0.88) 0%, rgba(7, 8, 10, 0.6) 100%),
+      linear-gradient(180deg, rgba(7, 8, 10, 0.5) 0%, transparent 18%, transparent 78%, rgba(7, 8, 10, 0.5) 100%);
+  }
+  .zintro__facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
   }
   .zcta {
     padding-top: 112px;

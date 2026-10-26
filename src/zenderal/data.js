@@ -76,19 +76,29 @@ export const PAD = {
   },
 };
 
-// Overview page (/zenderal/). Each goal shows a screenshot: put the image in
-// public/uploads/zenderal/ and set `shot` to its file name; empty shows a placeholder.
+// Overview page (/zenderal/). `body` and `facts` sit under the lede in the intro.
+// Each goal shows a screenshot: put the image in public/uploads/zenderal/ and set
+// `shot` to its file name; empty shows a placeholder. An optional `layers` (same folder)
+// sets a full-width parallax backdrop from `<layers>-back/mid/front.webp`.
 // `links` point at guide sections ({ guide: id }) or docs ({ doc: id }).
 export const OVERVIEW = {
   headline: 'Enderal, rebuilt for today.',
   lede: "Zenderal's goal is to deliver a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.",
-  shot: '',
+  body: "It's built on Enderal: Forgotten Stories, SureAI's total conversion for Skyrim, and keeps its story, quests and world as they were made. Around them it brings combat, visuals and character systems up to date, and tunes everything to work together, so you can start a new journey without spending weeks on a load order.",
+  facts: [
+    { label: 'One-click install', text: 'Wabbajack downloads, patches and sets up the whole list for you.' },
+    { label: 'Current visuals', text: 'An ENB preset with DLSS and frame generation support.' },
+    { label: 'Keyboard or controller', text: 'A full controller layout, so every action works on both.' },
+    { label: 'In beta', text: 'Playable now and changing fast. Feedback goes through Discord.' },
+  ],
   goals: [
     {
       title: 'Modern combat',
       text: "Combat that feels current and responsive, built around Enderal's talents and progression.",
       links: [{ guide: 'combat' }, { guide: 'firearms' }, { guide: 'magic' }],
       shot: '',
+      // Off for now. The crystal forest backdrop is ready as `layers: 'layers/crystal'`
+      // (back is the forest and water, mid the crystal creature, front the knight).
     },
     {
       title: 'Modern graphics',
