@@ -10,8 +10,8 @@ const BG = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/
 const LAYERS = ['back', 'mid', 'front'];
 
 // The Zenderal page header. `compact` is the shorter version used on the docs page;
-// `live` shows the 3D emblem and the scroll parallax background, and `logo` the
-// Zenderal wordmark in place of the text title (overview page).
+// `live` shows the scroll parallax background (and the 3D emblem, if shown), and `logo` the
+// Zenderal wordmark, full width in place of the text title and the emblem (overview page).
 export default function ZenHero({ eyebrow, desc, compact = false, live = false, logo = false, children }) {
   const hero = useRef(null);
 
@@ -50,7 +50,7 @@ export default function ZenHero({ eyebrow, desc, compact = false, live = false, 
         <img src={BG} alt="" className="zhero__bg" />
       )}
       <div className="zhero__shade" />
-      <Emblem live={live} className="zhero__emblem" />
+      {!logo && <Emblem live={live} className="zhero__emblem" />}
       <div className="zhero__inner">
         <div className="eyebrow-row">
           <span className="eyebrow" style={{ color: '#c9c5bd' }}>{eyebrow}</span>

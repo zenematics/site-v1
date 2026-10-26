@@ -138,7 +138,9 @@ html {
 }
 /* Wordmark in place of the text title (overview page). */
 .zhero__logo {
-  --w: clamp(260px, 36vw, 520px);
+  /* As wide as the column allows, but short enough on low screens that the intro still
+     peeks above the fold (the logo is about a third as tall as it is wide). */
+  --w: clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px);
   position: relative;
   display: block;
   width: var(--w);
@@ -289,38 +291,94 @@ html {
   --push: 1;
 }
 
-/* The intro's full-bleed backdrop. Like the hero, its bottom --blend fades out over the
-   first goal's backdrop, which starts that far up under it (.zgoals below). */
+/* The intro's full-bleed backdrop. It starts --blend up, over the hero, and its scene fades in
+   from the top so the two crossfade; the text sits outside the fade so it can start up in it.
+   Its bottom --blend fades out over the first goal's backdrop (.zgoals below). */
 .zstage {
   --blend: 260px;
   position: relative;
-  z-index: 1;
+  z-index: 3;
+}
+.zstage__pin {
+  position: relative;
   overflow: hidden;
   padding: 120px 0 calc(40px + var(--blend));
-  mask-image: linear-gradient(180deg, #000 calc(100% - var(--blend)), transparent);
 }
-/* Crossfade from the hero: the stage starts --blend higher, under the hero,
-   and the hero's bottom fades out over it instead of to solid black. */
+.zstage__scene {
+  position: absolute;
+  inset: 0;
+  mask-image: linear-gradient(180deg, transparent, #000 var(--blend), #000 calc(100% - var(--blend)), transparent);
+  mask-repeat: no-repeat;
+}
+/* The emblem portal (Zenderal.jsx): the scene pins while the scroll run under it plays,
+   and closes into the emblem instead of fading out. Reduced motion keeps the fade. */
+.zstage__emblem {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zstage::after {
+    content: '';
+    display: block;
+    height: 100vh;
+  }
+  .zstage__pin {
+    position: sticky;
+    min-height: 100vh;
+  }
+  .zstage__scene {
+    mask-image: linear-gradient(180deg, transparent, #000 var(--blend));
+  }
+  .zstage__emblem {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    max-width: none;
+    height: auto;
+    transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+/* Crossfade into the intro: the stage starts --blend higher, over the hero's bottom. */
 .zhero--parallax {
   --blend: 260px;
   /* Taller by the fade, so the full shot shows before it crossfades away; the extra
-     height goes below the content so the text and emblem stay where they were. */
+     height goes below the content. */
   min-height: calc(62vh + var(--blend));
-  padding-bottom: calc(120px + var(--blend));
-  z-index: 2;
-  mask-image: linear-gradient(180deg, #000 calc(100% - var(--blend)), transparent);
+  padding-top: 140px;
+  padding-bottom: calc(80px + var(--blend));
 }
-.zhero--parallax .zhero__emblem {
-  top: calc(50% - var(--blend) / 2);
+/* Centred, with the wordmark filling the space the emblem used to share. */
+.zhero--parallax .zhero__inner {
+  align-items: center;
+  text-align: center;
 }
+.zhero--parallax .eyebrow-row {
+  justify-content: center;
+}
+.zhero--parallax .zhero__logo {
+  /* The PNG has more transparent padding on the left (5.3%) than the right (3.1%). */
+  margin-left: calc(var(--w) * -0.022);
+}
+.zhero--parallax .zhero__desc {
+  max-width: 760px;
+  font-size: 21px;
+}
+/* Darkest behind the centred text, lighter towards the edges. */
 .zhero--parallax .zhero__shade {
   background:
-    linear-gradient(90deg, rgba(7, 8, 10, 0.94) 0%, rgba(7, 8, 10, 0.7) 45%, rgba(7, 8, 10, 0.2) 100%),
+    radial-gradient(ellipse 60% 55% at 50% 42%, rgba(7, 8, 10, 0.85) 0%, rgba(7, 8, 10, 0.6) 60%, rgba(7, 8, 10, 0.35) 100%),
     linear-gradient(180deg, rgba(7, 8, 10, 0.4) 0%, transparent 30%, rgba(7, 8, 10, 0.5) 100%);
 }
 .zhero--parallax + .zstage {
   margin-top: -260px;
-  padding-top: 320px;
+}
+/* The intro's text starts inside the crossfade, so its top peeks above the fold. */
+.zhero--parallax + .zstage .zstage__pin {
+  padding-top: 40px;
 }
 /* The intro is tall, so it has room for a stronger drift (and a taller box to match). */
 .zstage .zlayer {
@@ -2084,6 +2142,8 @@ html {
   }
   .zstage {
     --blend: 160px;
+  }
+  .zstage__pin {
     padding: 72px 0 calc(32px + var(--blend));
   }
   .zhero--parallax {
@@ -2091,7 +2151,12 @@ html {
   }
   .zhero--parallax + .zstage {
     margin-top: -160px;
-    padding-top: 208px;
+  }
+  .zhero--parallax .zhero__desc {
+    font-size: 17px;
+  }
+  .zhero--parallax + .zstage .zstage__pin {
+    padding-top: 64px;
   }
   .zstage__shade {
     background:
