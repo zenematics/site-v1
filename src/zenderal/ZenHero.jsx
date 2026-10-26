@@ -7,7 +7,7 @@ import Logo from './Logo.jsx';
 export default function ZenHero({ eyebrow, desc, compact = false, live = false, logo = false, children }) {
   return (
     <header className={`zhero${compact ? ' zhero--compact' : ''}`}>
-      <img src={`${import.meta.env.BASE_URL}uploads/zenderal-bg.png`} alt="" className="zhero__bg" />
+      <img src={`${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/ark.webp`} alt="" className="zhero__bg" />
       <div className="zhero__shade" />
       <Emblem live={live} className="zhero__emblem" />
       <div className="zhero__inner">

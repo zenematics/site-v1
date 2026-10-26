@@ -329,7 +329,7 @@ export default function Hero({ zenderalStage = 'Alpha' }) {
 
       {/* ---- Zenderal ---- */}
       <Panel s={p2} enter={stacked ? 'bottom' : 'right'} onActivate={activate(2)}>
-        <PhotoLayers s={p2} src={`${import.meta.env.BASE_URL}uploads/zenderal-bg.png`} />
+        <PhotoLayers s={p2} src={`${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/ark.webp`} />
         {stacked ? <MarkSlot>{emblem}</MarkSlot> : emblem}
         <Bar s={p2} color={ACCENT.zenderal} />
         <IdleLabel
