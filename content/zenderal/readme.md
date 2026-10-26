@@ -1,6 +1,6 @@
 Everything you need to know to install, run and update Zenderal, a Wabbajack modlist for Enderal: Forgotten Stories (Special Edition). Read it before you install.
 
-> **Alpha build**
+> **Beta build**
 > Zenderal is in testing. Expect bugs and breaking changes between updates. Report anything you find in the [Discord](https://discord.com/invite/aunT9MdevX).
 
 ---

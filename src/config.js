@@ -1,5 +1,5 @@
 // Zenderal release stage: 'Alpha' | 'Beta' | 'Release'
-export const ZENDERAL_STAGE = 'Alpha';
+export const ZENDERAL_STAGE = 'Beta';
 
 // Social links, used by the home hero, the Zenderal page and the footer.
 export const LINKS = {

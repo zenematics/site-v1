@@ -9,10 +9,10 @@ export const GROUPS = ['Getting Started', 'Help'];
 
 export const FAQ = [
   { q: 'Do I need Nexus Premium?', a: 'No. Without Premium, Wabbajack opens each download page and you click through them manually. Premium makes it fully automatic.' },
-  { q: 'Can I add my own mods?', a: "Not during alpha. Adding or removing mods is unsupported and bug reports from modified installs can't be investigated." },
+  { q: 'Can I add my own mods?', a: "Not during beta. Adding or removing mods is unsupported and bug reports from modified installs can't be investigated." },
   { q: 'The game crashes on startup.', a: 'Make sure Enderal SE has been launched once through Steam, then always start the game from Mod Organizer 2 using the provided launcher.' },
   { q: "DLSS or frame generation isn't working.", a: 'Check that your NVIDIA driver is up to date, hardware-accelerated GPU scheduling is on and the NVIDIA App isn\'t overriding DLSS for the game. The full checklist and fixes for common errors are on the', link: { doc: 'dlss', label: 'DLSS & Frame Gen page' } },
-  { q: 'Will my saves survive updates?', a: 'Not guaranteed during alpha. Each update notes whether a new game is required.' },
+  { q: 'Will my saves survive updates?', a: 'Not guaranteed during beta. Each update notes whether a new game is required.' },
   { q: 'Where do I report bugs?', a: 'In the Zenderal alpha channel on Discord — include your crash log if you have one.' },
 ];
 
@@ -74,4 +74,45 @@ export const PAD = {
     Left: { cat: 'mod', in: [['Press', 'Previous item']] },
     Right: { cat: 'mod', in: [['Press', 'Next item']] },
   },
+};
+
+// Overview page (/zenderal/). Each goal shows a screenshot: put the image in
+// public/uploads/zenderal/ and set `shot` to its file name; empty shows a placeholder.
+// `links` point at guide sections ({ guide: id }) or docs ({ doc: id }).
+export const OVERVIEW = {
+  headline: 'Enderal, rebuilt for today.',
+  lede: "Zenderal's goal is to deliver a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.",
+  shot: '',
+  goals: [
+    {
+      title: 'Modern combat',
+      text: "Combat that feels current and responsive, built around Enderal's talents and progression.",
+      links: [{ guide: 'combat' }, { guide: 'firearms' }, { guide: 'magic' }],
+      shot: '',
+    },
+    {
+      title: 'Modern graphics',
+      text: "A current-generation look through ENB, textures and meshes that suit Enderal's art direction.",
+      links: [{ doc: 'dlss' }],
+      shot: '',
+    },
+    {
+      title: 'Modern gameplay',
+      text: 'Deeper systems, new spells, gear and traits, and the fixes that keep it all running.',
+      links: [{ guide: 'spells' }, { guide: 'armor' }, { guide: 'books' }],
+      shot: '',
+    },
+    {
+      title: 'Rich build crafting',
+      text: 'Room to plan and experiment with characters that play very differently.',
+      links: [{ guide: 'race' }, { guide: 'affinities' }, { guide: 'perks' }],
+      shot: '',
+    },
+    {
+      title: 'New to Enderal',
+      text: "A great first playthrough, with the story and world kept intact. You don't need to have played Enderal before.",
+      links: [{ doc: 'readme' }, { guide: 'keys' }, { doc: 'controller' }],
+      shot: '',
+    },
+  ],
 };

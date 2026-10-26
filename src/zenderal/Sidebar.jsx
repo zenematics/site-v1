@@ -3,7 +3,7 @@ import { docSections } from './content.js';
 
 export const OVERVIEW_URL = `${import.meta.env.BASE_URL}zenderal/`;
 
-// The docs navigation, shared by the overview page and the docs page.
+// The docs page navigation.
 // `href(hash)` builds each link; `onPick` / `onPickSection`, when given, switch
 // docs in place instead of following the link. `reading` is the section of the
 // active doc currently on screen. The overview lives on its own page, so it's always a plain link.
