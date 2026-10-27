@@ -62,6 +62,18 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
   const [learned, setLearned] = useState(loadBuild);
   const [selected, setSelected] = useState(null);
   const [hover, setHover] = useState(null);
+  // Leaving a star clears the hover only after a moment, so the name and panel don't vanish the instant the
+  // pointer slips off a small star, and there's time to reach the panel (which keeps it while pointed at).
+  const hoverOff = useRef(0);
+  const hoverOn = (k) => {
+    clearTimeout(hoverOff.current);
+    setHover(k);
+  };
+  const hoverLeave = () => {
+    clearTimeout(hoverOff.current);
+    hoverOff.current = setTimeout(() => setHover(null), 600);
+  };
+  useEffect(() => () => clearTimeout(hoverOff.current), []);
   const box = useRef(null);
   const svg = useRef(null);
   const anim = useRef(0);
@@ -204,7 +216,9 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
   const px = (v) => v * grow * fit * upp;
 
   const state = (n) => (learned.has(n.key) ? 'learned' : canLearn(n) ? 'open' : 'locked');
-  const active = (selected && NODES.get(selected)) || (hover && NODES.get(hover));
+  const active = (hover && NODES.get(hover)) || (selected && NODES.get(selected));
+  // The panel opens on the side away from the star, so it never covers what you're pointing at.
+  const panelLeft = active && active.x > view.cx;
 
   const edges = useMemo(() => {
     const out = [];
@@ -309,8 +323,8 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
                   key={n.key}
                   transform={`translate(${n.x} ${-n.y})`}
                   className={`pmap__node is-${st}${n.key === selected ? ' is-selected' : ''}`}
-                  onPointerEnter={() => setHover(n.key)}
-                  onPointerLeave={() => setHover((h) => (h === n.key ? null : h))}
+                  onPointerEnter={() => hoverOn(n.key)}
+                  onPointerLeave={hoverLeave}
                   onPointerUp={(e) => {
                     if (drag.current && drag.current.moved) return;
                     e.stopPropagation();
@@ -320,7 +334,7 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
                     if (n.tree.id !== treeId) onTree(n.tree.id, false);
                   }}
                 >
-                  <circle r={r + px(8)} fill="transparent" />
+                  <circle r={r + px(11)} fill="transparent" />
                   {st === 'learned' && <circle r={r * 2} fill={color} opacity="0.25" />}
                   <circle
                     r={r}
@@ -369,7 +383,12 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
           <span className="pmap__hint">Drag to move · scroll or pinch to zoom · click a star</span>
 
         {active && (
-          <aside className="pmap__info" aria-live="polite">
+          <aside
+            className={`pmap__info${panelLeft ? ' is-left' : ''}`}
+            aria-live="polite"
+            onPointerEnter={() => clearTimeout(hoverOff.current)}
+            onPointerLeave={hoverLeave}
+          >
             <Detail
               n={active}
               st={state(active)}

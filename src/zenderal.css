@@ -1301,6 +1301,10 @@ html {
   font-size: 14px;
   line-height: 1.55;
 }
+.pmap__info.is-left {
+  right: auto;
+  left: 12px;
+}
 .pmap__detail {
   position: relative;
 }
