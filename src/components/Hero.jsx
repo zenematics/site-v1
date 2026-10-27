@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { LINKS, PANEL_VIDEOS } from '../config.js';
+import Logo from '../zenderal/Logo.jsx';
 
 const ACCENT = { content: '#a975ff', contentText: '#6a2fd6', guides: '#e0953d', zenderal: '#c9c5bd' };
 
@@ -133,6 +134,24 @@ function PanelVideo({ s, id, title, y, room }) {
             <span className="panel__video-play" />
           </button>
         ))}
+    </div>
+  );
+}
+
+// The Zenderal wordmark in the video slot: its vines grow each time the panel opens
+// (it remounts), then it holds on the still logo.
+function PanelLogo({ s, y, room }) {
+  return (
+    <div
+      className="panel__video panel__video--logo"
+      style={{
+        '--mark-y': y,
+        ...(room && { '--video-room': room }),
+        opacity: s.fullOp,
+        transitionDelay: s.delay,
+      }}
+    >
+      {s.on && <Logo className="panel__logo" />}
     </div>
   );
 }
@@ -279,14 +298,15 @@ export default function Hero({ zenderalStage = 'Beta' }) {
         {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" y={0.44} room={videoRoom('min(46vh, 34cqw)')} />}
         <Expanded s={p0}>
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
-          <h2 className="panel__title" style={{ color: '#0b0c0f' }}>Watch Zen</h2>
+          <h2 className="sr-only">Watch Zen</h2>
           <p className="panel__desc" style={{ color: '#3a3833' }}>
             Live modded playthroughs on Twitch, edited guides and showcases on YouTube, and a community on Discord.
           </p>
-          <div className="actions">
+          <div className="actions actions--lead">
+            <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--dark-solid">Discord</a>
             <a href={LINKS.twitch} target="_blank" rel="noopener noreferrer" className="btn btn--dark-outline">Twitch</a>
             <a href={LINKS.youtube} target="_blank" rel="noopener noreferrer" className="btn btn--dark-outline">YouTube</a>
-            <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--dark-solid">Discord</a>
+            <a href={LINKS.patreon} target="_blank" rel="noopener noreferrer" className="btn btn--dark-outline">Patreon</a>
           </div>
         </Expanded>
       </Panel>
@@ -343,19 +363,21 @@ export default function Hero({ zenderalStage = 'Beta' }) {
           ruleColor="#6f6a62"
         />
         <VerticalLabel s={p2} label="Zenderal" color="#d9d6d0" accent={ACCENT.zenderal} />
-        {!stacked && <PanelVideo s={p2} id={PANEL_VIDEOS.zenderal} title="Zenderal video" y={0.42} room={videoRoom('min(52vh, 36cqw)')} />}
+        {!stacked && <PanelLogo s={p2} y={0.42} room={videoRoom('min(52vh, 36cqw)')} />}
         <Expanded s={p2}>
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
             <span className="stage-badge">{stageLabel}</span>
           </div>
-          <h2 className="panel__title panel__title--metal">Zenderal</h2>
+          {/* The wordmark above (PanelLogo) stands in for the title wherever it shows. */}
+          <h2 className={`panel__title panel__title--metal${stacked ? '' : ' panel__title--logo'}`}>Zenderal</h2>
           <p className="panel__desc" style={{ color: '#c2beb6' }}>
             A Wabbajack modlist for Enderal: Forgotten Stories. Install steps and FAQs, plus gameplay guides for
             races, perks, spells, combat and controller support.
           </p>
-          <div className="actions">
-            <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Install</a>
+          <div className="actions actions--lead">
+            <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-solid">Explore</a>
+            <a href={`${import.meta.env.BASE_URL}zenderal/docs/#readme`} className="btn btn--light-outline">Install</a>
             <a href={`${import.meta.env.BASE_URL}zenderal/guide/`} className="btn btn--light-outline">Guides</a>
             <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="btn btn--light-outline">Support</a>
           </div>

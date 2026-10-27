@@ -76,10 +76,6 @@ export const PAD = {
 };
 
 // Overview page (/zenderal/). `body` and `facts` sit under the lede in the intro.
-// Each goal shows a screenshot: put the image in public/uploads/zenderal/ and set
-// `shot` to its file name; empty shows a placeholder. An optional `layers` (same folder)
-// sets a full-width parallax backdrop from `<layers>-back/mid/front.webp`.
-// `links` point at guide sections ({ guide: id }) or docs ({ doc: id }).
 export const OVERVIEW = {
   headline: 'Enderal, rebuilt for today.',
   lede: "Zenderal's goal is to deliver a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.",
@@ -90,38 +86,26 @@ export const OVERVIEW = {
     { label: 'Keyboard or controller', text: 'A full controller layout, so every action works on both.' },
     { label: 'In beta', text: 'Playable now and changing fast. Feedback goes through Discord.' },
   ],
-  goals: [
+  // The link cards under the intro, in groups. Each points at a guide section ({ guide: id })
+  // or a doc ({ doc: id }).
+  explore: [
     {
-      title: 'Modern combat',
-      text: "Combat that feels current and responsive, built around Enderal's talents and progression.",
-      links: [{ guide: 'combat' }, { guide: 'firearms' }, { guide: 'magic' }],
-      shot: '',
-      // Off for now. The crystal forest backdrop is ready as `layers: 'layers/crystal'`
-      // (back is the forest and water, mid the crystal creature, front the knight).
+      label: 'Get set up',
+      links: [
+        { doc: 'readme', title: 'Readme', text: 'Requirements, install steps and updates. Read it before you install.' },
+        { doc: 'dlss', title: 'DLSS & Frame Gen', text: 'Set up upscaling and frame generation, and fix the common errors.' },
+        { guide: 'keys', title: 'Keybindings', text: 'The keyboard and mouse layout, on a map you can hover or tap.' },
+        { guide: 'controller', title: 'Controller Support', text: 'Play on a controller out of the box, with the full button layout.' },
+      ],
     },
     {
-      title: 'Modern graphics',
-      text: "A current-generation look through ENB, textures and meshes that suit Enderal's art direction.",
-      links: [{ doc: 'dlss' }],
-      shot: '',
-    },
-    {
-      title: 'Modern gameplay',
-      text: 'Deeper systems, new spells, gear and traits, and the fixes that keep it all running.',
-      links: [{ guide: 'spells' }, { guide: 'armor' }, { guide: 'books' }],
-      shot: '',
-    },
-    {
-      title: 'Rich build crafting',
-      text: 'Room to plan and experiment with characters that play very differently.',
-      links: [{ guide: 'race' }, { guide: 'affinities' }, { guide: 'perks' }],
-      shot: '',
-    },
-    {
-      title: 'New to Enderal',
-      text: "A great first playthrough, with the story and world kept intact. You don't need to have played Enderal before.",
-      links: [{ doc: 'readme' }, { guide: 'keys' }, { guide: 'controller' }],
-      shot: '',
+      label: 'Learn the game',
+      links: [
+        { guide: 'race', title: 'Character', text: 'The five cultures, their stats and bonuses, and where a build starts.' },
+        { guide: 'combat', title: 'Combat', text: 'For Honor Reforged melee: timing, positioning and poise.' },
+        { guide: 'traits', title: 'Traits', text: 'An upside and a downside each, chosen at the start and built around.' },
+        { guide: 'prophecy', title: 'Prophecy', text: 'Seven talent trees, each built around a playstyle, with a build planner.' },
+      ],
     },
   ],
 };

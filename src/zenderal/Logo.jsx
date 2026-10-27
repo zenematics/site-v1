@@ -6,7 +6,8 @@ const BASE = `${import.meta.env.BASE_URL}uploads/zenderal/`;
 // white on black, blended in with `screen`), then it hands over to the static
 // PNG, which the video's last frame matches. Reduced motion, a failed or
 // blocked autoplay, or a video that's slow to start all go straight to the PNG.
-export default function Logo() {
+// `className` sizes it (the Zenderal hero, or the home Zenderal panel).
+export default function Logo({ className = 'zhero__logo' }) {
   const video = useRef(null);
   const [done, setDone] = useState(false);
 
@@ -26,7 +27,7 @@ export default function Logo() {
   }, []);
 
   return (
-    <span className={`zhero__logo${done ? ' is-done' : ''}`}>
+    <span className={`${className}${done ? ' is-done' : ''}`}>
       <img src={`${BASE}logo-white.png`} alt="Zenderal" />
       {!done && (
         <video ref={video} muted playsInline preload="auto" aria-hidden="true">
