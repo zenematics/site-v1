@@ -50,7 +50,7 @@ export const PAD = {
   b: {
     Up: { cat: 'menu', in: [['B +', 'Hero menu', 'H']] },
     Down: { cat: 'menu', in: [['B +', 'Map', 'M']] },
-    Left: { cat: 'menu', in: [['B +', 'Magic', 'P']] },
+    Left: { cat: 'menu', in: [['B +', 'Magic', 'Tab, then Magic']] },
     Right: { cat: 'menu', in: [['B +', 'Items', 'I']] },
     LS: { cat: 'move', in: [['B +', 'Auto-move', '.']] },
     View: { cat: 'menu', in: [['B +', 'Tween menu', 'Tab']] },

@@ -554,7 +554,7 @@ export const KEYS = {
   T: { cat: 'menu', action: 'Wait' },
   Y: { cat: 'menu', action: 'Meditate' },
   I: { cat: 'menu', action: 'Inventory' },
-  P: { cat: 'menu', action: 'Magic' },
+  P: { cat: 'mod', action: 'Prophecy Talents', note: 'Opens the Prophecy talent tree, the same as the Prophecy power. The Magic menu is in the Tab menu.' },
   CapsLock: { cat: 'move', action: 'Toggle always run' },
   A: { cat: 'move', action: 'Strafe left' },
   S: { cat: 'move', action: 'Back' },
