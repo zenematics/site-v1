@@ -1,6 +1,6 @@
 Everything you need to know to install, run and update Zenderal, a Wabbajack modlist for Enderal: Forgotten Stories (Special Edition). Read it before you install.
 
-> **Alpha build**
+> **Beta build**
 > Zenderal is in testing. Expect bugs and breaking changes between updates. Report anything you find in the [Discord](https://discord.com/invite/aunT9MdevX).
 
 ---
@@ -39,9 +39,9 @@ A performance profile for lower-end hardware is planned.
 
 | Folder    | Size     | Notes                                       |
 | --------- | -------- | ------------------------------------------- |
-| Downloads | ~90 GB   | Any drive. Keep it if you want faster updates |
-| Install   | ~140 GB  | Install on an **SSD**                       |
-| Total     | ~230 GB  | Plus your Steam installs of Enderal SE and Skyrim SE |
+| Downloads | ~150 GB  | Any drive. Keep it if you want faster updates |
+| Install   | ~200 GB  | Install on an **SSD**                       |
+| Total     | ~350 GB  | Plus your Steam installs of Enderal SE and Skyrim SE |
 
 You can delete the downloads folder once the game runs, but Wabbajack will then download everything again on the next update.
 
@@ -151,7 +151,7 @@ These are steps 1 and 3 of [Before you install](#readme/before-you-install).
 
 ## Known issues
 
-Nothing listed yet. The current list lives in the Discord's alpha channel and is updated with every release.
+Nothing listed yet. The current list lives in the Discord's beta channel and is updated with every release.
 
 ---
 

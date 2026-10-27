@@ -201,7 +201,7 @@ function PhotoLayers({ s, src, showcase = false, stacked = false }) {
   );
 }
 
-export default function Hero({ zenderalStage = 'Alpha' }) {
+export default function Hero({ zenderalStage = 'Beta' }) {
   const [active, setActive] = useState(null);
   const vw = useViewportWidth();
   const wide = vw >= 1200;
