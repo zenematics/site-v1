@@ -1647,10 +1647,10 @@ html {
   overflow-x: auto;
   padding-bottom: 4px;
 }
-/* 18.4 key units across (15 main + 0.4 gap + 3 nav) plus key gaps and padding;
-   below 30px a key the board scrolls sideways instead of shrinking further. */
+/* 22.8 key units across (15 main + 0.4 gap + 3 nav + 0.4 gap + 4 numpad) plus key gaps and padding;
+   below 26px a key the board scrolls sideways instead of shrinking further. */
 .kb {
-  --u: clamp(30px, calc((100cqw - 98px) / 18.4), 46px);
+  --u: clamp(26px, calc((100cqw - 110px) / 22.8), 46px);
   --gap: 4px;
   display: flex;
   gap: calc(var(--u) * 0.4);

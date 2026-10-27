@@ -578,6 +578,7 @@ export const KEYS = {
   LAlt: { cat: 'combat', action: 'Dodge', note: 'TK Dodge. Tapping Left Shift dodges too.' },
   Space: { cat: 'move', action: 'Jump' },
   Arrows: { cat: 'mod', action: 'Wheeler: move entries', note: 'Reorder slots and wheels while the wheel is open.' },
+  Num0: { cat: 'mod', action: 'Community Shaders menu', note: 'Opens the Community Shaders settings.' },
 };
 
 // `part` is the button on the mouse diagram it lights up.
@@ -609,6 +610,16 @@ export const NAV_CLUSTER = [
   [[null, 3]],
   [[null, 1], ['↑', 1, 'Arrows'], [null, 1]],
   [['←', 1, 'Arrows'], ['↓', 1, 'Arrows'], ['→', 1, 'Arrows']],
+];
+
+// Numpad, with + and Enter drawn as single keys so it keeps the board's six rows.
+export const NUMPAD = [
+  [[null, 4]],
+  [['Num', 1], ['/', 1, 'NumDiv'], ['*', 1, 'NumMul'], ['-', 1, 'NumSub']],
+  [['7', 1, 'Num7'], ['8', 1, 'Num8'], ['9', 1, 'Num9'], ['+', 1, 'NumAdd']],
+  [['4', 1, 'Num4'], ['5', 1, 'Num5'], ['6', 1, 'Num6'], [null, 1]],
+  [['1', 1, 'Num1'], ['2', 1, 'Num2'], ['3', 1, 'Num3'], ['Ent', 1, 'NumEnter']],
+  [['0', 2, 'Num0'], ['.', 1, 'NumDot'], [null, 1]],
 ];
 
 // ---------------------------------------------------------------- Traits

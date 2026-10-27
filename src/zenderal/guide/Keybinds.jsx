@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KEYBOARD, KEYS, KEY_CATS, NAV_CLUSTER } from './data.js';
+import { KEYBOARD, KEYS, KEY_CATS, NAV_CLUSTER, NUMPAD } from './data.js';
 import Mouse from './Mouse.jsx';
 
 // A row of keys; widths are in key units (--u), so the whole board scales with its container.
@@ -32,7 +32,7 @@ function Row({ row, focus, setFocus, cat }) {
   );
 }
 
-const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys' };
+const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys', Num0: 'Numpad 0' };
 
 export default function Keybinds() {
   const [focus, setFocus] = useState('LAlt');
@@ -81,6 +81,11 @@ export default function Keybinds() {
           </div>
           <div className="kb__nav">
             {NAV_CLUSTER.map((row, r) => (
+              <Row key={r} row={row} focus={focus} setFocus={setFocus} cat={cat} />
+            ))}
+          </div>
+          <div className="kb__nav">
+            {NUMPAD.map((row, r) => (
               <Row key={r} row={row} focus={focus} setFocus={setFocus} cat={cat} />
             ))}
           </div>
