@@ -12,8 +12,11 @@ import Firearms from '../zenderal/guide/Firearms.jsx';
 import Magic from '../zenderal/guide/Magic.jsx';
 import ArmorSets from '../zenderal/guide/ArmorSets.jsx';
 import Keybinds from '../zenderal/guide/Keybinds.jsx';
+import Controller from '../zenderal/guide/Controller.jsx';
 import Spells from '../zenderal/Spells.jsx';
 import Perks from '../zenderal/Perks.jsx';
+import Prophecy from '../zenderal/guide/Prophecy.jsx';
+import Traits from '../zenderal/guide/Traits.jsx';
 
 const DOCS_URL = `${import.meta.env.BASE_URL}zenderal/docs/`;
 
@@ -22,12 +25,15 @@ const BODY = {
   affinities: Affinities,
   books: Books,
   perks: Perks,
+  prophecy: Prophecy,
+  traits: Traits,
   combat: Combat,
   firearms: Firearms,
   magic: Magic,
   spells: Spells,
   armor: ArmorSets,
   keys: Keybinds,
+  controller: Controller,
 };
 
 // Hash routes: #<section-id>.

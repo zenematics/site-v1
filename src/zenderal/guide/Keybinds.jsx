@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { KEYBOARD, KEYS, KEY_CATS, MOUSE, NAV_CLUSTER } from './data.js';
+import { KEYBOARD, KEYS, KEY_CATS, NAV_CLUSTER, NUMPAD } from './data.js';
+import Mouse from './Mouse.jsx';
 
 // A row of keys; widths are in key units (--u), so the whole board scales with its container.
 function Row({ row, focus, setFocus, cat }) {
@@ -31,10 +32,10 @@ function Row({ row, focus, setFocus, cat }) {
   );
 }
 
-const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', ISO: 'ISO key', CapsLock: 'Caps Lock', Arrows: 'Arrow keys' };
+const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys', Num0: 'Numpad 0' };
 
 export default function Keybinds() {
-  const [focus, setFocus] = useState('Space');
+  const [focus, setFocus] = useState('LAlt');
   const [cat, setCat] = useState(null);
   const bind = KEYS[focus];
 
@@ -48,7 +49,7 @@ export default function Keybinds() {
       <div className="md">
         <p>
           Zenderal's default keyboard and mouse layout. It's built around For Honor Reforged: power attack and parry
-          live on the side mouse buttons, lock-on on the middle button, and dodge on Space with jump moved to Left Alt.
+          live on the side mouse buttons, lock-on on the middle button, and dodge on Left Alt or a tap of Left Shift, with jump on Space.
           Hover or tap a key to see what it does.
         </p>
       </div>
@@ -83,6 +84,11 @@ export default function Keybinds() {
               <Row key={r} row={row} focus={focus} setFocus={setFocus} cat={cat} />
             ))}
           </div>
+          <div className="kb__nav">
+            {NUMPAD.map((row, r) => (
+              <Row key={r} row={row} focus={focus} setFocus={setFocus} cat={cat} />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -94,17 +100,10 @@ export default function Keybinds() {
 
       <div className="md">
         <h2>Mouse</h2>
-        <table>
-          <tbody>
-            {MOUSE.map((m) => (
-              <tr key={m.input}>
-                <td>{m.input}</td>
-                <td>{m.action}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      </div>
+      <Mouse cat={cat} />
 
+      <div className="md">
         <h2>Every binding</h2>
       </div>
       <div className="g-keylists">
@@ -132,7 +131,7 @@ export default function Keybinds() {
             Rebind the vanilla controls in the game's own Controls menu. Mod hotkeys live in each mod's MCM page. For
             dodge and dual-wield parry, enable the <strong>Custom Keybinds</strong> mod in Mod Organizer 2: it holds
             those config files with instructions at the top. Using a controller? See{' '}
-            <a href={`${import.meta.env.BASE_URL}zenderal/docs/#controller`}>Controller Support</a>.
+            <a href="#controller">Controller Support</a>.
           </p>
         </blockquote>
       </div>

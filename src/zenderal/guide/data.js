@@ -7,12 +7,15 @@ export const SECTIONS = [
   { id: 'affinities', title: 'Affinities', group: 'Character' },
   { id: 'books', title: 'Learning Books', group: 'Character' },
   { id: 'perks', title: 'Perk Trees', group: 'Character' },
+  { id: 'prophecy', title: 'Prophecy Talents', group: 'Character' },
+  { id: 'traits', title: 'Traits', group: 'Character' },
   { id: 'combat', title: 'For Honor Reforged', group: 'Combat' },
   { id: 'firearms', title: 'Firearms', group: 'Combat' },
   { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat' },
   { id: 'spells', title: 'Spells', group: 'Combat' },
   { id: 'armor', title: 'Armor Sets', group: 'Gear' },
   { id: 'keys', title: 'Keybindings', group: 'Controls' },
+  { id: 'controller', title: 'Controller Support', group: 'Controls' },
 ];
 
 export const SECTION_GROUPS = ['Character', 'Combat', 'Gear', 'Controls'];
@@ -217,58 +220,95 @@ export const AMMO = [
 // ---------------------------------------------------------------- Magic
 export const SPELL_TIERS = ['Novice', 'Apprentice', 'Adept', 'Expert', 'Master'];
 
-// Where each source's tomes are sold. Apocalypse and Triumvirate stock comes from
-// their Enderal patches' `<Merchant>_CustomMerchandise` hook lists.
+// The spell packs, as the Source field of spells.json names them.
 export const SPELL_SOURCES = [
+  { id: 'Enderal', label: 'Enderal', blurb: "The base game's spells, rebalanced by EGO." },
+  { id: 'EGO', label: 'EGO', blurb: 'Spells added by the Enderal Gameplay Overhaul.' },
+  { id: 'Apocalypse', label: 'Apocalypse', blurb: '175 spells across all five schools, 35 per school.' },
+  { id: 'Triumvirate', label: 'Triumvirate', blurb: '75 spells across five mage archetypes: Cleric, Druid, Shadow, Shaman and Warlock.' },
+  { id: 'KataPUMB Spell Pack', label: 'KataPUMB', blurb: 'Ranked spell lines (Rank I to IV) for every school.' },
+  { id: 'xxOpenSpells', label: 'Open Spells', blurb: 'A handful of utility spells.' },
+];
+
+// Who sells which tomes. Apocalypse and Triumvirate stock comes from their Enderal patches'
+// `<Merchant>_CustomMerchandise` hook lists and is always in stock. `random` shops also draw
+// Enderal and EGO tomes from the trader leveled lists (the six spell merchants in
+// zenderal-patches' porting-from-skyrim.md), re-rolled every two in-game days.
+// A stock line matches spells.json by `source`, plus `tiers`, `schools` and `archetype` when given.
+const LOW = ['Novice', 'Apprentice', 'Adept'];
+const HIGH = ['Expert', 'Master'];
+export const VENDORS = [
   {
-    id: 'Enderal',
-    label: 'Enderal',
-    blurb: 'The base game\'s spells, rebalanced by EGO.',
-    where: 'Random stock at Enderal\'s spell merchants, plus tomes in dungeon loot. Stock re-rolls every two in-game days.',
+    name: 'Gabrielle Emberlord', place: 'Emberlord and Fireflash', town: 'Ark', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Master'] }, { source: 'KataPUMB Spell Pack' }, { source: 'xxOpenSpells' }],
+  },
+  { name: 'Milbert Foxhand', place: 'Ark', town: 'Ark', random: true, stock: [{ source: 'Apocalypse', tiers: ['Novice'] }] },
+  {
+    name: 'Ora Stonehand', place: 'Ark', town: 'Ark', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Adept'], schools: ['Psionics', 'Light Magic'] }],
   },
   {
-    id: 'EGO',
-    label: 'EGO',
-    blurb: 'Spells added by the Enderal Gameplay Overhaul.',
-    where: 'Mixed into the same merchant and loot lists as Enderal\'s own tomes.',
+    name: 'Librarian Marius', place: 'Ark', town: 'Ark',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Cleric' },
+      { source: 'Triumvirate', archetype: 'Shadow' },
+      { source: 'Triumvirate', archetype: 'Druid', tiers: HIGH },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: HIGH },
+    ],
+  },
+  { name: 'Court Blacksmith', place: 'Ark', town: 'Ark', stock: [{ source: 'Triumvirate', archetype: 'Cleric' }] },
+  {
+    name: 'Barnabas', place: 'Undercity', town: 'Undercity', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Adept'], schools: ['Mentalism', 'Entropy', 'Elementalism'] }],
   },
   {
-    id: 'Apocalypse',
-    label: 'Apocalypse',
-    blurb: '175 spells across all five schools, 35 per school.',
-    where: 'Every tome is always in stock at exactly one shop, by tier.',
-    vendors: {
-      Novice: 'Milbert Foxhand, Ark',
-      Apprentice: 'Tarhutie Leklerk, Riverville',
-      Adept: 'Barnabas, Undercity (Mentalism, Entropy, Elementalism) · Ora Stonehand, Ark (Psionics, Light Magic)',
-      Expert: 'Torius Flameling, Sun Temple',
-      Master: 'Gabrielle Emberlord, Emberlord and Fireflash, Ark',
-    },
+    name: 'Shrouded Mage', place: 'Undercity', town: 'Undercity',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Shadow' },
+      { source: 'Triumvirate', archetype: 'Warlock' },
+      { source: 'Triumvirate', archetype: 'Druid', tiers: HIGH },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: HIGH },
+    ],
+  },
+  { name: 'Fence', place: 'Undercity', town: 'Undercity', stock: [{ source: 'Triumvirate', archetype: 'Shadow' }] },
+  { name: 'Waif at the Bash Hole', place: 'Undercity', town: 'Undercity', stock: [{ source: 'Triumvirate', archetype: 'Warlock' }] },
+  {
+    name: 'Tarhutie Leklerk', place: 'Riverville', town: 'Riverville',
+    stock: [{ source: 'Apocalypse', tiers: ['Apprentice'] }, { source: 'xxOpenSpells' }],
   },
   {
-    id: 'Triumvirate',
-    label: 'Triumvirate',
-    blurb: '75 spells across five mage archetypes: Cleric, Druid, Shadow, Shaman and Warlock.',
-    where: 'Each archetype has its own merchants. Novice to Adept tomes and Expert/Master tomes are sold in different places.',
-    archetypes: {
-      Cleric: { low: 'Court Blacksmith (Ark) · Librarian Marius (Ark) · Vexin (Riverville)', high: 'Court Blacksmith (Ark) · Librarian Marius (Ark)' },
-      Druid: { low: 'Vexin (Riverville) · Shrouded Mage (Duneville) · Shrouded Mage (Frostcliff Tavern)', high: 'Librarian Marius (Ark) · Shrouded Mage (Undercity)' },
-      Shadow: { low: 'Librarian Marius (Ark) · Sister Envy (Rhalata) · Fence (Undercity) · Shrouded Mage (Undercity)', high: 'Librarian Marius (Ark) · Fence (Undercity) · Shrouded Mage (Undercity)' },
-      Shaman: { low: 'Akatyr Scheenhair (Duneville) · Shrouded Mage (Duneville) · Shrouded Mage (Frostcliff Tavern)', high: 'Librarian Marius (Ark) · Shrouded Mage (Undercity)' },
-      Warlock: { low: 'Waif at the Bash Hole (Undercity) · Sister Envy (Rhalata) · Shrouded Mage (Undercity)', high: 'Waif at the Bash Hole (Undercity) · Shrouded Mage (Undercity)' },
-    },
+    name: 'Vexin', place: 'Riverville', town: 'Riverville',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Cleric', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Druid', tiers: LOW },
+    ],
   },
   {
-    id: 'KataPUMB Spell Pack',
-    label: 'KataPUMB',
-    blurb: 'Ranked spell lines (Rank I to IV) for every school.',
-    where: 'Gabrielle Emberlord at Emberlord and Fireflash in Ark sells every KataPUMB tome.',
+    name: 'Torius Flameling', place: 'Sun Temple', town: 'Sun Temple', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Expert'] }, { source: 'xxOpenSpells' }],
+  },
+  { name: 'Maxus Tabbakus', place: 'Duneville', town: 'Duneville', random: true, stock: [] },
+  {
+    name: 'Shrouded Mage', place: 'Duneville', town: 'Duneville',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Druid', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: LOW },
+    ],
+  },
+  { name: 'Akatyr Scheenhair', place: 'Duneville', town: 'Duneville', stock: [{ source: 'Triumvirate', archetype: 'Shaman', tiers: LOW }] },
+  {
+    name: 'Shrouded Mage', place: 'Frostcliff Tavern', town: 'Frostcliff Tavern',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Druid', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: LOW },
+    ],
   },
   {
-    id: 'xxOpenSpells',
-    label: 'Open Spells',
-    blurb: 'A handful of utility spells.',
-    where: 'Emberlord and Fireflash (Ark), Torius Flameling (Sun Temple) and Tarhutie Leklerk (Riverville).',
+    name: 'Sister Envy', place: 'Rhalata', town: 'Rhalata',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Shadow', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Warlock', tiers: LOW },
+    ],
   },
 ];
 
@@ -514,7 +554,7 @@ export const KEYS = {
   T: { cat: 'menu', action: 'Wait' },
   Y: { cat: 'menu', action: 'Meditate' },
   I: { cat: 'menu', action: 'Inventory' },
-  P: { cat: 'menu', action: 'Magic' },
+  P: { cat: 'mod', action: 'Prophecy Talents', note: 'Opens the Prophecy talent tree, the same as the Prophecy power. The Magic menu is in the Tab menu.' },
   CapsLock: { cat: 'move', action: 'Toggle always run' },
   A: { cat: 'move', action: 'Strafe left' },
   S: { cat: 'move', action: 'Back' },
@@ -524,8 +564,8 @@ export const KEYS = {
   H: { cat: 'menu', action: 'Hero Menu' },
   J: { cat: 'menu', action: 'Journal' },
   L: { cat: 'mod', action: 'Lantern on / off' },
-  LShift: { cat: 'move', action: 'Sprint' },
-  ISO: { cat: 'mod', action: 'Toggle first / third person', note: 'The extra key beside Left Shift on ISO keyboards. On other layouts, scroll the mouse wheel to zoom in and out of first person.' },
+  LShift: { cat: 'move', action: 'Sprint', note: 'Hold to sprint. Tap to dodge.' },
+  Z: { cat: 'mod', action: 'Toggle first / third person' },
   X: { cat: 'combat', action: 'Talents and powers' },
   C: { cat: 'combat', action: 'Dual power attack' },
   V: { cat: 'mod', action: 'Hide / show the HUD' },
@@ -535,19 +575,21 @@ export const KEYS = {
   ',': { cat: 'mod', action: 'Swap camera shoulder' },
   '.': { cat: 'move', action: 'Auto-move' },
   LCtrl: { cat: 'move', action: 'Sneak' },
-  LAlt: { cat: 'move', action: 'Jump' },
-  Space: { cat: 'combat', action: 'Dodge', note: 'TK Dodge. Holding it also walks instead of runs.' },
+  LAlt: { cat: 'combat', action: 'Dodge', note: 'TK Dodge. Tapping Left Shift dodges too.' },
+  Space: { cat: 'move', action: 'Jump' },
   Arrows: { cat: 'mod', action: 'Wheeler: move entries', note: 'Reorder slots and wheels while the wheel is open.' },
+  Num0: { cat: 'mod', action: 'Community Shaders menu', note: 'Opens the Community Shaders settings.' },
 };
 
+// `part` is the button on the mouse diagram it lights up.
 export const MOUSE = [
-  { input: 'Left click', action: 'Right-hand attack', cat: 'combat' },
-  { input: 'Right click', action: 'Left-hand attack / block', cat: 'combat' },
-  { input: 'Middle click', action: 'Lock on to target', cat: 'combat' },
-  { input: 'Mouse 4', action: 'Power attack', cat: 'combat' },
-  { input: 'Mouse 5', action: 'Dual-wield parry', cat: 'combat' },
-  { input: 'Wheel', action: 'Zoom camera · cycle wheel items', cat: 'move' },
-  { input: 'Shift + wheel', action: 'Cycle what you\'re about to activate', cat: 'mod' },
+  { input: 'Left click', action: 'Right-hand attack', cat: 'combat', part: 'left' },
+  { input: 'Right click', action: 'Left-hand attack / block', cat: 'combat', part: 'right' },
+  { input: 'Middle click', action: 'Lock on to target', cat: 'combat', part: 'wheel', note: 'Follow-up attacks only work while you are locked on.' },
+  { input: 'Mouse 4', action: 'Power attack', cat: 'combat', part: 'm4', note: 'The rear side button. Combine it with a direction for side and back power attacks (guard break).' },
+  { input: 'Mouse 5', action: 'Dual-wield parry', cat: 'combat', part: 'm5', note: 'The front side button. Only with a weapon in each hand.' },
+  { input: 'Wheel', action: 'Zoom camera · cycle wheel items', cat: 'move', part: 'wheel', note: 'Scroll all the way in for first person. While the Wheeler wheel is open it cycles items instead.' },
+  { input: 'Shift + wheel', action: 'Cycle what you\'re about to activate', cat: 'mod', part: 'wheel', note: 'Better Third Person Selection: picks between several nearby things you could activate.' },
 ];
 
 // Keyboard rows: [label, width in key units, KEYS id when it differs from the label].
@@ -568,4 +610,48 @@ export const NAV_CLUSTER = [
   [[null, 3]],
   [[null, 1], ['↑', 1, 'Arrows'], [null, 1]],
   [['←', 1, 'Arrows'], ['↓', 1, 'Arrows'], ['→', 1, 'Arrows']],
+];
+
+// Numpad, with + and Enter drawn as single keys so it keeps the board's six rows.
+export const NUMPAD = [
+  [[null, 4]],
+  [['Num', 1], ['/', 1, 'NumDiv'], ['*', 1, 'NumMul'], ['-', 1, 'NumSub']],
+  [['7', 1, 'Num7'], ['8', 1, 'Num8'], ['9', 1, 'Num9'], ['+', 1, 'NumAdd']],
+  [['4', 1, 'Num4'], ['5', 1, 'Num5'], ['6', 1, 'Num6'], [null, 1]],
+  [['1', 1, 'Num1'], ['2', 1, 'Num2'], ['3', 1, 'Num3'], ['Ent', 1, 'NumEnter']],
+  [['0', 2, 'Num0'], ['.', 1, 'NumDot'], [null, 1]],
+];
+
+// ---------------------------------------------------------------- Traits
+// Biggie Traits' picker with Zenderal's own traits (`Zenderal - Traits.esp`, zenderal-patches
+// src/TraitsRework) and Zen Traits' nine. Up to two picks (Biggie Traits MCM `iMaxTraits`).
+// Icons: public/uploads/guide/traits/.
+export const TRAITS = [
+  { name: 'Overcharged', source: 'zenderal', img: 'overcharged.webp', up: 'Elementalism spells deal 20% more damage.', down: '15% less maximum Health.' },
+  { name: 'Stormcaller', source: 'zenderal', img: 'stormcaller.webp', up: 'Shock spells deal 25% more damage and cost 10% less.', down: 'Fire and frost spells deal 15% less.' },
+  { name: 'Entropic Pact', source: 'zenderal', img: 'entropic-pact.webp', up: "Entropy spells cost 20% less, and those that aren't summons last 25% longer.", down: 'Light Magic costs 25% more.' },
+  { name: 'Gravecaller', source: 'zenderal', img: 'gravecaller.webp', up: 'Summons and revived dead last 50% longer.', down: 'Undead hit you 15% harder.' },
+  { name: 'Iron Will', source: 'zenderal', img: 'iron-will.webp', up: 'Psionic spells cast on you are 50% weaker.', down: 'Blocking absorbs 15% less damage.' },
+  { name: 'Cornered Wolf', source: 'zenderal', img: 'cornered-wolf.webp', up: 'Below 30% Health, you deal 25% more weapon damage and take 10% less.', down: 'Above 75% Health, you deal 10% less weapon damage.' },
+  { name: 'Heavy Hand', source: 'zenderal', img: 'heavy-hand.webp', up: 'Power attacks deal 30% more damage.', down: 'Normal attacks deal 10% less, and power attacks cost 20% more Stamina.' },
+  { name: 'Steady Breath', source: 'zenderal', img: 'steady-breath.webp', up: 'Bows, crossbows and muskets deal 20% more damage while you stand still.', down: 'They deal 15% less while you move.' },
+  { name: 'Nightwalker', source: 'zenderal', img: 'nightwalker.webp', up: 'From 20:00 to 05:00, +20 Sneak and 25% faster Mana regeneration.', down: 'During the day, 10% slower Stamina regeneration.' },
+  { name: 'Cold-Hardened', source: 'zenderal', img: 'cold-hardened.webp', up: '30% resistance to frost.', down: 'You take 20% more fire damage.' },
+  { name: 'Wildling', source: 'zenderal', img: 'wildling.webp', up: 'You deal 15% more damage to animals and take 15% less from them.', down: 'Prices are 15% worse.' },
+  { name: 'Pathfinder', source: 'zenderal', img: 'pathfinder.webp', up: '15% faster outdoors while out of combat.', down: '50 less carry weight.' },
+  { name: 'Ark-Born', source: 'zenderal', img: 'ark-born.webp', up: 'Prices are 15% better in Ark and Riverville.', down: 'Health regenerates 25% slower in the wild.' },
+  { name: 'Back-Alley Born', source: 'zenderal', img: 'back-alley-born.webp', up: 'Pickpocketing and lockpicking are easier, and +15 Sneak, in Ark and Riverville.', down: 'Buying costs 10% more everywhere.' },
+  { name: 'Ink-Stained', source: 'zenderal', img: 'ink-stained.webp', up: 'Handbooks cost 25% less.', down: '15% less maximum Stamina.' },
+  { name: "Brewer's Lungs", source: 'zenderal', img: 'brewers-lungs.webp', up: 'Potions you brew are 20% stronger.', down: '10% less maximum Health.' },
+  { name: 'Goblin Slayer', source: 'zenderal', img: 'goblin-slayer.webp', up: '25% more damage to goblins and Arps, 15% less damage from them, and they drop extra gold and gems.', down: '10% less damage to everything else.' },
+  { name: 'Gunslinger', source: 'zenderal', img: 'gunslinger.webp', up: 'Flintlock pistols deal 35% more damage, and enemies you kill have a 50% chance to carry bullets.', down: 'Melee attacks deal 25% less damage.' },
+  { name: 'Aeterna Veins', source: 'zen', img: 'aeterna-veins.webp', up: '2% more spell power for every 10% Arcane Fever.', down: '20% less maximum Health.' },
+  { name: 'Arcane Addict', source: 'zen', img: 'arcane-addict.webp', up: 'Spells are 20% stronger above 70% Arcane Fever.', down: 'Arcane Fever rises 50% faster.' },
+  { name: 'Beacon', source: 'zen', img: 'beacon.webp', up: 'Nearby allies regenerate Health and Mana.', down: 'Staying hidden is much harder.' },
+  { name: 'Cleansed Soul', source: 'zen', img: 'cleansed-soul.webp', up: 'Sleeping removes some Arcane Fever.', down: 'Sleep bonuses last half as long.' },
+  { name: 'Lightborn', source: 'zen', img: 'lightborn.webp', up: 'Light Magic is 50% stronger and cheaper.', down: 'All other schools are 50% weaker and cost more.' },
+  { name: 'Night Fever', source: 'zen', img: 'night-fever.webp', up: 'Arcane Fever drops by 2 every hour you spend outdoors at night.', down: 'By day it rises 10% faster.' },
+  { name: 'Purified Blood', source: 'zen', img: 'purified-blood.webp', up: 'Arcane Fever builds 40% slower.', down: 'Ambrosia is 50% weaker.' },
+  { name: 'Radiant Soul', source: 'zen', img: 'radiant-soul.webp', up: 'Healing spells also restore Stamina.', down: 'Offensive spells cost 20% more.' },
+  { name: 'Twilight Disciple', source: 'zen', img: 'twilight-disciple.webp', up: 'Light Magic is 30% stronger at night.', down: 'It is 30% weaker in daylight.' },
 ];

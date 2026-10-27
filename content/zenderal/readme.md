@@ -39,9 +39,9 @@ A performance profile for lower-end hardware is planned.
 
 | Folder    | Size     | Notes                                       |
 | --------- | -------- | ------------------------------------------- |
-| Downloads | ~90 GB   | Any drive. Keep it if you want faster updates |
-| Install   | ~140 GB  | Install on an **SSD**                       |
-| Total     | ~230 GB  | Plus your Steam installs of Enderal SE and Skyrim SE |
+| Downloads | ~150 GB  | Any drive. Keep it if you want faster updates |
+| Install   | ~200 GB  | Install on an **SSD**                       |
+| Total     | ~350 GB  | Plus your Steam installs of Enderal SE and Skyrim SE |
 
 You can delete the downloads folder once the game runs, but Wabbajack will then download everything again on the next update.
 
@@ -49,7 +49,7 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 ## Before you install
 
-1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install, such as the [Dismembering Framework error](#readme/troubleshooting).
+1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install, such as the [Dismembering Framework error](#readme/troubleshooting). Zenderal runs on the latest version of Enderal SE that Steam installs, so you don't need to change versions. If you switched to **enderal_2.0.12.4** for an earlier Zenderal release, switch back to **Default Public Version** under **Properties → Game Versions & Betas**.
 2. **Set the language to English** for both Enderal SE and Skyrim SE in Steam (Properties → Language).
 3. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
 4. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
@@ -151,7 +151,7 @@ These are steps 1 and 3 of [Before you install](#readme/before-you-install).
 
 ## Known issues
 
-Nothing listed yet. The current list lives in the Discord's alpha channel and is updated with every release.
+Nothing listed yet. The current list lives in the Discord's beta channel and is updated with every release.
 
 ---
 
