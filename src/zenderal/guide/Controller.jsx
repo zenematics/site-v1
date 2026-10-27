@@ -63,7 +63,7 @@ export default function Controller() {
         <p>
           Prefer one image?{' '}
           <a
-            href={`${import.meta.env.BASE_URL}uploads/controller/zenderal-controller-mapping.png`}
+            href={`${import.meta.env.BASE_URL}uploads/controller/zenderal-controller-mapping.webp`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -24,7 +24,7 @@ export default function Emblem({ live = false, className, style }) {
 
   return (
     <div ref={box} className={`emblem ${className}${ready ? ' is-live' : ''}`} style={style}>
-      <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`} alt="" />
+      <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.webp`} alt="" />
     </div>
   );
 }

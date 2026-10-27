@@ -227,7 +227,7 @@ export default function Zenderal() {
             {/* The river landscape: back is the sky and mountains, mid the forest, front the rocks and water. */}
             <Layers src="layers/river" />
             <div className="zstage__shade" />
-            <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`} alt="" className="zstage__emblem" />
+            <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.webp`} alt="" className="zstage__emblem" />
           </div>
           <div className="zintro">
             <span className="docs__label">What Zenderal is</span>

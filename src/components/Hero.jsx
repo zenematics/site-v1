@@ -259,7 +259,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
   );
   const emblem = (
     <img
-      src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.png`}
+      src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.webp`}
       alt=""
       className="panel__mark"
       style={{
@@ -313,7 +313,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
 
       {/* ---- Guides ---- */}
       <Panel s={p1} enter="bottom" onActivate={activate(1)}>
-        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.png`} showcase stacked={stacked} />
+        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.webp`} showcase stacked={stacked} />
         <Bar s={p1} color={ACCENT.guides} />
         <IdleLabel
           s={p1}
