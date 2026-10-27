@@ -7,6 +7,8 @@ export const SECTIONS = [
   { id: 'affinities', title: 'Affinities', group: 'Character' },
   { id: 'books', title: 'Learning Books', group: 'Character' },
   { id: 'perks', title: 'Perk Trees', group: 'Character' },
+  { id: 'prophecy', title: 'Prophecy Talents', group: 'Character' },
+  { id: 'traits', title: 'Traits', group: 'Character' },
   { id: 'combat', title: 'For Honor Reforged', group: 'Combat' },
   { id: 'firearms', title: 'Firearms', group: 'Combat' },
   { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat' },
@@ -570,4 +572,38 @@ export const NAV_CLUSTER = [
   [[null, 3]],
   [[null, 1], ['↑', 1, 'Arrows'], [null, 1]],
   [['←', 1, 'Arrows'], ['↓', 1, 'Arrows'], ['→', 1, 'Arrows']],
+];
+
+// ---------------------------------------------------------------- Traits
+// Biggie Traits' picker with Zenderal's own traits (`Zenderal - Traits.esp`, zenderal-patches
+// src/TraitsRework) and Zen Traits' nine. Up to two picks (Biggie Traits MCM `iMaxTraits`).
+// Icons: public/uploads/guide/traits/.
+export const TRAITS = [
+  { name: 'Overcharged', source: 'zenderal', img: 'overcharged.webp', up: 'Elementalism spells deal 20% more damage.', down: '15% less maximum Health.' },
+  { name: 'Stormcaller', source: 'zenderal', img: 'stormcaller.webp', up: 'Shock spells deal 25% more damage and cost 10% less.', down: 'Fire and frost spells deal 15% less.' },
+  { name: 'Entropic Pact', source: 'zenderal', img: 'entropic-pact.webp', up: "Entropy spells cost 20% less, and those that aren't summons last 25% longer.", down: 'Light Magic costs 25% more.' },
+  { name: 'Gravecaller', source: 'zenderal', img: 'gravecaller.webp', up: 'Summons and revived dead last 50% longer.', down: 'Undead hit you 15% harder.' },
+  { name: 'Iron Will', source: 'zenderal', img: 'iron-will.webp', up: 'Psionic spells cast on you are 50% weaker.', down: 'Blocking absorbs 15% less damage.' },
+  { name: 'Cornered Wolf', source: 'zenderal', img: 'cornered-wolf.webp', up: 'Below 30% Health, you deal 25% more weapon damage and take 10% less.', down: 'Above 75% Health, you deal 10% less weapon damage.' },
+  { name: 'Heavy Hand', source: 'zenderal', img: 'heavy-hand.webp', up: 'Power attacks deal 30% more damage.', down: 'Normal attacks deal 10% less, and power attacks cost 20% more Stamina.' },
+  { name: 'Steady Breath', source: 'zenderal', img: 'steady-breath.webp', up: 'Bows, crossbows and muskets deal 20% more damage while you stand still.', down: 'They deal 15% less while you move.' },
+  { name: 'Nightwalker', source: 'zenderal', img: 'nightwalker.webp', up: 'From 20:00 to 05:00, +20 Sneak and 25% faster Mana regeneration.', down: 'During the day, 10% slower Stamina regeneration.' },
+  { name: 'Cold-Hardened', source: 'zenderal', img: 'cold-hardened.webp', up: '30% resistance to frost.', down: 'You take 20% more fire damage.' },
+  { name: 'Wildling', source: 'zenderal', img: 'wildling.webp', up: 'You deal 15% more damage to animals and take 15% less from them.', down: 'Prices are 15% worse.' },
+  { name: 'Pathfinder', source: 'zenderal', img: 'pathfinder.webp', up: '15% faster outdoors while out of combat.', down: '50 less carry weight.' },
+  { name: 'Ark-Born', source: 'zenderal', img: 'ark-born.webp', up: 'Prices are 15% better in Ark and Riverville.', down: 'Health regenerates 25% slower in the wild.' },
+  { name: 'Back-Alley Born', source: 'zenderal', img: 'back-alley-born.webp', up: 'Pickpocketing and lockpicking are easier, and +15 Sneak, in Ark and Riverville.', down: 'Buying costs 10% more everywhere.' },
+  { name: 'Ink-Stained', source: 'zenderal', img: 'ink-stained.webp', up: 'Handbooks cost 25% less.', down: '15% less maximum Stamina.' },
+  { name: "Brewer's Lungs", source: 'zenderal', img: 'brewers-lungs.webp', up: 'Potions you brew are 20% stronger.', down: '10% less maximum Health.' },
+  { name: 'Goblin Slayer', source: 'zenderal', img: 'goblin-slayer.webp', up: '25% more damage to goblins and Arps, 15% less damage from them, and they drop extra gold and gems.', down: '10% less damage to everything else.' },
+  { name: 'Gunslinger', source: 'zenderal', img: 'gunslinger.webp', up: 'Flintlock pistols deal 35% more damage, and enemies you kill have a 50% chance to carry bullets.', down: 'Melee attacks deal 25% less damage.' },
+  { name: 'Aeterna Veins', source: 'zen', img: 'aeterna-veins.webp', up: '2% more spell power for every 10% Arcane Fever.', down: '20% less maximum Health.' },
+  { name: 'Arcane Addict', source: 'zen', img: 'arcane-addict.webp', up: 'Spells are 20% stronger above 70% Arcane Fever.', down: 'Arcane Fever rises 50% faster.' },
+  { name: 'Beacon', source: 'zen', img: 'beacon.webp', up: 'Nearby allies regenerate Health and Mana.', down: 'Staying hidden is much harder.' },
+  { name: 'Cleansed Soul', source: 'zen', img: 'cleansed-soul.webp', up: 'Sleeping removes some Arcane Fever.', down: 'Sleep bonuses last half as long.' },
+  { name: 'Lightborn', source: 'zen', img: 'lightborn.webp', up: 'Light Magic is 50% stronger and cheaper.', down: 'All other schools are 50% weaker and cost more.' },
+  { name: 'Night Fever', source: 'zen', img: 'night-fever.webp', up: 'Arcane Fever drops by 2 every hour you spend outdoors at night.', down: 'By day it rises 10% faster.' },
+  { name: 'Purified Blood', source: 'zen', img: 'purified-blood.webp', up: 'Arcane Fever builds 40% slower.', down: 'Ambrosia is 50% weaker.' },
+  { name: 'Radiant Soul', source: 'zen', img: 'radiant-soul.webp', up: 'Healing spells also restore Stamina.', down: 'Offensive spells cost 20% more.' },
+  { name: 'Twilight Disciple', source: 'zen', img: 'twilight-disciple.webp', up: 'Light Magic is 30% stronger at night.', down: 'It is 30% weaker in daylight.' },
 ];
