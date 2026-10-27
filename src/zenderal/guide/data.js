@@ -525,7 +525,7 @@ export const KEYS = {
   H: { cat: 'menu', action: 'Hero Menu' },
   J: { cat: 'menu', action: 'Journal' },
   L: { cat: 'mod', action: 'Lantern on / off' },
-  LShift: { cat: 'move', action: 'Sprint' },
+  LShift: { cat: 'move', action: 'Sprint', note: 'Hold to sprint. Tap to dodge.' },
   Z: { cat: 'mod', action: 'Toggle first / third person' },
   X: { cat: 'combat', action: 'Talents and powers' },
   C: { cat: 'combat', action: 'Dual power attack' },
@@ -536,8 +536,8 @@ export const KEYS = {
   ',': { cat: 'mod', action: 'Swap camera shoulder' },
   '.': { cat: 'move', action: 'Auto-move' },
   LCtrl: { cat: 'move', action: 'Sneak' },
-  LAlt: { cat: 'move', action: 'Jump' },
-  Space: { cat: 'combat', action: 'Dodge', note: 'TK Dodge. Holding it also walks instead of runs.' },
+  LAlt: { cat: 'combat', action: 'Dodge', note: 'TK Dodge. Tapping Left Shift dodges too.' },
+  Space: { cat: 'move', action: 'Jump' },
   Arrows: { cat: 'mod', action: 'Wheeler: move entries', note: 'Reorder slots and wheels while the wheel is open.' },
 };
 

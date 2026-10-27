@@ -37,11 +37,11 @@ export const PAD = {
     A: { cat: 'move', in: [['Press', 'Activate / interact', 'E']] },
     B: {
       cat: 'combat',
-      in: [['Press', 'Dodge', 'Space'], ['Hold', 'Sprint', 'Left Shift']],
+      in: [['Press', 'Dodge', 'Left Alt or tap Left Shift'], ['Hold', 'Sprint', 'Left Shift']],
       note: 'Also the modifier for the menu combos: see Hold B.',
     },
     X: { cat: 'combat', in: [['Press', 'Open Wheeler', 'Q']] },
-    Y: { cat: 'move', in: [['Press', 'Jump', 'Left Alt']] },
+    Y: { cat: 'move', in: [['Press', 'Jump', 'Space']] },
     Up: { cat: 'combat', in: [['Hold', 'High stance', 'F1']] },
     Down: { cat: 'combat', in: [['Hold', 'Low stance', 'F3']] },
     Left: { cat: 'combat', in: [['Hold', 'Neutral stance', 'F4'], ['Double tap', 'Quick light']] },

@@ -35,7 +35,7 @@ function Row({ row, focus, setFocus, cat }) {
 const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys' };
 
 export default function Keybinds() {
-  const [focus, setFocus] = useState('Space');
+  const [focus, setFocus] = useState('LAlt');
   const [cat, setCat] = useState(null);
   const bind = KEYS[focus];
 
@@ -49,7 +49,7 @@ export default function Keybinds() {
       <div className="md">
         <p>
           Zenderal's default keyboard and mouse layout. It's built around For Honor Reforged: power attack and parry
-          live on the side mouse buttons, lock-on on the middle button, and dodge on Space with jump moved to Left Alt.
+          live on the side mouse buttons, lock-on on the middle button, and dodge on Left Alt or a tap of Left Shift, with jump on Space.
           Hover or tap a key to see what it does.
         </p>
       </div>
