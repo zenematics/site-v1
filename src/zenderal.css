@@ -487,11 +487,19 @@ html {
 .zcta {
   --blend: 220px;
   position: relative;
+  margin-top: 80px;
+}
+.zcta__pin {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: clamp(600px, 48vw, 100vh);
-  margin-top: 80px;
   overflow: hidden;
+}
+.zcta__portal {
+  position: absolute;
+  inset: 0;
+  mask-repeat: no-repeat;
 }
 .zcta__scene {
   position: absolute;
@@ -544,6 +552,46 @@ html {
 }
 .zcta .actions {
   margin-top: 10px;
+}
+/* The Zenematics portal (Zenderal.jsx): the pin sticks over the scroll run below it while the
+   scene opens out of the mark. Reduced motion keeps the plain section. */
+.zcta__logo {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .zcta::after {
+    content: '';
+    display: block;
+    height: 120vh;
+  }
+  /* Its top overlaps the end of the cards (Zenderal.jsx sets the margin), so only the text takes clicks. */
+  .zcta {
+    pointer-events: none;
+  }
+  .zcta__pin {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+  }
+  .zcta__body {
+    pointer-events: auto;
+  }
+  /* It opens out of the mark rather than fading in, so only the bottom fades (into the footer). */
+  .zcta__scene {
+    mask-image: linear-gradient(180deg, #000 calc(100% - 160px), transparent);
+  }
+  .zcta__logo {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    max-width: none;
+    height: auto;
+    transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 /* ---------- Docs layout ---------- */
@@ -2591,9 +2639,11 @@ html {
   /* The knight sits up top, the text at the bottom over a dark fade. */
   .zcta {
     --blend: 140px;
+    margin-top: 40px;
+  }
+  .zcta__pin {
     align-items: flex-end;
     min-height: max(640px, 100svh);
-    margin-top: 40px;
   }
   .zcta__art {
     inset: 0 0 auto;
