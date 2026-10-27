@@ -3,24 +3,18 @@ import { docSections } from './content.js';
 
 export const OVERVIEW_URL = `${import.meta.env.BASE_URL}zenderal/`;
 
-// The docs navigation, shared by the overview page and the docs page.
+// The docs page navigation.
 // `href(hash)` builds each link; `onPick` / `onPickSection`, when given, switch
 // docs in place instead of following the link. `reading` is the section of the
-// active doc currently on screen. The overview lives on its own page, so it's always a plain link.
+// active doc currently on screen.
 export default function Sidebar({ active, href, onPick, reading, onPickSection }) {
   const click = (handler, id) => (handler ? handler(id) : undefined);
   return (
     <aside className="side">
       <span className="docs__label">Documentation</span>
-      {GROUPS.map((g, gi) => (
+      {GROUPS.map((g) => (
         <div key={g} className="side__group">
           <span className="side__group-name">{g}</span>
-          {gi === 0 && (
-            <a href={OVERVIEW_URL} className={`side__link${active === 'overview' ? ' is-active' : ''}`}>
-              <span className="side__dot" />
-              Overview
-            </a>
-          )}
           {DOCS.filter((d) => d.group === g).map((d) => (
             <div key={d.id}>
               <a href={href(d.id)} onClick={click(onPick, d.id)} className={`side__link${d.id === active ? ' is-active' : ''}`}>

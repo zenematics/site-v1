@@ -1,5 +1,4 @@
 // Markdown-driven docs content. Edit the files under /content/zenderal — no code changes needed.
-//   overview.md          → overview section on the Zenderal home page
 //   readme.md            → Readme doc
 //   render-pipeline.md   → DLSS & Frame Gen doc (Theo's Render Pipeline troubleshooting)
 
@@ -27,7 +26,6 @@ function parse(src) {
 
 const get = (path) => (files[PREFIX + path] != null ? parse(files[PREFIX + path]) : { data: {}, body: '' });
 
-export const overview = get('overview.md').body;
 export const readme = get('readme.md').body;
 export const renderPipeline = get('render-pipeline.md').body;
 

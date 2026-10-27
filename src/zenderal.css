@@ -6,6 +6,8 @@ html {
   background: #07080a;
   min-height: 100vh;
   position: relative;
+  /* Full-width backdrops span 100vw, which includes the scrollbar. */
+  overflow-x: clip;
 }
 
 /* ---------- Transitions ---------- */
@@ -53,6 +55,49 @@ html {
   object-position: center 40%;
   filter: brightness(0.7);
 }
+/* Overview: the background as depth layers that move at different rates.
+   --s is the scroll offset in px (ZenHero.jsx); at 0 the layers line up as the
+   original shot. Far layers sink with the page (look slower), near ones push in. */
+.zhero--parallax {
+  --s: 0;
+  --fade: calc(1 - var(--s) / 700);
+}
+.zhero__layer {
+  /* Taller than the hero so sinking layers never show an edge; all share one box so they line up.
+     Set low enough that the shot's waterline falls in the crossfade into the next section. */
+  top: -8%;
+  height: 120%;
+  bottom: auto;
+  transform-origin: 50% 85%;
+  translate: 0 calc(var(--s) * var(--sink) * 1px);
+  scale: calc(1 + var(--s) * var(--push) * 0.0001);
+  will-change: translate, scale;
+}
+.zhero__layer--back {
+  --sink: 0.5;
+  --push: 0;
+}
+.zhero__layer--mid {
+  --sink: 0.32;
+  --push: 0.6;
+}
+.zhero__layer--front {
+  --sink: 0.12;
+  --push: 1.6;
+}
+/* The text rises out faster than the page and fades as the hero scrolls away.
+   Moved with `top` and faded per element: a translate or opacity on .zhero__inner would
+   make it a stacking context and stop the logo video's screen blend reaching the background. */
+.zhero--parallax .zhero__inner {
+  top: calc(var(--s) * -0.25px);
+}
+.zhero--parallax .eyebrow-row,
+.zhero--parallax .zhero__desc,
+.zhero--parallax .zhero__logo video,
+.zhero--parallax .zhero__logo.is-done img {
+  opacity: var(--fade);
+}
+
 .zhero__shade {
   position: absolute;
   inset: 0;
@@ -67,7 +112,6 @@ html {
   translate: 0 -50%;
   width: min(44vh, 34%);
   aspect-ratio: 1378 / 1141;
-  object-fit: contain;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
 }
 .zhero__inner {
@@ -92,6 +136,35 @@ html {
   background-clip: text;
   color: transparent;
 }
+/* Wordmark in place of the text title (overview page). */
+.zhero__logo {
+  /* As wide as the column allows, but short enough on low screens that the intro still
+     peeks above the fold (the logo is about a third as tall as it is wide). */
+  --w: clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px);
+  position: relative;
+  display: block;
+  width: var(--w);
+  /* The PNG has ~5% transparent padding on the left; line the Z up with the text. */
+  margin-left: calc(var(--w) * -0.05);
+}
+.zhero__logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Hidden while the vines-growing video plays over it (Logo.jsx). */
+  opacity: 0;
+}
+.zhero__logo.is-done img {
+  opacity: 1;
+}
+.zhero__logo video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* White on black: screen drops the black so only the logo shows. */
+  mix-blend-mode: screen;
+}
 .zhero__desc {
   margin: 0;
   max-width: 560px;
@@ -114,6 +187,415 @@ html {
 .zhero--compact .zhero__title {
   font-size: clamp(44px, 6vw, 76px);
 }
+
+/* ---------- Overview ---------- */
+.zintro,
+.zexplore,
+.zcta__body {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 40px 56px 0;
+  display: flex;
+  flex-direction: column;
+}
+.zintro {
+  gap: 24px;
+}
+.zintro__title,
+.zcta__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(36px, 5.4vw, 72px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zintro__lede {
+  margin: 0;
+  max-width: 820px;
+  font-size: clamp(19px, 2vw, 24px);
+  line-height: 1.55;
+  font-weight: 300;
+  color: #c2beb6;
+  text-wrap: pretty;
+}
+.zintro__body {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zintro__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 40px;
+  max-width: 660px;
+  margin: 24px 0 0;
+}
+.zintro__fact {
+  padding-top: 16px;
+  border-top: 1px solid rgba(201, 171, 118, 0.35);
+}
+.zintro__fact dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zintro__fact dd {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #c2beb6;
+}
+
+/* Parallax backdrops (the intro and goals): a shot split into depth layers, far to near.
+   --p is the backdrop's distance from the viewport centre in px (Zenderal.jsx); at 0 the
+   layers line up as the original shot. Far layers sink with the page (look slower), near
+   ones push in. */
+.zparallax {
+  --p: 0;
+}
+.zlayer {
+  /* Taller than the backdrop so drifting layers never show an edge; one shared box keeps them lined up. */
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  filter: brightness(0.9) saturate(0.75);
+  transform-origin: 50% 85%;
+  translate: 0 calc(var(--p) * var(--drift) * 1px);
+  scale: calc(1.04 + min(1, max(-1, var(--p) / 800)) * var(--push) * 0.04);
+  will-change: translate, scale;
+}
+.zlayer--back {
+  --drift: 0.08;
+  --push: 0;
+}
+.zlayer--mid {
+  --drift: 0.045;
+  --push: 0.5;
+}
+.zlayer--front {
+  --drift: 0.01;
+  --push: 1;
+}
+
+/* The intro's full-bleed backdrop. It starts --blend up, over the hero, and its scene fades in
+   from the top so the two crossfade; the text sits outside the fade so it can start up in it.
+   Its bottom --blend fades out into the page below. */
+.zstage {
+  --blend: 260px;
+  position: relative;
+  z-index: 3;
+}
+.zstage__pin {
+  position: relative;
+  overflow: hidden;
+  padding: 120px 0 calc(40px + var(--blend));
+}
+.zstage__scene {
+  position: absolute;
+  inset: 0;
+  mask-image: linear-gradient(180deg, transparent, #000 var(--blend), #000 calc(100% - var(--blend)), transparent);
+  mask-repeat: no-repeat;
+}
+/* The emblem portal (Zenderal.jsx): the scene pins while the scroll run under it plays,
+   and closes into the emblem instead of fading out. Reduced motion keeps the fade. */
+.zstage__emblem {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zstage::after {
+    content: '';
+    display: block;
+    height: 100vh;
+  }
+  .zstage__pin {
+    position: sticky;
+    min-height: 100vh;
+  }
+  .zstage__scene {
+    mask-image: linear-gradient(180deg, transparent, #000 var(--blend));
+  }
+  .zstage__emblem {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    max-width: none;
+    height: auto;
+    transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+/* Crossfade into the intro: the stage starts --blend higher, over the hero's bottom. */
+.zhero--parallax {
+  --blend: 260px;
+  /* Taller by the fade, so the full shot shows before it crossfades away; the extra
+     height goes below the content. */
+  min-height: calc(62vh + var(--blend));
+  padding-top: 140px;
+  padding-bottom: calc(80px + var(--blend));
+}
+/* Centred, with the wordmark filling the space the emblem used to share. */
+.zhero--parallax .zhero__inner {
+  align-items: center;
+  text-align: center;
+}
+.zhero--parallax .eyebrow-row {
+  justify-content: center;
+}
+.zhero--parallax .zhero__logo {
+  /* The PNG has more transparent padding on the left (5.3%) than the right (3.1%). */
+  margin-left: calc(var(--w) * -0.022);
+}
+.zhero--parallax .zhero__desc {
+  max-width: 760px;
+  font-size: 21px;
+}
+/* Darkest behind the centred text, lighter towards the edges. */
+.zhero--parallax .zhero__shade {
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 42%, rgba(7, 8, 10, 0.85) 0%, rgba(7, 8, 10, 0.6) 60%, rgba(7, 8, 10, 0.35) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, 0.4) 0%, transparent 30%, rgba(7, 8, 10, 0.5) 100%);
+}
+.zhero--parallax + .zstage {
+  margin-top: -260px;
+}
+/* The intro's text starts inside the crossfade, so its top peeks above the fold. Padding moved
+   from the bottom to the top keeps the pin's height, so the emblem run doesn't move. */
+.zhero--parallax + .zstage .zstage__pin {
+  padding-top: 120px;
+  padding-bottom: calc(var(--blend) - 40px);
+}
+/* The intro is tall, so it has room for a stronger drift (and a taller box to match). */
+.zstage .zlayer {
+  top: -18%;
+  height: 136%;
+  object-position: center 60%;
+}
+.zstage .zlayer--back {
+  --drift: 0.2;
+}
+.zstage .zlayer--mid {
+  --drift: 0.11;
+}
+.zstage .zlayer--front {
+  --drift: 0.02;
+}
+.zstage__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.92) 0%, rgba(7, 8, 10, 0.6) 40%, rgba(7, 8, 10, 0.05) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, 0.5) 0%, transparent 22%, transparent 72%, rgba(7, 8, 10, 0.5) 100%);
+}
+.zstage .zintro {
+  position: relative;
+}
+
+/* Link cards into the docs and guide, in labelled groups. Pulled up into the intro's
+   bottom fade so they follow the emblem closely. */
+.zexplore {
+  gap: 72px;
+  margin-top: -220px;
+  padding-top: 120px;
+}
+.zexplore__group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.zexplore__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.zcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 24px 56px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(23, 24, 28, 0.9), rgba(13, 14, 17, 0.9));
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+.zcard:hover {
+  border-color: rgba(201, 171, 118, 0.55);
+  background: linear-gradient(180deg, rgba(30, 29, 28, 0.95), rgba(15, 15, 17, 0.95));
+  transform: translateY(-3px);
+}
+.zcard__page {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zcard__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zcard__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #b3afa7;
+  text-wrap: pretty;
+}
+.zcard__go {
+  position: absolute;
+  left: 24px;
+  bottom: 20px;
+  font-size: 18px;
+  color: #9b968d;
+  transition: color 0.25s ease, translate 0.25s ease;
+}
+.zcard:hover .zcard__go {
+  color: #c9ab76;
+  translate: 4px 0;
+}
+@media (max-width: 1100px) and (min-width: 861px) {
+  .zexplore__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* The closing call to action, over the crystal forest backdrop: full-bleed, fading in from
+   the page above and out into the footer, with the knight pushed right and the text on the
+   left. The violet is toned down towards the site's palette. */
+.zcta {
+  --blend: 220px;
+  position: relative;
+  margin-top: 80px;
+}
+.zcta__pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(600px, 48vw, 100vh);
+  overflow: hidden;
+}
+.zcta__portal {
+  position: absolute;
+  inset: 0;
+  mask-repeat: no-repeat;
+}
+.zcta__scene {
+  position: absolute;
+  inset: 0;
+  mask-image: linear-gradient(180deg, transparent, #000 var(--blend), #000 calc(100% - 160px), transparent);
+}
+/* The shot is very wide, so it sits right of the text and fades in from its left edge. */
+.zcta__art {
+  position: absolute;
+  inset: 0 -10% 0 22%;
+  mask-image: linear-gradient(90deg, transparent, #000 24%);
+}
+.zcta .zlayer {
+  top: -5%;
+  height: 110%;
+  object-position: 30% 30%;
+  filter: brightness(0.82) saturate(0.5);
+}
+.zcta .zlayer--back {
+  --drift: 0.04;
+}
+.zcta .zlayer--mid {
+  --drift: 0.025;
+}
+.zcta .zlayer--front {
+  --drift: 0.01;
+}
+.zcta__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.9) 0%, rgba(7, 8, 10, 0.55) 30%, transparent 55%, rgba(7, 8, 10, 0.3) 100%),
+    radial-gradient(ellipse 70% 60% at 70% 55%, rgba(201, 171, 118, 0.06), transparent 70%);
+}
+.zcta__body {
+  position: relative;
+  width: 100%;
+  gap: 22px;
+  padding-top: 0;
+}
+.zcta__body > * {
+  max-width: 520px;
+}
+.zcta__text {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #c2beb6;
+}
+.zcta .actions {
+  margin-top: 10px;
+}
+/* The Zenematics portal (Zenderal.jsx): the pin sticks over the scroll run below it while the
+   scene opens out of the mark. Reduced motion keeps the plain section. */
+.zcta__logo {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .zcta::after {
+    content: '';
+    display: block;
+    height: 120vh;
+  }
+  /* Its top overlaps the end of the cards (Zenderal.jsx sets the margin), so only the text takes clicks. */
+  .zcta {
+    pointer-events: none;
+  }
+  .zcta__pin {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+  }
+  .zcta__body {
+    pointer-events: auto;
+  }
+  /* It opens out of the mark rather than fading in, so only the bottom fades (into the footer). */
+  .zcta__scene {
+    mask-image: linear-gradient(180deg, #000 calc(100% - 160px), transparent);
+  }
+  .zcta__logo {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    max-width: none;
+    height: auto;
+    transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 /* ---------- Docs layout ---------- */
 .docs {
   max-width: 1240px;
@@ -1460,6 +1942,10 @@ html {
   letter-spacing: 0.08em;
   color: #c9ab76;
 }
+/* Every trait card fills its row's height (the art stretches with it). */
+.g-traits {
+  align-items: stretch;
+}
 .g-trait {
   flex-direction: row;
   align-items: stretch;
@@ -2082,6 +2568,9 @@ html {
 @media (max-width: 860px) {
   .zhero,
   .docs,
+  .zintro,
+  .zexplore,
+  .zcta__body,
   .footer {
     padding-left: 24px;
     padding-right: 24px;
@@ -2098,6 +2587,80 @@ html {
   }
   .md td:first-child {
     width: auto;
+  }
+  .zexplore {
+    gap: 56px;
+    margin-top: -240px;
+    padding-top: 80px;
+  }
+  .zexplore__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .zcard {
+    gap: 8px;
+    padding: 20px 20px 46px;
+  }
+  .zcard__title {
+    font-size: 19px;
+  }
+  .zcard__text {
+    font-size: 14px;
+  }
+  .zcard__go {
+    left: 20px;
+    bottom: 16px;
+  }
+  .zstage {
+    --blend: 160px;
+  }
+  .zstage__pin {
+    padding: 72px 0 calc(32px + var(--blend));
+  }
+  .zhero--parallax {
+    --blend: 160px;
+  }
+  .zhero--parallax + .zstage {
+    margin-top: -160px;
+  }
+  .zhero--parallax .zhero__desc {
+    font-size: 17px;
+  }
+  .zhero--parallax + .zstage .zstage__pin {
+    padding-top: 112px;
+    padding-bottom: calc(var(--blend) - 16px);
+  }
+  .zstage__shade {
+    background:
+      linear-gradient(90deg, rgba(7, 8, 10, 0.88) 0%, rgba(7, 8, 10, 0.6) 100%),
+      linear-gradient(180deg, rgba(7, 8, 10, 0.5) 0%, transparent 18%, transparent 78%, rgba(7, 8, 10, 0.5) 100%);
+  }
+  .zintro__facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  /* The knight sits up top, the text at the bottom over a dark fade. */
+  .zcta {
+    --blend: 140px;
+    margin-top: 40px;
+  }
+  .zcta__pin {
+    align-items: flex-end;
+    min-height: max(640px, 100svh);
+  }
+  .zcta__art {
+    inset: 0 0 auto;
+    height: 64%;
+    mask-image: linear-gradient(180deg, #000 60%, transparent);
+  }
+  .zcta .zlayer {
+    object-position: 46% 30%;
+  }
+  .zcta__shade {
+    background: linear-gradient(180deg, transparent 40%, rgba(7, 8, 10, 0.7) 62%);
+  }
+  .zcta__body {
+    padding-bottom: 96px;
   }
 }
 

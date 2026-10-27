@@ -20,6 +20,16 @@ a:hover {
   color: #ffffff;
 }
 
+/* Hidden on screen, still read by screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ---------- Nav ---------- */
 .nav {
   position: fixed;
@@ -59,6 +69,25 @@ a:hover {
   letter-spacing: 0.32em;
   color: #ece9e2;
   text-transform: uppercase;
+}
+/* The Zenderal emblem, after the brand on the Zenderal pages (links to the overview). */
+.nav__zen {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 22px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+.nav__emblem {
+  position: relative;
+  width: 66px;
+  height: 58px;
+  margin: -10px -6px;
+  transition: transform 0.3s ease;
+}
+.nav__zen:hover .nav__emblem {
+  transform: scale(1.08);
 }
 .nav__links {
   position: relative;
@@ -302,6 +331,50 @@ a:hover {
     display: none;
   }
 }
+/* The Zenderal panel shows its wordmark (src/zenderal/Logo.jsx) in the slot instead,
+   on the backdrop with no frame. The video is white on black, so the whole slot is
+   screened onto the panel (its translate isolates it, so blending the video alone
+   would only blend with the empty slot). */
+.panel__video--logo {
+  width: min(var(--video-room, min(600px, 72vw)), calc(var(--half) * 2 * 3));
+  aspect-ratio: auto;
+  background: none;
+  box-shadow: none;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+/* Kept for screen readers, hidden while the wordmark shows (the slot is dropped on short screens). */
+@media (min-height: 800px) {
+  .panel__title--logo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+.panel__logo {
+  position: relative;
+  display: block;
+  /* The PNG has ~5% transparent padding on the left; line the Z up with the text. */
+  margin-left: -5%;
+}
+.panel__logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+}
+.panel__logo.is-done img {
+  opacity: 1;
+}
+.panel__logo video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 .panel__title {
   margin: 0;
   font-family: inherit;
@@ -325,6 +398,27 @@ a:hover {
   line-height: 1.6;
   font-weight: 300;
   text-wrap: pretty;
+}
+
+/* The Zenderal emblem (src/zenderal/Emblem.jsx): the flat image shows until
+   the 3D model has loaded, then they cross-fade. */
+.emblem > img,
+.emblem > canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.8s ease;
+}
+.emblem > canvas {
+  opacity: 0;
+}
+.emblem.is-live > canvas {
+  opacity: 1;
+}
+.emblem.is-live > img {
+  opacity: 0;
 }
 
 .eyebrow {
@@ -367,6 +461,31 @@ a:hover {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 4px;
+}
+/* A lead button on its own row, as wide as the row of three beneath it. */
+.actions--lead {
+  display: inline-grid;
+  grid-template-columns: repeat(3, auto);
+  align-self: flex-start;
+}
+.actions--lead .btn {
+  justify-content: center;
+  text-align: center;
+}
+.actions--lead .btn:first-child {
+  grid-column: 1 / -1;
+}
+@media (max-width: 759px) {
+  .actions--lead {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-self: stretch;
+    gap: 10px;
+  }
+  .actions--lead .btn {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 .btn {
   padding: 13px 26px;
@@ -442,6 +561,15 @@ a:hover {
   }
   .nav:has(.nav__links) .nav__name {
     display: none;
+  }
+  .nav__zen {
+    margin-left: 10px;
+    padding-left: 6px;
+  }
+  .nav__emblem {
+    width: 50px;
+    height: 44px;
+    margin: -8px -4px;
   }
   .nav__links {
     gap: 6px;

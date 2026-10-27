@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { LINKS } from '../config.js';
+import Emblem from '../zenderal/Emblem.jsx';
 
 // `blend`: invert against the content behind it until the page is scrolled (home hero).
 // `intro`: fade in after the home hero panels have landed.
-// `zenderal`: show the Zenderal links, minus the page you're on ('install' or 'guides').
+// `zenderal`: show the Zenderal emblem (linking to the overview) and links, minus the page
+// you're on ('overview', 'install' or 'guides').
 export default function Nav({ blend = false, intro = false, zenderal = null }) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -22,9 +24,14 @@ export default function Nav({ blend = false, intro = false, zenderal = null }) {
         <span className="nav__name">Zenematics</span>
       </a>
       {zenderal && (
+        <a href={`${import.meta.env.BASE_URL}zenderal/`} className="nav__zen" aria-label="Zenderal">
+          <Emblem live className="nav__emblem" />
+        </a>
+      )}
+      {zenderal && (
         <div className="nav__links">
           {zenderal !== 'install' && (
-            <a href={`${import.meta.env.BASE_URL}zenderal/`} className="btn btn--light-outline nav__btn">Install</a>
+            <a href={`${import.meta.env.BASE_URL}zenderal/docs/#readme`} className="btn btn--light-outline nav__btn">Install</a>
           )}
           {zenderal !== 'guides' && (
             <a href={`${import.meta.env.BASE_URL}zenderal/guide/`} className="btn btn--light-outline nav__btn">Guides</a>
