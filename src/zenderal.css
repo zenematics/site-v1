@@ -1494,6 +1494,60 @@ html {
   gap: 16px;
   align-items: start;
 }
+.g-vendor {
+  gap: 14px;
+}
+.g-vendor__random {
+  align-self: flex-start;
+}
+.g-stock__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.g-stock {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.g-stock__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: #ece9e2;
+  cursor: pointer;
+}
+.g-stock__head .g-count {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+.g-stock__spells {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.g-stock__spells li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
 .g-set__bonuses {
   margin: 0;
   padding: 0;

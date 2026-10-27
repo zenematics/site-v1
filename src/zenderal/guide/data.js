@@ -220,58 +220,95 @@ export const AMMO = [
 // ---------------------------------------------------------------- Magic
 export const SPELL_TIERS = ['Novice', 'Apprentice', 'Adept', 'Expert', 'Master'];
 
-// Where each source's tomes are sold. Apocalypse and Triumvirate stock comes from
-// their Enderal patches' `<Merchant>_CustomMerchandise` hook lists.
+// The spell packs, as the Source field of spells.json names them.
 export const SPELL_SOURCES = [
+  { id: 'Enderal', label: 'Enderal', blurb: "The base game's spells, rebalanced by EGO." },
+  { id: 'EGO', label: 'EGO', blurb: 'Spells added by the Enderal Gameplay Overhaul.' },
+  { id: 'Apocalypse', label: 'Apocalypse', blurb: '175 spells across all five schools, 35 per school.' },
+  { id: 'Triumvirate', label: 'Triumvirate', blurb: '75 spells across five mage archetypes: Cleric, Druid, Shadow, Shaman and Warlock.' },
+  { id: 'KataPUMB Spell Pack', label: 'KataPUMB', blurb: 'Ranked spell lines (Rank I to IV) for every school.' },
+  { id: 'xxOpenSpells', label: 'Open Spells', blurb: 'A handful of utility spells.' },
+];
+
+// Who sells which tomes. Apocalypse and Triumvirate stock comes from their Enderal patches'
+// `<Merchant>_CustomMerchandise` hook lists and is always in stock. `random` shops also draw
+// Enderal and EGO tomes from the trader leveled lists (the six spell merchants in
+// zenderal-patches' porting-from-skyrim.md), re-rolled every two in-game days.
+// A stock line matches spells.json by `source`, plus `tiers`, `schools` and `archetype` when given.
+const LOW = ['Novice', 'Apprentice', 'Adept'];
+const HIGH = ['Expert', 'Master'];
+export const VENDORS = [
   {
-    id: 'Enderal',
-    label: 'Enderal',
-    blurb: 'The base game\'s spells, rebalanced by EGO.',
-    where: 'Random stock at Enderal\'s spell merchants, plus tomes in dungeon loot. Stock re-rolls every two in-game days.',
+    name: 'Gabrielle Emberlord', place: 'Emberlord and Fireflash', town: 'Ark', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Master'] }, { source: 'KataPUMB Spell Pack' }, { source: 'xxOpenSpells' }],
+  },
+  { name: 'Milbert Foxhand', place: 'Ark', town: 'Ark', random: true, stock: [{ source: 'Apocalypse', tiers: ['Novice'] }] },
+  {
+    name: 'Ora Stonehand', place: 'Ark', town: 'Ark', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Adept'], schools: ['Psionics', 'Light Magic'] }],
   },
   {
-    id: 'EGO',
-    label: 'EGO',
-    blurb: 'Spells added by the Enderal Gameplay Overhaul.',
-    where: 'Mixed into the same merchant and loot lists as Enderal\'s own tomes.',
+    name: 'Librarian Marius', place: 'Ark', town: 'Ark',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Cleric' },
+      { source: 'Triumvirate', archetype: 'Shadow' },
+      { source: 'Triumvirate', archetype: 'Druid', tiers: HIGH },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: HIGH },
+    ],
+  },
+  { name: 'Court Blacksmith', place: 'Ark', town: 'Ark', stock: [{ source: 'Triumvirate', archetype: 'Cleric' }] },
+  {
+    name: 'Barnabas', place: 'Undercity', town: 'Undercity', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Adept'], schools: ['Mentalism', 'Entropy', 'Elementalism'] }],
   },
   {
-    id: 'Apocalypse',
-    label: 'Apocalypse',
-    blurb: '175 spells across all five schools, 35 per school.',
-    where: 'Every tome is always in stock at exactly one shop, by tier.',
-    vendors: {
-      Novice: 'Milbert Foxhand, Ark',
-      Apprentice: 'Tarhutie Leklerk, Riverville',
-      Adept: 'Barnabas, Undercity (Mentalism, Entropy, Elementalism) · Ora Stonehand, Ark (Psionics, Light Magic)',
-      Expert: 'Torius Flameling, Sun Temple',
-      Master: 'Gabrielle Emberlord, Emberlord and Fireflash, Ark',
-    },
+    name: 'Shrouded Mage', place: 'Undercity', town: 'Undercity',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Shadow' },
+      { source: 'Triumvirate', archetype: 'Warlock' },
+      { source: 'Triumvirate', archetype: 'Druid', tiers: HIGH },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: HIGH },
+    ],
+  },
+  { name: 'Fence', place: 'Undercity', town: 'Undercity', stock: [{ source: 'Triumvirate', archetype: 'Shadow' }] },
+  { name: 'Waif at the Bash Hole', place: 'Undercity', town: 'Undercity', stock: [{ source: 'Triumvirate', archetype: 'Warlock' }] },
+  {
+    name: 'Tarhutie Leklerk', place: 'Riverville', town: 'Riverville',
+    stock: [{ source: 'Apocalypse', tiers: ['Apprentice'] }, { source: 'xxOpenSpells' }],
   },
   {
-    id: 'Triumvirate',
-    label: 'Triumvirate',
-    blurb: '75 spells across five mage archetypes: Cleric, Druid, Shadow, Shaman and Warlock.',
-    where: 'Each archetype has its own merchants. Novice to Adept tomes and Expert/Master tomes are sold in different places.',
-    archetypes: {
-      Cleric: { low: 'Court Blacksmith (Ark) · Librarian Marius (Ark) · Vexin (Riverville)', high: 'Court Blacksmith (Ark) · Librarian Marius (Ark)' },
-      Druid: { low: 'Vexin (Riverville) · Shrouded Mage (Duneville) · Shrouded Mage (Frostcliff Tavern)', high: 'Librarian Marius (Ark) · Shrouded Mage (Undercity)' },
-      Shadow: { low: 'Librarian Marius (Ark) · Sister Envy (Rhalata) · Fence (Undercity) · Shrouded Mage (Undercity)', high: 'Librarian Marius (Ark) · Fence (Undercity) · Shrouded Mage (Undercity)' },
-      Shaman: { low: 'Akatyr Scheenhair (Duneville) · Shrouded Mage (Duneville) · Shrouded Mage (Frostcliff Tavern)', high: 'Librarian Marius (Ark) · Shrouded Mage (Undercity)' },
-      Warlock: { low: 'Waif at the Bash Hole (Undercity) · Sister Envy (Rhalata) · Shrouded Mage (Undercity)', high: 'Waif at the Bash Hole (Undercity) · Shrouded Mage (Undercity)' },
-    },
+    name: 'Vexin', place: 'Riverville', town: 'Riverville',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Cleric', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Druid', tiers: LOW },
+    ],
   },
   {
-    id: 'KataPUMB Spell Pack',
-    label: 'KataPUMB',
-    blurb: 'Ranked spell lines (Rank I to IV) for every school.',
-    where: 'Gabrielle Emberlord at Emberlord and Fireflash in Ark sells every KataPUMB tome.',
+    name: 'Torius Flameling', place: 'Sun Temple', town: 'Sun Temple', random: true,
+    stock: [{ source: 'Apocalypse', tiers: ['Expert'] }, { source: 'xxOpenSpells' }],
+  },
+  { name: 'Maxus Tabbakus', place: 'Duneville', town: 'Duneville', random: true, stock: [] },
+  {
+    name: 'Shrouded Mage', place: 'Duneville', town: 'Duneville',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Druid', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: LOW },
+    ],
+  },
+  { name: 'Akatyr Scheenhair', place: 'Duneville', town: 'Duneville', stock: [{ source: 'Triumvirate', archetype: 'Shaman', tiers: LOW }] },
+  {
+    name: 'Shrouded Mage', place: 'Frostcliff Tavern', town: 'Frostcliff Tavern',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Druid', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Shaman', tiers: LOW },
+    ],
   },
   {
-    id: 'xxOpenSpells',
-    label: 'Open Spells',
-    blurb: 'A handful of utility spells.',
-    where: 'Emberlord and Fireflash (Ark), Torius Flameling (Sun Temple) and Tarhutie Leklerk (Riverville).',
+    name: 'Sister Envy', place: 'Rhalata', town: 'Rhalata',
+    stock: [
+      { source: 'Triumvirate', archetype: 'Shadow', tiers: LOW },
+      { source: 'Triumvirate', archetype: 'Warlock', tiers: LOW },
+    ],
   },
 ];
 
