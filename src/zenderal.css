@@ -376,9 +376,11 @@ html {
 .zhero--parallax + .zstage {
   margin-top: -260px;
 }
-/* The intro's text starts inside the crossfade, so its top peeks above the fold. */
+/* The intro's text starts inside the crossfade, so its top peeks above the fold. Padding moved
+   from the bottom to the top keeps the pin's height, so the emblem run doesn't move. */
 .zhero--parallax + .zstage .zstage__pin {
-  padding-top: 40px;
+  padding-top: 120px;
+  padding-bottom: calc(var(--blend) - 40px);
 }
 /* The intro is tall, so it has room for a stronger drift (and a taller box to match). */
 .zstage .zlayer {
@@ -2625,7 +2627,8 @@ html {
     font-size: 17px;
   }
   .zhero--parallax + .zstage .zstage__pin {
-    padding-top: 64px;
+    padding-top: 112px;
+    padding-bottom: calc(var(--blend) - 16px);
   }
   .zstage__shade {
     background:
