@@ -1,6 +1,7 @@
 // Markdown-driven docs content. Edit the files under /content/zenderal — no code changes needed.
 //   readme.md            → Readme doc
 //   render-pipeline.md   → DLSS & Frame Gen doc (Theo's Render Pipeline troubleshooting)
+//   performance.md       → Performance doc (TRP and Community Shaders tuning, stutter, AMD)
 
 const files = import.meta.glob('../../content/zenderal/**/*.md', {
   query: '?raw',
@@ -28,6 +29,7 @@ const get = (path) => (files[PREFIX + path] != null ? parse(files[PREFIX + path]
 
 export const readme = get('readme.md').body;
 export const renderPipeline = get('render-pipeline.md').body;
+export const performance = get('performance.md').body;
 
 // Heading text → anchor id, shared by the markdown renderer and the sidebar.
 export const slugify = (text) =>
@@ -40,4 +42,5 @@ const sectionsOf = (body) =>
 export const docSections = {
   readme: sectionsOf(readme),
   dlss: sectionsOf(renderPipeline),
+  performance: sectionsOf(performance),
 };

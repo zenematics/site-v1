@@ -110,6 +110,8 @@ Zenderal comes with [Theo's Render Pipeline](#dlss) set up for DLSS and frame ge
 
 Press **End** in game to open its settings. Step-by-step instructions, error messages and fixes are on the [DLSS & Frame Gen](#dlss) page.
 
+To get more FPS, fix stutter or set things up on an AMD or Intel GPU, see the [Performance](#performance) page.
+
 ---
 
 ## Updating

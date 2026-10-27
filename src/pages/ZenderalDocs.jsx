@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import Footer from '../components/Footer.jsx';
 import { DOCS, FAQ } from '../zenderal/data.js';
-import { readme, docSections, renderPipeline } from '../zenderal/content.js';
+import { readme, docSections, renderPipeline, performance } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Sidebar, { OVERVIEW_URL } from '../zenderal/Sidebar.jsx';
@@ -153,6 +153,7 @@ export default function ZenderalDocs() {
 
           {doc === 'readme' && <Md>{readme}</Md>}
           {doc === 'dlss' && <Md>{renderPipeline}</Md>}
+          {doc === 'performance' && <Md>{performance}</Md>}
           {doc === 'faq' && <Faq key={doc} onPick={pick} />}
 
           <div className="pager">
