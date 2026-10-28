@@ -3,7 +3,7 @@ import { ZENDERAL_STAGE, stageLabel } from '../config.js';
 import Emblem from './Emblem.jsx';
 import Logo from './Logo.jsx';
 
-const BG = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/ark.webp`;
+const BACKGROUNDS = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/`;
 
 // The Ark shot split into depth layers, far to near (public/uploads/zenderal/hero/):
 // back is the filled sky, peaks and water; mid the castle, statue and cliffs; front the bridge and town.
@@ -12,7 +12,8 @@ const LAYERS = ['back', 'mid', 'front'];
 // The Zenderal page header. `compact` is the shorter version used on the docs page;
 // `live` shows the scroll parallax background (and the 3D emblem, if shown), and `logo` the
 // Zenderal wordmark, full width in place of the text title and the emblem (overview page).
-export default function ZenHero({ eyebrow, desc, compact = false, live = false, logo = false, children }) {
+// `bg` names the still background in screenshots/backgrounds/ (not used with `live`).
+export default function ZenHero({ eyebrow, desc, compact = false, live = false, logo = false, bg = 'ark.webp', children }) {
   const hero = useRef(null);
 
   // Feed the scroll offset (clamped to the hero's height) to the CSS as --s.
@@ -47,7 +48,7 @@ export default function ZenHero({ eyebrow, desc, compact = false, live = false, 
           />
         ))
       ) : (
-        <img src={BG} alt="" className="zhero__bg" />
+        <img src={`${BACKGROUNDS}${bg}`} alt="" className="zhero__bg" />
       )}
       <div className="zhero__shade" />
       {!logo && <Emblem live={live} className="zhero__emblem" />}
