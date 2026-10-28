@@ -6,7 +6,7 @@ export const OVERVIEW_URL = `${import.meta.env.BASE_URL}zenderal/`;
 // The docs page navigation.
 // `href(hash)` builds each link; `onPick` / `onPickSection`, when given, switch
 // docs in place instead of following the link. `reading` is the section of the
-// active doc currently on screen.
+// active doc currently on screen; only the active doc's sections are listed.
 export default function Sidebar({ active, href, onPick, reading, onPickSection }) {
   const click = (handler, id) => (handler ? handler(id) : undefined);
   return (
@@ -21,14 +21,14 @@ export default function Sidebar({ active, href, onPick, reading, onPickSection }
                 <span className="side__dot" />
                 {d.title}
               </a>
-              {docSections[d.id] && (
+              {d.id === active && docSections[d.id] && (
                 <div className="side__subs">
                   {docSections[d.id].map((s) => (
                     <a
                       key={s.id}
                       href={href(`${d.id}/${s.id}`)}
                       onClick={click(onPickSection, `${d.id}/${s.id}`)}
-                      className={`side__sub${d.id === active && s.id === reading ? ' is-active' : ''}`}
+                      className={`side__sub${s.id === reading ? ' is-active' : ''}`}
                     >
                       {s.title}
                     </a>
