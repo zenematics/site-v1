@@ -78,7 +78,10 @@ function VerticalLabel({ s, label, color, accent }) {
 
 // Publishes its height on the panel as `--text-h`, so the video slot can fill
 // the space between the nav and the text.
-function Expanded({ s, children }) {
+// `room`: the panel's video room (as PanelVideo), so on big screens the text can
+// span the video's width with the buttons on the right (.panel__full--split);
+// `minWidth` keeps room for the description beside the buttons.
+function Expanded({ s, room, minWidth, children }) {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
@@ -89,8 +92,9 @@ function Expanded({ s, children }) {
   return (
     <div
       ref={ref}
-      className="panel__full"
+      className={`panel__full${room ? ' panel__full--split' : ''}`}
       style={{
+        ...(room && { '--video-room': room, '--split-min': minWidth }),
         opacity: s.fullOp,
         transform: `translateY(${s.fullY})`,
         pointerEvents: s.events,
@@ -266,7 +270,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
         />
         <VerticalLabel s={p0} label="Content" color="#1a1a1d" accent={ACCENT.contentText} />
         <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" room={wide ? '60cqw' : null} />
-        <Expanded s={p0}>
+        <Expanded s={p0} room={wide ? '60cqw' : null} minWidth="860px">
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
           <h2 className="sr-only">Watch Zen</h2>
           <p className="panel__desc" style={{ color: '#3a3833' }}>
@@ -334,7 +338,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
         />
         <VerticalLabel s={p2} label="Zenderal" color="#d9d6d0" accent={ACCENT.zenderal} />
         <PanelLogo s={p2} room={videoRoom('min(52vh, 36cqw)')} />
-        <Expanded s={p2}>
+        <Expanded s={p2} room={videoRoom('min(52vh, 36cqw)')} minWidth="1000px">
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
             <span className="stage-badge">{stageLabel}</span>
