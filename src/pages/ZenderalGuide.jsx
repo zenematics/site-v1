@@ -110,8 +110,8 @@ export default function ZenderalGuide({ section }) {
             : 'Races, affinities, perk trees, combat, firearms, magic, gear and controls: how Zenderal plays, with the numbers from the list\'s own records.'
         }
         compact
-        bg="ark-with-jespar.webp"
-        bgPos="45% 78%"
+        bg={cur?.bg ?? 'ark-with-jespar.webp'}
+        bgPos={cur?.bg ? cur.bgPos : '45% 78%'}
       />
 
       {cur ? <Section id={cur.id} /> : <Overview />}
