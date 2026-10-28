@@ -261,18 +261,19 @@ a:hover {
   gap: 22px;
   transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-/* Centred on the panel mark's height (--mark-y) and lined up with the text's
-   left edge. Its half-height is capped by the smaller of the room up to the
-   nav (~96px) and down to the expanded text (~344px from the bottom); its
-   width by the room across to the mark (--video-room). On short screens (laptops)
-   that room gets tight, so it never shrinks below a 160px-tall slot. */
+/* Lined up with the text's left edge and centred in the space between the nav
+   (--top) and the expanded text (--bottom, from its measured --text-h). Its
+   height fills that space unless the room across to the mark (--video-room)
+   caps its width first. */
 .panel__video {
-  --half: max(80px, min(var(--mark-y) * 100vh - 96px, (1 - var(--mark-y)) * 100vh - 344px));
+  --top: 88px;
+  --bottom: calc(64px + var(--text-h, 280px) + 32px);
+  --avail: max(160px, 100vh - var(--top) - var(--bottom));
   position: absolute;
   left: 56px;
-  top: calc(var(--mark-y) * 100%);
+  top: calc((var(--top) + 100% - var(--bottom)) / 2);
   translate: 0 -50%;
-  width: min(var(--video-room, min(600px, 72vw)), calc(var(--half) * 2 * 16 / 9));
+  width: min(var(--video-room, calc(100cqw - 112px)), calc(var(--avail) * 16 / 9));
   aspect-ratio: 16 / 9;
   background: rgba(0, 0, 0, 0.35);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
@@ -340,7 +341,7 @@ a:hover {
    screened onto the panel (its translate isolates it, so blending the video alone
    would only blend with the empty slot). */
 .panel__video--logo {
-  width: min(var(--video-room, min(600px, 72vw)), calc(var(--half) * 2 * 3));
+  width: min(var(--video-room, min(600px, 72vw)), calc(var(--avail) * 3));
   aspect-ratio: auto;
   background: none;
   box-shadow: none;

@@ -75,9 +75,19 @@ function VerticalLabel({ s, label, color, accent }) {
   );
 }
 
+// Publishes its height on the panel as `--text-h`, so the video slot can fill
+// the space between the nav and the text.
 function Expanded({ s, children }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    const ro = new ResizeObserver(() => el.parentElement.style.setProperty('--text-h', `${el.offsetHeight}px`));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   return (
     <div
+      ref={ref}
       className="panel__full"
       style={{
         opacity: s.fullOp,
@@ -91,13 +101,12 @@ function Expanded({ s, children }) {
   );
 }
 
-// Fills the space above the expanded text, centred on the panel mark's height
-// (`y`, the mark's `top` as a fraction). YouTube's own embed poster is a
+// Fills the space between the nav and the expanded text. YouTube's own embed poster is a
 // low-res 480px frame, so until play is clicked we show the full-HD thumbnail
 // with our own play button, then swap in the player. Nothing loads until the
 // panel opens, and closing it resets to the thumbnail. `inline` (phones) puts
 // it in the text column instead, above the eyebrow.
-function PanelVideo({ s, id, title, y, room, inline = false }) {
+function PanelVideo({ s, id, title, room, inline = false }) {
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     if (!s.on) setPlaying(false);
@@ -112,7 +121,6 @@ function PanelVideo({ s, id, title, y, room, inline = false }) {
     <div
       className={`panel__video${inline ? ' panel__video--inline' : ''}`}
       style={{
-        ...(!inline && { '--mark-y': y }),
         ...(room && { '--video-room': room }),
         opacity: s.fullOp,
         pointerEvents: s.events,
@@ -139,12 +147,11 @@ function PanelVideo({ s, id, title, y, room, inline = false }) {
 
 // The Zenderal wordmark in the video slot: its vines grow each time the panel opens
 // (it remounts), then it holds on the still logo.
-function PanelLogo({ s, y, room }) {
+function PanelLogo({ s, room }) {
   return (
     <div
       className="panel__video panel__video--logo"
       style={{
-        '--mark-y': y,
         ...(room && { '--video-room': room }),
         opacity: s.fullOp,
         transitionDelay: s.delay,
@@ -232,7 +239,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
 
   // Widest a panel video can get before reaching the expanded mark: from the
   // text's 56px inset to the mark's left edge (see markLeft), less a gutter.
-  // Below `wide` the mark fades to a watermark, so the video keeps the text width.
+  // Below `wide` the mark fades to a watermark, so the video can span the panel.
   const videoRoom = (markW) => (wide ? `calc(94cqw - ${markW} - 56px - 40px)` : null);
 
   const stageLabel = zenderalStage + (zenderalStage === 'Release' ? '' : ' · In testing');
@@ -294,7 +301,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
           ruleColor="#9b968d"
         />
         <VerticalLabel s={p0} label="Content" color="#1a1a1d" accent={ACCENT.contentText} />
-        {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" y={0.44} room={videoRoom('min(46vh, 34cqw)')} />}
+        {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" room={videoRoom('min(46vh, 34cqw)')} />}
         <Expanded s={p0}>
           {stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" inline />}
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
@@ -363,7 +370,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
           ruleColor="#6f6a62"
         />
         <VerticalLabel s={p2} label="Zenderal" color="#d9d6d0" accent={ACCENT.zenderal} />
-        {!stacked && <PanelLogo s={p2} y={0.42} room={videoRoom('min(52vh, 36cqw)')} />}
+        {!stacked && <PanelLogo s={p2} room={videoRoom('min(52vh, 36cqw)')} />}
         <Expanded s={p2}>
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
