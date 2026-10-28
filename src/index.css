@@ -162,8 +162,9 @@ a:hover {
   object-fit: contain;
   transition:
     left 0.9s cubic-bezier(0.7, 0, 0.2, 1),
+    top 0.9s cubic-bezier(0.7, 0, 0.2, 1),
     width 0.9s cubic-bezier(0.7, 0, 0.2, 1),
-    opacity 0.6s ease,
+    opacity 0.9s ease,
     filter 0.9s ease;
 }
 .panel__bar {
@@ -279,13 +280,13 @@ a:hover {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   transition: opacity 0.6s ease;
 }
-.panel__video iframe {
+.yt__player {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
 }
-.panel__video-poster {
+.yt__poster {
   position: relative;
   display: block;
   width: 100%;
@@ -295,13 +296,13 @@ a:hover {
   background: none;
   cursor: pointer;
 }
-.panel__video-poster img {
+.yt__poster img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.panel__video-play {
+.yt__play {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -314,7 +315,7 @@ a:hover {
   backdrop-filter: blur(4px);
   transition: background 0.25s ease, scale 0.25s ease;
 }
-.panel__video-play::after {
+.yt__play::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -324,17 +325,9 @@ a:hover {
   border-width: 11px 0 11px 18px;
   border-color: transparent transparent transparent #ece9e2;
 }
-.panel__video-poster:hover .panel__video-play {
+.yt__poster:hover .yt__play {
   background: rgba(7, 8, 10, 0.8);
   scale: 1.06;
-}
-/* Phones: in the text column, full width. */
-.panel__video--inline {
-  position: relative;
-  left: auto;
-  top: auto;
-  translate: none;
-  width: 100%;
 }
 /* The Zenderal panel shows its wordmark (src/zenderal/Logo.jsx) in the slot instead,
    on the backdrop with no frame. The video is white on black, so the whole slot is
@@ -368,11 +361,6 @@ a:hover {
   inset: 0;
   width: 100%;
   height: 100%;
-}
-/* Phones: in place of the title. Screened onto the panel like the desktop slot. */
-.panel__logo--inline {
-  width: min(78%, 340px);
-  mix-blend-mode: screen;
 }
 .panel__title {
   margin: 0;
@@ -545,7 +533,7 @@ a:hover {
 }
 
 /* ---------- Phones ---------- */
-/* Panels stack and each shows its expanded content (see `stacked` in Hero). */
+/* Nav sizing; the home hero itself is MobileHero (see Home). */
 @media (max-width: 759px) {
   .nav {
     padding: 14px 20px;
@@ -577,77 +565,6 @@ a:hover {
     padding: 8px 11px;
     letter-spacing: 0.16em;
   }
-}
-
-/* One panel per screen: the page snaps to each panel like a carousel, and
-   `scroll-snap-stop` keeps a hard fling from skipping past one. */
-html:has(.hero--stacked) {
-  scroll-snap-type: y mandatory;
-}
-.hero--stacked {
-  flex-direction: column;
-  height: auto;
-  min-height: 0;
-}
-.hero--stacked .panel {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 100svh;
-  padding-top: 60px; /* clears the nav */
-  cursor: default;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-.hero--stacked .panel + .panel {
-  border-left: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-.hero--stacked .panel__mark-slot {
-  position: relative;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(min(52vw, 240px) + 32px);
-}
-.hero--stacked .panel__mark {
-  position: relative;
-  translate: none;
-}
-.hero--stacked .panel__idle,
-.hero--stacked .panel__vert {
-  display: none;
-}
-.hero--stacked .panel__full {
-  /* No transform: it would isolate the inline logo's screen blend from the backdrop. */
-  transform: none !important;
-  position: relative;
-  left: auto;
-  bottom: auto;
-  width: auto;
-  gap: 18px;
-  padding: 0 24px 56px;
-}
-.hero--stacked .panel__title {
-  font-size: clamp(30px, 10vw, 44px);
-  white-space: normal;
-}
-.hero--stacked .panel__desc {
-  font-size: 16px;
-}
-.hero--stacked .panel__scrim--light {
-  background: linear-gradient(
-    to top,
-    rgba(7, 8, 10, 0.96) 0%,
-    rgba(7, 8, 10, 0.9) 42%,
-    rgba(7, 8, 10, 0.5) 64%,
-    transparent 82%
-  );
-}
-.hero--stacked .btn {
-  padding: 12px 20px;
 }
 
 /* ---------- Hero intro ---------- */
@@ -724,6 +641,324 @@ html:has(.hero--stacked) {
   .panel .panel__idle,
   .panel .panel__mark,
   .nav--intro {
+    animation: none;
+  }
+}
+
+/* ---------- Mobile hero (src/components/MobileHero.jsx) ---------- */
+/* One screen, no page scroll: the bands share the height below the nav, and the
+   open one takes most of it. Only opacity animates on load, so nothing moves. */
+.mhero {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 520px;
+  padding-top: 60px; /* clears the nav */
+  background: #07080a;
+}
+.mband {
+  --ease: cubic-bezier(0.7, 0, 0.2, 1);
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: flex-grow 0.8s var(--ease);
+  animation: mband-in 0.8s ease backwards;
+}
+.mband:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.mband:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.mband + .mband {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.mband.is-on {
+  flex-grow: 10;
+  cursor: default;
+}
+.mband:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+@keyframes mband-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* backdrops */
+.mband__white {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  transition: filter 0.8s ease;
+}
+.mband.is-off .mband__white {
+  filter: brightness(0.85);
+}
+.mband__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.55) saturate(0.7);
+  transition: filter 0.8s ease;
+}
+.mband.is-on .mband__bg {
+  filter: brightness(0.8) saturate(1);
+}
+.mband.is-off .mband__bg {
+  filter: brightness(0.3) saturate(0.3);
+}
+/* The open band is tall and crops the art's sides, so it drifts across them. */
+.mband.is-on .mband__bg {
+  animation: mband-pan 14s cubic-bezier(0.45, 0, 0.55, 1) 0.8s infinite alternate;
+}
+@keyframes mband-pan {
+  from {
+    object-position: 50% 50%;
+  }
+  50% {
+    object-position: 0% 50%;
+  }
+  to {
+    object-position: 100% 50%;
+  }
+}
+.mband__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(7, 8, 10, 0.9) 0%, rgba(7, 8, 10, 0.45) 50%, transparent 85%);
+  transition: opacity 0.8s ease;
+}
+.mband.is-on .mband__scrim {
+  background: linear-gradient(to top, rgba(7, 8, 10, 0.97) 0%, rgba(7, 8, 10, 0.88) 50%, rgba(7, 8, 10, 0.3) 78%, transparent 95%);
+}
+
+/* the section mark: above-right of the idle label, shrunk to the bar's end
+   when another band is open, gone when this one is */
+.mband__mark {
+  position: absolute;
+  top: 42%;
+  right: 24px;
+  height: 52%;
+  max-width: 42%;
+  object-fit: contain;
+  translate: 0 -50%;
+  pointer-events: none;
+  transition:
+    height 0.8s var(--ease),
+    max-width 0.8s var(--ease),
+    top 0.8s var(--ease),
+    right 0.8s var(--ease),
+    translate 0.8s var(--ease),
+    opacity 0.8s ease;
+}
+.mband--zenderal .mband__mark {
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6));
+}
+.mband.is-off .mband__mark {
+  top: 50%;
+  height: 50%;
+  right: 20px;
+}
+.mband.is-on .mband__mark {
+  opacity: 0;
+}
+/* Open Content band: the mark grows into a faint watermark filling the space
+   above the video, coming in from the top right with its right side cut off. */
+.mband--content.is-on .mband__mark {
+  top: -20%;
+  right: -62vw;
+  height: 135vw;
+  max-width: 200vw;
+  translate: 0 0;
+  opacity: 0.07;
+}
+
+/* idle label (no band open) */
+.mband__idle {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  transition: opacity 0.5s ease 0.3s;
+  animation: label-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s backwards;
+}
+.mband:not(.is-idle) .mband__idle {
+  opacity: 0;
+  transition-delay: 0s;
+  transition-duration: 0.25s;
+}
+.mband__eyebrow {
+  color: var(--accent);
+}
+.mband__title {
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: #ece9e2;
+}
+.mband__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #b8b4ac;
+}
+.mband__rule {
+  width: 20px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.mband--content .mband__title {
+  color: #0b0c0f;
+}
+.mband--content .mband__meta {
+  color: #3a3833;
+}
+
+/* bar label (another band is open) */
+.mband__name {
+  position: absolute;
+  top: 50%;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  translate: 0 -50%;
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #d9d6d0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.mband__name::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--accent);
+  rotate: 45deg;
+}
+.mband--content .mband__name {
+  color: #1a1a1d;
+}
+.mband.is-off .mband__name {
+  opacity: 1;
+  transition: opacity 0.5s ease 0.35s;
+}
+
+/* open content. The children fade, not the column: an opacity or transform on
+   it would isolate the Zenderal logo's screen blend from the backdrop. */
+.mband__full {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 24px 30px;
+  pointer-events: none;
+}
+.mband.is-on .mband__full {
+  pointer-events: auto;
+}
+.mband__full > * {
+  flex-shrink: 0;
+  opacity: 0;
+  translate: 0 16px;
+  transition: opacity 0.25s ease, translate 0.25s ease;
+}
+.mband.is-on .mband__full > * {
+  opacity: 1;
+  translate: 0 0;
+  transition: opacity 0.6s ease 0.45s, translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.45s;
+}
+.mband.is-on .mband__full > :nth-child(n + 3) {
+  transition-delay: 0.55s;
+}
+.mband.is-on .mband__full > :nth-child(n + 5) {
+  transition-delay: 0.65s;
+}
+.mband__video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+}
+.mband__desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 300;
+  color: #c2beb6;
+  text-wrap: pretty;
+}
+.mband--content .mband__desc {
+  color: #3a3833;
+}
+.mband__heading {
+  font-size: clamp(30px, 10vw, 40px);
+  white-space: normal;
+}
+.mband__logo {
+  width: min(80%, 320px);
+  mix-blend-mode: screen;
+}
+.mband__full .btn {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  white-space: nowrap;
+}
+.mband__full .btn--disabled {
+  padding: 12px 16px;
+  letter-spacing: 0.16em;
+}
+.mband__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.mband.is-on .mband__bar {
+  transform: scaleX(1);
+}
+
+/* The nav waits for the desktop panels to land; the bands only fade in. */
+@media (max-width: 759px) {
+  .nav--intro {
+    animation-delay: 0.3s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mband,
+  .mband__idle,
+  .mband.is-on .mband__bg {
     animation: none;
   }
 }

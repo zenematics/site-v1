@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { LINKS, PANEL_VIDEOS } from '../config.js';
 import Logo from '../zenderal/Logo.jsx';
+import YouTube from './YouTube.jsx';
 
 const ACCENT = { content: '#a975ff', contentText: '#6a2fd6', guides: '#e0953d', zenderal: '#c9c5bd' };
 
@@ -101,25 +102,13 @@ function Expanded({ s, children }) {
   );
 }
 
-// Fills the space between the nav and the expanded text. YouTube's own embed poster is a
-// low-res 480px frame, so until play is clicked we show the full-HD thumbnail
-// with our own play button, then swap in the player. Nothing loads until the
-// panel opens, and closing it resets to the thumbnail. `inline` (phones) puts
-// it in the text column instead, above the eyebrow.
-function PanelVideo({ s, id, title, room, inline = false }) {
-  const [playing, setPlaying] = useState(false);
-  useEffect(() => {
-    if (!s.on) setPlaying(false);
-  }, [s.on]);
+// Fills the space between the nav and the expanded text. Nothing loads until
+// the panel opens (see YouTube).
+function PanelVideo({ s, id, title, room }) {
   if (!id) return null;
-  // Not every video has a maxres thumbnail; YouTube serves a 120px placeholder instead.
-  const fallback = (e) => {
-    const img = e.currentTarget;
-    if (img.naturalWidth <= 120 && !img.src.includes('hqdefault')) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-  };
   return (
     <div
-      className={`panel__video${inline ? ' panel__video--inline' : ''}`}
+      className="panel__video"
       style={{
         ...(room && { '--video-room': room }),
         opacity: s.fullOp,
@@ -127,20 +116,7 @@ function PanelVideo({ s, id, title, room, inline = false }) {
         transitionDelay: s.delay,
       }}
     >
-      {s.on &&
-        (playing ? (
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`}
-            title={title}
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-          />
-        ) : (
-          <button type="button" className="panel__video-poster" aria-label={`Play ${title}`} onClick={() => setPlaying(true)}>
-            <img src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`} alt="" onLoad={fallback} onError={fallback} />
-            <span className="panel__video-play" />
-          </button>
-        ))}
+      <YouTube id={id} title={title} on={s.on} />
     </div>
   );
 }
@@ -162,29 +138,20 @@ function PanelLogo({ s, room }) {
   );
 }
 
-// Phones: fills the panel between the nav and the text, centring the mark in it.
-function MarkSlot({ children }) {
-  return <div className="panel__mark-slot">{children}</div>;
-}
-
 function Bar({ s, color }) {
   return <div className="panel__bar" style={{ background: color, transform: `scaleX(${s.bar})` }} />;
 }
 
-// Pan endpoints. Wide panels crop the image top and bottom, so it drifts
-// vertically; tall phone panels crop the sides, so it drifts horizontally.
-const PAN = {
-  y: ['center 0%', 'center 100%'],
-  x: ['0% center', '100% center'],
-};
+// Pan endpoints. Wide panels crop the image top and bottom, so it drifts vertically.
+const PAN = ['center 0%', 'center 100%'];
 
 // While active, drift the image between its crop edges on a loop. On leave, pick
 // the pan up from wherever it is and ease it back to the start instead of snapping.
-function usePan(ref, on, enabled, axis) {
+function usePan(ref, on, enabled) {
   useEffect(() => {
     const img = ref.current;
     if (!enabled || !img || !on || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const [from, to] = PAN[axis];
+    const [from, to] = PAN;
     img.style.objectPosition = from;
     const anim = img.animate([{ objectPosition: from }, { objectPosition: to }], {
       duration: 9000,
@@ -199,21 +166,20 @@ function usePan(ref, on, enabled, axis) {
       void img.offsetWidth; // commit the frozen position so the return trip transitions
       img.style.objectPosition = from;
     };
-  }, [ref, on, enabled, axis]);
+  }, [ref, on, enabled]);
 }
 
 // `showcase`: for artwork meant to be seen. No zoom, brighter when active, a scrim
 // that only shadows the bottom-left corner behind the text, and the image pans up
-// and down (side to side when `stacked`) to reveal what the panel crops off.
-function PhotoLayers({ s, src, showcase = false, stacked = false }) {
+// and down to reveal what the panel crops off.
+function PhotoLayers({ s, src, showcase = false }) {
   const ref = useRef(null);
-  const axis = stacked ? 'x' : 'y';
-  usePan(ref, s.on, showcase, axis);
+  usePan(ref, s.on, showcase);
   const img = showcase
     ? {
         transform: 'scale(1)',
         filter: s.on ? 'brightness(.9) saturate(1.05)' : s.filter,
-        objectPosition: PAN[axis][0],
+        objectPosition: PAN[0],
         transition: 'object-position .9s cubic-bezier(.7,0,.2,1), filter .9s ease',
       }
     : { transform: `scale(${s.scale})`, filter: s.filter };
@@ -226,16 +192,14 @@ function PhotoLayers({ s, src, showcase = false, stacked = false }) {
   );
 }
 
+// Desktop and tablet; phones get MobileHero (see Home).
 export default function Hero({ zenderalStage = 'Beta' }) {
   const [active, setActive] = useState(null);
   const vw = useViewportWidth();
   const wide = vw >= 1200;
-  // Phones: no hover to drive the accordion, so the panels stack and each shows
-  // its full content.
-  const stacked = vw < 760;
 
-  const activate = (i) => () => !stacked && setActive((cur) => (cur === i ? cur : i));
-  const [p0, p1, p2] = [0, 1, 2].map((i) => panelState(i, stacked ? i : active));
+  const activate = (i) => () => setActive((cur) => (cur === i ? cur : i));
+  const [p0, p1, p2] = [0, 1, 2].map((i) => panelState(i, active));
 
   // Widest a panel video can get before reaching the expanded mark: from the
   // text's 56px inset to the mark's left edge (see markLeft), less a gutter.
@@ -244,11 +208,12 @@ export default function Hero({ zenderalStage = 'Beta' }) {
 
   const stageLabel = zenderalStage + (zenderalStage === 'Release' ? '' : ' · In testing');
 
-  const logoW = stacked ? 'min(44vw,200px)' : p0.on ? 'min(46vh,34%)' : 'min(70vh,90%)';
-  const emblemW = stacked ? 'min(56vw,260px)' : p2.on ? 'min(52vh,36%)' : 'min(60vh,86%)';
-  // Desktop marks are placed absolutely and slide right when their panel expands.
-  // Stacked marks sit in a slot that fills the space above the text (MarkSlot).
-  const markPos = (top, w, expanded) => (stacked ? { opacity: 1 } : { top, left: markLeft(expanded, w) });
+  // Open, the Zenematics mark grows into a faint watermark coming in from the top
+  // right, its right side cut off by the panel edge (as on the mobile hero).
+  const logoW = p0.on ? '125vh' : 'min(70vh,90%)';
+  const emblemW = p2.on ? 'min(52vh,36%)' : 'min(60vh,86%)';
+  // Marks are placed absolutely and slide right when their panel expands.
+  const markPos = (top, w, expanded) => ({ top, left: markLeft(expanded, w) });
 
   const logo = (
     <img
@@ -258,8 +223,8 @@ export default function Hero({ zenderalStage = 'Beta' }) {
       style={{
         width: logoW,
         aspectRatio: '1',
-        opacity: p0.on && !wide ? 0.14 : 1,
-        ...markPos('44%', logoW, p0.on),
+        opacity: p0.on ? 0.07 : 1,
+        ...(p0.on ? { top: '24%', left: 'calc(100% - 62vh)' } : markPos('44%', logoW, false)),
       }}
     />
   );
@@ -279,16 +244,15 @@ export default function Hero({ zenderalStage = 'Beta' }) {
   );
 
   return (
-    <header id="top" className={`hero${stacked ? ' hero--stacked' : ''}`} onMouseLeave={() => setActive(null)}>
+    <header id="top" className="hero" onMouseLeave={() => setActive(null)}>
       {/* ---- Content ---- */}
-      <Panel s={p0} enter={stacked ? 'bottom' : 'left'} onActivate={activate(0)}>
+      <Panel s={p0} enter="left" onActivate={activate(0)}>
         <div
           className="panel__white"
           style={{ filter: p0.on || active == null ? 'brightness(1)' : 'brightness(.85)' }}
         >
-          {!stacked && logo}
+          {logo}
         </div>
-        {stacked && <MarkSlot>{logo}</MarkSlot>}
         <Bar s={p0} color={ACCENT.content} />
         <IdleLabel
           s={p0}
@@ -301,9 +265,8 @@ export default function Hero({ zenderalStage = 'Beta' }) {
           ruleColor="#9b968d"
         />
         <VerticalLabel s={p0} label="Content" color="#1a1a1d" accent={ACCENT.contentText} />
-        {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" room={videoRoom('min(46vh, 34cqw)')} />}
+        <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" room={wide ? '60cqw' : null} />
         <Expanded s={p0}>
-          {stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" inline />}
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
           <h2 className="sr-only">Watch Zen</h2>
           <p className="panel__desc" style={{ color: '#3a3833' }}>
@@ -320,7 +283,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
 
       {/* ---- Guides ---- */}
       <Panel s={p1} enter="bottom" onActivate={activate(1)}>
-        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.webp`} showcase stacked={stacked} />
+        <PhotoLayers s={p1} src={`${import.meta.env.BASE_URL}uploads/guides-bg-home.webp`} showcase />
         <Bar s={p1} color={ACCENT.guides} />
         <IdleLabel
           s={p1}
@@ -355,9 +318,9 @@ export default function Hero({ zenderalStage = 'Beta' }) {
       </Panel>
 
       {/* ---- Zenderal ---- */}
-      <Panel s={p2} enter={stacked ? 'bottom' : 'right'} onActivate={activate(2)}>
+      <Panel s={p2} enter="right" onActivate={activate(2)}>
         <PhotoLayers s={p2} src={`${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/ark.webp`} />
-        {stacked ? <MarkSlot>{emblem}</MarkSlot> : emblem}
+        {emblem}
         <Bar s={p2} color={ACCENT.zenderal} />
         <IdleLabel
           s={p2}
@@ -370,15 +333,14 @@ export default function Hero({ zenderalStage = 'Beta' }) {
           ruleColor="#6f6a62"
         />
         <VerticalLabel s={p2} label="Zenderal" color="#d9d6d0" accent={ACCENT.zenderal} />
-        {!stacked && <PanelLogo s={p2} room={videoRoom('min(52vh, 36cqw)')} />}
+        <PanelLogo s={p2} room={videoRoom('min(52vh, 36cqw)')} />
         <Expanded s={p2}>
           <div className="eyebrow-row">
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
             <span className="stage-badge">{stageLabel}</span>
           </div>
-          {/* The wordmark stands in for the title: above the text on desktop (PanelLogo), in its place on phones. */}
+          {/* The wordmark above (PanelLogo) stands in for the title. */}
           <h2 className="sr-only">Zenderal</h2>
-          {stacked && <Logo className="panel__logo panel__logo--inline" />}
           <p className="panel__desc" style={{ color: '#c2beb6' }}>
             A Wabbajack modlist for Enderal: Forgotten Stories. Install steps and FAQs, plus gameplay guides for
             races, perks, spells, combat and controller support.
