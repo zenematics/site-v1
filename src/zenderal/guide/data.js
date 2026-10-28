@@ -2,23 +2,6 @@
 // list's winning plugin records (zenderal-patches reference YAML and the installed
 // .esp files), so they describe Zenderal, not vanilla Enderal.
 
-export const SECTIONS = [
-  { id: 'race', title: 'Races', group: 'Character' },
-  { id: 'affinities', title: 'Affinities', group: 'Character' },
-  { id: 'books', title: 'Learning Books', group: 'Character' },
-  { id: 'perks', title: 'Perk Trees', group: 'Character' },
-  { id: 'prophecy', title: 'Prophecy Talents', group: 'Character' },
-  { id: 'traits', title: 'Traits', group: 'Character' },
-  { id: 'combat', title: 'For Honor Reforged', group: 'Combat' },
-  { id: 'firearms', title: 'Firearms', group: 'Combat' },
-  { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat' },
-  { id: 'armor', title: 'Armor Sets', group: 'Gear' },
-  { id: 'keys', title: 'Keybindings', group: 'Controls' },
-  { id: 'controller', title: 'Controller Support', group: 'Controls' },
-];
-
-export const SECTION_GROUPS = ['Character', 'Combat', 'Gear', 'Controls'];
-
 // ---------------------------------------------------------------- Races
 // Starting attributes and regen from `EGO SE - DS Movement Stamina UNIQUE RACES.esp`
 // (Half Starling from `Zenderal - Half Starling DS Races.esp`); regen is % of the

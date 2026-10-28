@@ -131,7 +131,7 @@ export default function Keybinds() {
             Rebind the vanilla controls in the game's own Controls menu. Mod hotkeys live in each mod's MCM page. For
             dodge and dual-wield parry, enable the <strong>Custom Keybinds</strong> mod in Mod Organizer 2: it holds
             those config files with instructions at the top. Using a controller? See{' '}
-            <a href="#controller">Controller Support</a>.
+            <a href={`${import.meta.env.BASE_URL}zenderal/guide/controller/`}>Controller Support</a>.
           </p>
         </blockquote>
       </div>

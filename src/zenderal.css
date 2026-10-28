@@ -992,6 +992,88 @@ html {
   color: #ffffff;
 }
 
+/* ---------- Gameplay guide ---------- */
+/* A section page: the article alone, with no sidebar, starting at the header's text edge
+   (as wide as the header's 1240px column plus the side padding). */
+.docs--single {
+  max-width: calc(1240px + 2 * 56px);
+}
+/* With no sidebar the article takes the whole column. */
+.docs--single .doc {
+  max-width: none;
+}
+.doc__crumb {
+  color: inherit;
+  transition: color 0.2s;
+}
+.doc__crumb:hover {
+  color: #ece9e2;
+}
+/* The overview's cards sit under the header, not tucked into it like the Zenderal overview's,
+   and as wide as the header's text column (its 1240px plus the side padding) so the edges line up. */
+.zexplore.guide-index {
+  max-width: calc(1240px + 2 * 56px);
+  margin-top: 0;
+  padding-top: 40px;
+  padding-bottom: 120px;
+}
+.guide-index .zexplore__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+/* Image cards: the art runs edge to edge across the top and fades into the card. */
+.gcard {
+  overflow: hidden;
+  padding-top: 0;
+}
+.gcard__art {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  margin: 0 -24px 6px;
+  overflow: hidden;
+  background: #17181c;
+}
+.gcard__art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(13, 14, 17, 0.9) 100%);
+}
+.gcard__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85);
+  transition: transform 0.6s ease, filter 0.6s ease;
+}
+.gcard:hover .gcard__art img {
+  transform: scale(1.05);
+  filter: saturate(1);
+}
+/* No art yet: the emblem, small and dim. */
+.gcard__art--none img {
+  object-fit: contain;
+  padding: 18% 0;
+  opacity: 0.18;
+}
+.gcard:hover .gcard__art--none img {
+  opacity: 0.3;
+}
+@media (max-width: 1100px) {
+  .guide-index .zexplore__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 860px) {
+  .guide-index .zexplore__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gcard__art {
+    aspect-ratio: 21 / 9;
+  }
+}
+
 /* ---------- Footer ---------- */
 .footer {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -1206,6 +1288,8 @@ html {
   width: 100%;
   min-width: 560px;
   height: auto;
+  /* On a wide page the tree would outgrow the screen; past this it stays centred in the frame. */
+  max-height: 78vh;
 }
 .ptree__edge {
   fill: none;
@@ -1700,6 +1784,9 @@ html {
 .pmap__svg {
   display: block;
   width: 100%;
+  /* Square (the pan and zoom maths relies on it), and no taller than the screen on a wide page. */
+  max-width: 78vh;
+  margin: 0 auto;
   aspect-ratio: 1;
   cursor: grab;
   touch-action: none;

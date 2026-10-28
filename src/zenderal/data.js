@@ -95,14 +95,14 @@ export const OVERVIEW = {
       links: [
         { doc: 'readme', title: 'Readme', text: 'Requirements, install steps and updates. Read it before you install.' },
         { doc: 'dlss', title: 'DLSS & Frame Gen', text: 'Set up upscaling and frame generation, and fix the common errors.' },
-        { guide: 'keys', title: 'Keybindings', text: 'The keyboard and mouse layout, on a map you can hover or tap.' },
+        { guide: 'keybindings', title: 'Keybindings', text: 'The keyboard and mouse layout, on a map you can hover or tap.' },
         { guide: 'controller', title: 'Controller Support', text: 'Play on a controller out of the box, with the full button layout.' },
       ],
     },
     {
       label: 'Learn the game',
       links: [
-        { guide: 'race', title: 'Character', text: 'The five cultures, their stats and bonuses, and where a build starts.' },
+        { guide: 'races', title: 'Character', text: 'The five cultures, their stats and bonuses, and where a build starts.' },
         { guide: 'combat', title: 'Combat', text: 'For Honor Reforged melee: timing, positioning and poise.' },
         { guide: 'traits', title: 'Traits', text: 'An upside and a downside each, chosen at the start and built around.' },
         { guide: 'prophecy', title: 'Prophecy', text: 'Seven talent trees, each built around a playstyle, with a build planner.' },
