@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SPELL_SOURCES, SPELL_TIERS, VENDORS } from './data.js';
 
-// Same lazy load as the Spells page; the file is shared.
+// Loaded on demand so the other sections don't pay for it.
 const loadSpells = () => import('../../../content/zenderal/spells.json').then((m) => m.default);
 
 const TOWNS = [...new Set(VENDORS.map((v) => v.town))];
@@ -82,7 +82,7 @@ export default function Magic() {
         <p>
           Every spell in Zenderal is learned from a <strong>spell tome</strong>, and every tome has a tier from Novice to
           Master. Below is every shop that sells them, by town, with what each one stocks. Search for a spell to see who
-          sells it. The full list, with costs and effects, is on the <a href="#spells">Spells</a> page.
+          sells it.
         </p>
         <ul>
           <li>

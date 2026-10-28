@@ -12,7 +12,6 @@ export const SECTIONS = [
   { id: 'combat', title: 'For Honor Reforged', group: 'Combat' },
   { id: 'firearms', title: 'Firearms', group: 'Combat' },
   { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat' },
-  { id: 'spells', title: 'Spells', group: 'Combat' },
   { id: 'armor', title: 'Armor Sets', group: 'Gear' },
   { id: 'keys', title: 'Keybindings', group: 'Controls' },
   { id: 'controller', title: 'Controller Support', group: 'Controls' },

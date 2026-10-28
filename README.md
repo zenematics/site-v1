@@ -48,7 +48,7 @@ index.html, zenderal/ HTML entry points (registered in vite.config.js)
 - **Docs and guides:** edit the Markdown in `content/zenderal/`. It's loaded at build time.
 - **FAQ, controller setup, doc list:** `src/zenderal/data.js`. A new entry in `DOCS` also needs rendering in `src/pages/ZenderalDocs.jsx`.
 - **Release stage, socials, hero videos:** `src/config.js`.
-- **Spells and perk trees:** generated from the sibling `zenderal-patches` repo:
+- **Spell and perk tree data:** generated from the sibling `zenderal-patches` repo:
 
   ```sh
   npm run import:spells [path/to/spells.json]

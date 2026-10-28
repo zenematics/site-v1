@@ -1,5 +1,5 @@
 // Slims the MagicExtract spells.json from zenderal-patches down to the
-// player-learnable spells (those taught by a spell tome) for the Spells doc.
+// player-learnable spells (those taught by a spell tome) for the guide's Magic section.
 //   node scripts/import-spells.mjs [path/to/spells.json]
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

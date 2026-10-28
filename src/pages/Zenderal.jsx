@@ -219,7 +219,7 @@ export default function Zenderal() {
 
       <ZenHero
         live
-        logo
+        emblem={false}
         eyebrow="Wabbajack Modlist · Enderal SE"
         desc="A Wabbajack modlist for Enderal: Forgotten Stories — installed in one click and playable on keyboard or controller."
       />

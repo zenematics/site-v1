@@ -9,11 +9,13 @@ const BACKGROUNDS = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/bac
 // back is the filled sky, peaks and water; mid the castle, statue and cliffs; front the bridge and town.
 const LAYERS = ['back', 'mid', 'front'];
 
-// The Zenderal page header. `compact` is the shorter version used on the docs page;
-// `live` shows the scroll parallax background (and the 3D emblem, if shown), and `logo` the
-// Zenderal wordmark, full width in place of the text title and the emblem (overview page).
-// `bg` names the still background in screenshots/backgrounds/ (not used with `live`).
-export default function ZenHero({ eyebrow, desc, compact = false, live = false, logo = false, bg = 'ark.webp', children }) {
+// The Zenderal page header, titled with the Zenderal wordmark. `compact` is the shorter
+// version used on the docs and guide pages; `live` shows the scroll parallax background
+// (and the 3D emblem, if shown), and `emblem={false}` drops the emblem so the wordmark
+// can go full width (overview page).
+// `bg` names the still background in screenshots/backgrounds/ (not used with `live`), and
+// `bgPos` overrides which part of it the crop keeps (CSS object-position).
+export default function ZenHero({ eyebrow, desc, compact = false, live = false, emblem = true, bg = 'ark.webp', bgPos, children }) {
   const hero = useRef(null);
 
   // Feed the scroll offset (clamped to the hero's height) to the CSS as --s.
@@ -48,17 +50,17 @@ export default function ZenHero({ eyebrow, desc, compact = false, live = false, 
           />
         ))
       ) : (
-        <img src={`${BACKGROUNDS}${bg}`} alt="" className="zhero__bg" />
+        <img src={`${BACKGROUNDS}${bg}`} alt="" className="zhero__bg" style={{ objectPosition: bgPos }} />
       )}
       <div className="zhero__shade" />
-      {!logo && <Emblem live={live} className="zhero__emblem" />}
+      {emblem && <Emblem live={live} className="zhero__emblem" />}
       <div className="zhero__inner">
         <div className="eyebrow-row">
           <span className="eyebrow" style={{ color: '#c9c5bd' }}>{eyebrow}</span>
           <span className="stage-badge">{stageLabel(ZENDERAL_STAGE)}</span>
         </div>
         <h1 className="zhero__title">
-          {logo ? <Logo /> : 'Zenderal'}
+          <Logo />
         </h1>
         <p className="zhero__desc">{desc}</p>
         {children}

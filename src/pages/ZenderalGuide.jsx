@@ -13,7 +13,6 @@ import Magic from '../zenderal/guide/Magic.jsx';
 import ArmorSets from '../zenderal/guide/ArmorSets.jsx';
 import Keybinds from '../zenderal/guide/Keybinds.jsx';
 import Controller from '../zenderal/guide/Controller.jsx';
-import Spells from '../zenderal/Spells.jsx';
 import Perks from '../zenderal/Perks.jsx';
 import Prophecy from '../zenderal/guide/Prophecy.jsx';
 import Traits from '../zenderal/guide/Traits.jsx';
@@ -30,15 +29,18 @@ const BODY = {
   combat: Combat,
   firearms: Firearms,
   magic: Magic,
-  spells: Spells,
   armor: ArmorSets,
   keys: Keybinds,
   controller: Controller,
 };
 
+// Sections folded into another; old links land on the new one.
+const ALIASES = { spells: 'magic' };
+
 // Hash routes: #<section-id>.
 function readHash() {
-  const id = decodeURIComponent(location.hash.slice(1));
+  const hash = decodeURIComponent(location.hash.slice(1));
+  const id = ALIASES[hash] ?? hash;
   return SECTIONS.some((s) => s.id === id) ? id : SECTIONS[0].id;
 }
 
@@ -75,8 +77,10 @@ export default function ZenderalGuide() {
 
       <ZenHero
         eyebrow="Gameplay Guide"
-        desc="Races, affinities, perk trees, combat, firearms, magic, spells, gear and controls: how Zenderal plays, with the numbers from the list's own records."
+        desc="Races, affinities, perk trees, combat, firearms, magic, gear and controls: how Zenderal plays, with the numbers from the list's own records."
         compact
+        bg="ark-with-jespar.webp"
+        bgPos="45% 78%"
       />
 
       <section id="guide" className="docs">
