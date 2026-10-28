@@ -168,8 +168,11 @@ export default function Zenderal() {
     const update = () => {
       frame = 0;
       const t = ramp(-cta.getBoundingClientRect().top, 0, cta.offsetHeight - pin.offsetHeight);
+      // The run is long enough that after the mark has opened the layers keep pulling apart for
+      // a while before the text arrives. The portal's own steps keep the pace they had over 120vh.
+      pin.style.setProperty('--t', ease(ramp(t, 0, 0.85)).toFixed(4));
       // Hidden until it fades in, so it can't catch clicks meant for the cards under the pin.
-      body.style.visibility = t < 0.75 ? 'hidden' : '';
+      body.style.visibility = t < 0.85 ? 'hidden' : '';
       if (t === 1) {
         portal.style.maskImage = portal.style.maskSize = portal.style.maskPosition = '';
         body.style.opacity = '';
@@ -183,15 +186,15 @@ export default function Zenderal() {
       const ax = W / 2;
       const ay = by - (ZEN.boxCy - ZEN.cy) * w0;
       const w1 = Math.hypot(Math.max(ax, W - ax), Math.max(ay, H - ay)) / ZEN.radius;
-      const w = w0 * (w1 / w0) ** ease(ramp(t, 0.05, 0.85));
+      const w = w0 * (w1 / w0) ** ease(ramp(t, 0.03, 0.55));
       const x = ax - ZEN.cx * w;
       const y = ay - ZEN.cy * w;
       portal.style.maskImage = `url(${ZEN_LOGO})`;
       portal.style.maskSize = `${w}px ${w}px`;
       portal.style.maskPosition = `${x}px ${y}px`;
-      art.style.opacity = 0.9 * (1 - ease(ramp(t, 0.1, 0.45)));
+      art.style.opacity = 0.9 * (1 - ease(ramp(t, 0.06, 0.28)));
       art.style.transform = `translate(${x}px, ${y}px) scale(${w / LOGO_W})`;
-      body.style.opacity = ramp(t, 0.75, 1);
+      body.style.opacity = ramp(t, 0.85, 1);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);

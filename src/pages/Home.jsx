@@ -21,7 +21,9 @@ function usePhone() {
 export default function Home() {
   const phone = usePhone();
   return (
-    <div style={{ background: '#07080a', minHeight: '100vh', overflow: 'clip', position: 'relative' }}>
+    // Phones: on mobile 100vh is the screen with the toolbars hidden, taller than what's visible,
+    // so the wrapper takes the hero's height instead.
+    <div style={{ background: '#07080a', minHeight: phone ? null : '100vh', overflow: 'clip', position: 'relative' }}>
       <Nav blend intro />
       {phone ? <MobileHero zenderalStage={ZENDERAL_STAGE} /> : <Hero zenderalStage={ZENDERAL_STAGE} />}
     </div>

@@ -99,6 +99,16 @@ a:hover {
   padding: 9px 18px;
   font-size: 11px;
 }
+.nav__icon {
+  display: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 /* ---------- Hero ---------- */
 .hero {
@@ -561,9 +571,20 @@ a:hover {
   .nav__links {
     gap: 6px;
   }
+  /* Icons only: the labels don't fit beside the logo and emblem. */
   .nav__btn {
-    padding: 8px 11px;
-    letter-spacing: 0.16em;
+    padding: 8px 12px;
+  }
+  .nav__icon {
+    display: block;
+  }
+  .nav__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 
@@ -651,8 +672,9 @@ a:hover {
 .mhero {
   display: flex;
   flex-direction: column;
+  /* Exactly the visible screen (dvh follows the browser toolbars), so the page never scrolls. */
   height: 100svh;
-  min-height: 520px;
+  height: 100dvh;
   padding-top: 60px; /* clears the nav */
   background: #07080a;
 }
