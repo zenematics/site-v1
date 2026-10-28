@@ -488,6 +488,8 @@ html {
    left. The violet is toned down towards the site's palette. */
 .zcta {
   --blend: 220px;
+  /* The art starts below the nav (its height; 60px on phones) so the top of the shot isn't hidden. */
+  --nav-h: 78px;
   position: relative;
   margin-top: 80px;
 }
@@ -511,8 +513,10 @@ html {
 /* The shot is very wide, so it sits right of the text and fades in from its left edge. */
 .zcta__art {
   position: absolute;
-  inset: 0 -10% 0 22%;
-  mask-image: linear-gradient(90deg, transparent, #000 24%);
+  /* Its top (where the layers overhang for the drift) fades in from the nav's bottom edge. */
+  inset: var(--nav-h) -10% 0 22%;
+  mask-image: linear-gradient(90deg, transparent, #000 24%), linear-gradient(180deg, transparent, #000 14%);
+  mask-composite: intersect;
 }
 /* Besides the scroll drift, the layers pull apart as the portal opens (--t, 0 → 1, set by
    Zenderal.jsx): each starts lower and bigger the nearer it is and settles as the scene opens,
@@ -2663,9 +2667,9 @@ html {
     min-height: max(640px, 100svh);
   }
   .zcta__art {
-    inset: 0 0 auto;
-    height: 80%;
-    mask-image: linear-gradient(180deg, #000 70%, transparent);
+    inset: var(--nav-h) 0 auto;
+    height: 78%;
+    mask-image: linear-gradient(180deg, transparent, #000 12%, #000 70%, transparent);
   }
   .zcta .zlayer {
     object-position: 46% 30%;
@@ -2680,6 +2684,9 @@ html {
 
 /* Phones: the sidebar becomes a sticky, horizontally scrolling tab row. */
 @media (max-width: 759px) {
+  .zcta {
+    --nav-h: 60px;
+  }
   .docs {
     padding-top: 0;
     gap: 32px;

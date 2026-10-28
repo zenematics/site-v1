@@ -109,6 +109,10 @@ a:hover {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.nav__icon .nav__icon-fill {
+  fill: currentColor;
+  stroke: none;
+}
 
 /* ---------- Hero ---------- */
 .hero {
