@@ -95,15 +95,14 @@ function Expanded({ s, children }) {
 // (`y`, the mark's `top` as a fraction). YouTube's own embed poster is a
 // low-res 480px frame, so until play is clicked we show the full-HD thumbnail
 // with our own play button, then swap in the player. Nothing loads until the
-// panel opens, and closing it resets to the thumbnail. Skipped on short
-// screens, where the CSS hides the slot.
-function PanelVideo({ s, id, title, y, room }) {
+// panel opens, and closing it resets to the thumbnail. `inline` (phones) puts
+// it in the text column instead, above the eyebrow.
+function PanelVideo({ s, id, title, y, room, inline = false }) {
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     if (!s.on) setPlaying(false);
   }, [s.on]);
   if (!id) return null;
-  const show = s.on && matchMedia('(min-height: 800px)').matches;
   // Not every video has a maxres thumbnail; YouTube serves a 120px placeholder instead.
   const fallback = (e) => {
     const img = e.currentTarget;
@@ -111,16 +110,16 @@ function PanelVideo({ s, id, title, y, room }) {
   };
   return (
     <div
-      className="panel__video"
+      className={`panel__video${inline ? ' panel__video--inline' : ''}`}
       style={{
-        '--mark-y': y,
+        ...(!inline && { '--mark-y': y }),
         ...(room && { '--video-room': room }),
         opacity: s.fullOp,
         pointerEvents: s.events,
         transitionDelay: s.delay,
       }}
     >
-      {show &&
+      {s.on &&
         (playing ? (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`}
@@ -297,6 +296,7 @@ export default function Hero({ zenderalStage = 'Beta' }) {
         <VerticalLabel s={p0} label="Content" color="#1a1a1d" accent={ACCENT.contentText} />
         {!stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" y={0.44} room={videoRoom('min(46vh, 34cqw)')} />}
         <Expanded s={p0}>
+          {stacked && <PanelVideo s={p0} id={PANEL_VIDEOS.content} title="Zenematics video" inline />}
           <span className="eyebrow" style={{ color: ACCENT.contentText }}>Content</span>
           <h2 className="sr-only">Watch Zen</h2>
           <p className="panel__desc" style={{ color: '#3a3833' }}>
@@ -369,8 +369,9 @@ export default function Hero({ zenderalStage = 'Beta' }) {
             <span className="eyebrow" style={{ color: ACCENT.zenderal }}>Modlist</span>
             <span className="stage-badge">{stageLabel}</span>
           </div>
-          {/* The wordmark above (PanelLogo) stands in for the title wherever it shows. */}
-          <h2 className={`panel__title panel__title--metal${stacked ? '' : ' panel__title--logo'}`}>Zenderal</h2>
+          {/* The wordmark stands in for the title: above the text on desktop (PanelLogo), in its place on phones. */}
+          <h2 className="sr-only">Zenderal</h2>
+          {stacked && <Logo className="panel__logo panel__logo--inline" />}
           <p className="panel__desc" style={{ color: '#c2beb6' }}>
             A Wabbajack modlist for Enderal: Forgotten Stories. Install steps and FAQs, plus gameplay guides for
             races, perks, spells, combat and controller support.
