@@ -11,9 +11,10 @@ const MIN_S = 4;
 const MAX_S = BG;
 const STORE = 'zen-prophecy-build';
 
-// Map units to move a tree toward the start point, along its spoke. The game places Druidic's root about 36 units
-// out, the rest 19 to 29; on the page it reads better in line with them.
-const PULL = { druidic: 9 };
+// Map units to move a tree toward the start point along its spoke (negative moves it out). The game places
+// Druidic's root about 36 units out and Firearms' and Sorcery's about 19 and 21, the rest 22 to 29; on the page
+// they read better in line.
+const PULL = { druidic: 9, firearms: -5, sorcery: -4 };
 
 function pulled(t) {
   const d = PULL[t.id];
