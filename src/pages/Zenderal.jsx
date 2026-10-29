@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
@@ -27,6 +27,8 @@ const LOGO_W = 1000;
 const SHOT = { ratio: 1440 / 3360, cx: 0.5104, cy: 0.554, radius: 0.0946 };
 const RADIAL = { void: 0.23 };
 const BUILD_W = 1000;
+// The "New to Enderal" switch's two sides, keys into OVERVIEW.welcome.
+const AUDIENCES = ['newcomers', 'veterans'];
 
 function Layers({ src }) {
   return LAYERS.map((l) => (
@@ -49,6 +51,7 @@ function resolve(link) {
 }
 
 export default function Zenderal() {
+  const [audience, setAudience] = useState('newcomers');
   // Feed each parallax backdrop its distance from the viewport centre (px) as --p.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -264,7 +267,7 @@ export default function Zenderal() {
   // The closing portal: the intro's in reverse. The Zenematics mark arrives as the pin reaches the
   // top, the scene shows through it as its art fades, and it grows over the run (.zcta::after)
   // until the head covers the screen; then the text fades in. It rests as far below the cards as
-  // the intro's emblem does above the before/after heading, so the pin is pulled up over the
+  // the intro's emblem does above the "New to Enderal" heading, so the pin is pulled up over the
   // cards' end to match.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -279,7 +282,7 @@ export default function Zenderal() {
     const stagePin = stage.querySelector('.zstage__pin');
     const cards = document.querySelectorAll('.zcard');
     const compare = document.querySelector('.zcompare');
-    const compareHead = compare.querySelector('.zcompare__head');
+    const welcome = document.querySelector('.znew__head');
     const pageTop = (el) => el.getBoundingClientRect().top + scrollY;
     const rest = () => {
       const W = pin.offsetWidth;
@@ -289,11 +292,11 @@ export default function Zenderal() {
     };
     const layout = () => {
       // Where the emblem ends: centred in the viewport once the intro's run is scrolled through.
-      // The gap is from it to the before/after heading under it, where that sits before its pin sticks.
+      // The gap is from it to the "New to Enderal" heading under it.
       const stick = Math.min(0, innerHeight - stagePin.offsetHeight);
       const end = pageTop(stage) - stick + stage.offsetHeight - stagePin.offsetHeight;
       const ew = Math.min(innerWidth * 0.7, (innerHeight * 0.5) / EMBLEM.ratio) * EMBLEM.ratio;
-      const gap = pageTop(compare) + compareHead.offsetTop - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
+      const gap = pageTop(welcome) - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
       const { w0, by } = rest();
       const logoTop = by - (ZEN.boxCy - ZEN.top) * w0;
       const last = cards[cards.length - 1].getBoundingClientRect().bottom + scrollY;
@@ -339,6 +342,7 @@ export default function Zenderal() {
     // The cards and the intro reflow as the fonts load.
     const ro = new ResizeObserver(layout);
     ro.observe(stagePin);
+    ro.observe(document.querySelector('.znew'));
     ro.observe(compare);
     ro.observe(document.querySelector('.zclips'));
     ro.observe(document.querySelector('.zbuild'));
@@ -385,6 +389,82 @@ export default function Zenderal() {
                 </div>
               ))}
             </dl>
+          </div>
+        </div>
+      </section>
+
+      <section className="znew">
+        <div className="znew__head">
+          <span className="docs__label">{OVERVIEW.welcome.label}</span>
+          <h2 className="znew__title">{OVERVIEW.welcome.title}</h2>
+          <p className="znew__text">{OVERVIEW.welcome.text}</p>
+        </div>
+        {/* One panel, switched between the two audiences; both views share one grid cell so the panel
+            keeps the taller one's height and doesn't jump when switching. */}
+        <div className={`znew__panel znew__panel--${audience}`}>
+          {AUDIENCES.map((a) => (
+            <img
+              key={a}
+              src={`${import.meta.env.BASE_URL}uploads/zenderal/${OVERVIEW.welcome[a].art}`}
+              alt=""
+              className={`znew__art znew__art--${a}${audience === a ? ' is-on' : ''}`}
+            />
+          ))}
+          <div className="znew__shade" />
+          <div className="znew__switch" role="tablist" aria-label="Who's playing">
+            {AUDIENCES.map((a) => (
+              <button
+                key={a}
+                type="button"
+                role="tab"
+                id={`znew-tab-${a}`}
+                aria-controls={`znew-view-${a}`}
+                aria-selected={audience === a}
+                tabIndex={audience === a ? 0 : -1}
+                className={`znew__option${audience === a ? ' is-on' : ''}`}
+                onClick={() => setAudience(a)}
+                onKeyDown={(e) => {
+                  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+                  const next = AUDIENCES[(AUDIENCES.indexOf(a) + 1) % AUDIENCES.length];
+                  setAudience(next);
+                  document.getElementById(`znew-tab-${next}`).focus();
+                }}
+              >
+                {OVERVIEW.welcome[a].label}
+              </button>
+            ))}
+          </div>
+          <div className="znew__views">
+            {AUDIENCES.map((a) => {
+              const view = OVERVIEW.welcome[a];
+              const rows = a === 'newcomers'
+                ? view.steps.map((s) => ({ ...s, key: s.title }))
+                : view.changes.map((c) => ({ ...c, key: c.area, title: c.area }));
+              const List = a === 'newcomers' ? 'ol' : 'ul';
+              return (
+                <div
+                  key={a}
+                  id={`znew-view-${a}`}
+                  role="tabpanel"
+                  aria-labelledby={`znew-tab-${a}`}
+                  className={`znew__view${audience === a ? ' is-on' : ''}`}
+                >
+                  <h3 className="znew__panel-title">{view.title}</h3>
+                  <p className="znew__panel-text">{view.text}</p>
+                  <List className={a === 'newcomers' ? 'znew__steps' : 'znew__changes'}>
+                    {rows.map((r) => (
+                      <li key={r.key}>
+                        <a href={resolve(r).href} className="znew__row">
+                          <span className="znew__row-title">{r.title}</span>
+                          <span className="znew__row-text">{r.text}</span>
+                          <span className="znew__go" aria-hidden="true">→</span>
+                        </a>
+                      </li>
+                    ))}
+                  </List>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

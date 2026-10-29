@@ -182,6 +182,7 @@ html {
 .zintro,
 .zexplore,
 .zclips,
+.znew,
 .zcta__body {
   max-width: 1240px;
   margin: 0 auto;
@@ -399,14 +400,318 @@ html {
   position: relative;
 }
 
-/* Before/after: base Enderal and Zenderal from the same spot. Pulled up into the intro's bottom
-   fade so it follows the emblem closely. --split is where the divider sits from the left; Zenderal's
+/* "New to Enderal": two panels, a first-hour path for new players and what Zenderal changes for
+   returning ones, each row linking into the guide or docs. Pulled up into the intro's bottom fade so
+   it follows the emblem closely. */
+.znew {
+  position: relative;
+  z-index: 3;
+  gap: 40px;
+  margin-top: -220px;
+  padding-top: 120px;
+}
+.znew__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.znew__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.znew__text {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+/* One panel, switched between the audiences (Zenderal.jsx). Each side has its own art, which
+   crossfades in behind a shade that keeps the text on the left readable. */
+.znew__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 36px 40px 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d0e11;
+}
+/* Right of the text, fading in from its left edge, with each shot's subject in view. */
+.znew__art {
+  position: absolute;
+  top: 0;
+  left: 40%;
+  width: 60%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9) saturate(0.6);
+  mask-image: linear-gradient(90deg, transparent, #000 35%);
+  opacity: 0;
+  scale: 1.04;
+  transition: opacity 0.6s ease, scale 1.2s ease;
+}
+.znew__art.is-on {
+  opacity: 1;
+  scale: 1;
+}
+.znew__art--newcomers {
+  object-position: 42% 50%;
+}
+.znew__art--veterans {
+  object-position: 18% 40%;
+}
+.znew__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 8, 10, 0.6) 40%, rgba(7, 8, 10, 0.1) 70%, transparent),
+    linear-gradient(180deg, rgba(7, 8, 10, 0.3), transparent 30%, transparent 70%, rgba(7, 8, 10, 0.5));
+}
+/* The two-way switch: a sliding gold bar marks the chosen side. */
+.znew__switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(7, 8, 10, 0.6);
+}
+.znew__switch::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  background: #ece9e2;
+  transition: translate 0.35s ease;
+}
+.znew__panel--veterans .znew__switch::before {
+  translate: 100% 0;
+}
+.znew__option {
+  position: relative;
+  padding: 14px 26px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #9b968d;
+  cursor: pointer;
+  transition: color 0.35s ease;
+}
+.znew__option:hover {
+  color: #ece9e2;
+}
+.znew__option.is-on {
+  color: #07080a;
+}
+.znew__option:focus-visible {
+  outline: 2px solid #c9ab76;
+  outline-offset: 2px;
+}
+/* Both views share one cell, so the panel keeps the taller one's height. */
+.znew__views {
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-width: 580px;
+}
+.znew__view {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 12px;
+  transition: opacity 0.4s ease, translate 0.4s ease, visibility 0s 0.4s;
+}
+.znew__view.is-on {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition: opacity 0.4s ease 0.1s, translate 0.4s ease 0.1s, visibility 0s;
+}
+.znew__panel-title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.znew__panel-text {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #b3afa7;
+  text-wrap: pretty;
+}
+.znew__steps,
+.znew__changes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.znew__steps {
+  counter-reset: step;
+}
+.znew__steps li {
+  counter-increment: step;
+}
+/* One row per step or change: number (steps only) or area, then the line, then an arrow. */
+.znew__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 20px;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  transition: color 0.25s ease;
+}
+.znew__steps .znew__row {
+  grid-template-columns: 28px 150px minmax(0, 1fr) 20px;
+}
+.znew__steps .znew__row::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(201, 171, 118, 0.6);
+  font-size: 12px;
+  color: #c9ab76;
+  align-self: start;
+  margin-top: -3px;
+}
+.znew__row-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.znew__row-text {
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 300;
+  color: #b3afa7;
+}
+.znew__go {
+  font-size: 16px;
+  color: #6f6a62;
+  transition: color 0.25s ease, translate 0.25s ease;
+}
+.znew__row:hover .znew__row-title {
+  color: #c9ab76;
+}
+.znew__row:hover .znew__go {
+  color: #c9ab76;
+  translate: 4px 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .znew__art,
+  .znew__view,
+  .znew__switch::before {
+    transition: none;
+  }
+}
+@media (max-width: 860px) {
+  .znew {
+    margin-top: -240px;
+    padding-top: 80px;
+    gap: 28px;
+  }
+  .znew__text {
+    font-size: 16px;
+  }
+  /* The art shows as a band at the top, under the switch; the text sits below it on the shade. */
+  .znew__panel {
+    gap: 24px;
+    padding: 20px 20px 12px;
+  }
+  .znew__art {
+    left: 0;
+    width: 100%;
+    height: 260px;
+    mask-image: none;
+  }
+  .znew__art--newcomers {
+    object-position: 45% 40%;
+  }
+  .znew__art--veterans {
+    object-position: 25% 40%;
+  }
+  .znew__shade {
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.35) 0, rgba(7, 8, 10, 0.2) 80px, #0d0e11 260px);
+  }
+  .znew__switch {
+    width: 100%;
+  }
+  .znew__option {
+    padding: 12px 8px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    white-space: normal;
+  }
+  .znew__views {
+    margin-top: 110px;
+  }
+  .znew__panel-title {
+    font-size: 21px;
+  }
+  /* The title goes above the line. */
+  .znew__row,
+  .znew__steps .znew__row {
+    grid-template-columns: minmax(0, 1fr) 20px;
+    gap: 4px 12px;
+  }
+  .znew__steps .znew__row {
+    grid-template-columns: 28px minmax(0, 1fr) 20px;
+  }
+  .znew__steps .znew__row::before {
+    grid-row: span 2;
+    align-self: start;
+  }
+  .znew__row-text {
+    grid-column: -3 / -2;
+    font-size: 14px;
+  }
+  .znew__go {
+    grid-column: -2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+}
+
+/* Before/after: base Enderal and Zenderal from the same spot, in a frame under its heading.
+   --split is where the divider sits from the left; Zenderal's
    shot shows right of it. Zenderal.jsx sweeps it from 100% to 0 while the pin sticks; reduced
    motion leaves it in the middle. */
 .zcompare {
   position: relative;
   z-index: 3;
-  margin-top: -220px;
+  margin-top: 40px;
 }
 .zcompare__pin {
   --split: 50%;
@@ -3063,6 +3368,7 @@ html {
   .zintro,
   .zexplore,
   .zclips,
+  .znew,
   .zcta__body {
     padding-left: 24px;
     padding-right: 24px;
@@ -3133,7 +3439,7 @@ html {
   }
   /* A taller crop of the shots, centred on the character, so they aren't a thin strip. */
   .zcompare {
-    margin-top: -240px;
+    margin-top: 24px;
   }
   .zcompare__pin {
     --ratio: 4 / 5;

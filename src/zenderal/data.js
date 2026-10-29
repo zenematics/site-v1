@@ -87,6 +87,40 @@ export const OVERVIEW = {
     { label: 'Keyboard or controller', text: 'A full controller layout, so every action works on both.' },
     { label: 'In beta', text: 'Playable now and changing fast. Feedback goes through Discord.' },
   ],
+  // "New to Enderal" under the intro: a switch between first-time players (a first-hour path) and
+  // players who know Enderal (what Zenderal changes), each over its own `art` (under uploads/zenderal/).
+  // `label` is the switch's text. Links are { guide: id } or { doc: id }.
+  welcome: {
+    label: 'New to Enderal',
+    title: 'Made for first-timers and veterans.',
+    text: "Whether this is your first trip to Vyn or your fifth, here's where to start.",
+    newcomers: {
+      label: 'New to Enderal',
+      art: 'screenshots/backgrounds/ark-with-jespar.webp',
+      title: 'Your first hour',
+      text: "Enderal is SureAI's free total conversion for Skyrim, with its own world and story. You don't need to know Skyrim to play it.",
+      steps: [
+        { doc: 'readme', title: 'Install', text: 'Wabbajack downloads and sets up the whole list. Read the readme first.' },
+        { guide: 'races', title: 'Pick your culture', text: 'Five cultures, each with its own starting stats and bonuses.' },
+        { guide: 'traits', title: 'Choose a trait', text: 'An upside and a downside, picked at the start and built around.' },
+        { guide: 'combat', title: 'Learn to fight', text: 'Directional melee: parries, guard breaks and poise.' },
+        { guide: 'books', title: 'Grow your skills', text: 'Spend Learning and Crafting Points, capped by the books you read.' },
+      ],
+    },
+    veterans: {
+      label: 'Played Enderal before',
+      art: 'screenshots/backgrounds/warrior.webp',
+      title: 'What Zenderal changes',
+      text: 'The story, quests and world are as SureAI made them. Around them:',
+      changes: [
+        { guide: 'combat', area: 'Combat', text: 'For Honor Reforged: directional, poise-driven duels.' },
+        { guide: 'prophecy', area: 'Prophecy', text: 'Eleven talent trees on top of the perk trees, with a build planner.' },
+        { doc: 'performance', area: 'Visuals', text: 'Community Shaders lighting, shadows, water and weather, with DLSS and frame generation.' },
+        { guide: 'firearms', area: 'Arsenal', text: 'Pistols and muskets, new spell packs and armor sets with set bonuses.' },
+        { guide: 'controller', area: 'Controls', text: 'Full controller support, with every action on the pad.' },
+      ],
+    },
+  },
   // The before/after wipe under the intro: the same view in base Enderal and in Zenderal.
   compare: {
     label: 'Modern visuals',
