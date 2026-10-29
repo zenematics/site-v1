@@ -38,7 +38,7 @@ if (location.hash.length > 1) location.replace(DOCS_URL + location.hash);
 
 // { guide: id } / { doc: id } → the page link and which page it's on.
 function resolve(link) {
-  if (link.guide) return { href: GUIDE_URL + '#' + link.guide, page: 'Guide' };
+  if (link.guide) return { href: GUIDE_URL + link.guide + '/', page: 'Guide' };
   return { href: DOCS_URL + '#' + link.doc, page: 'Docs' };
 }
 

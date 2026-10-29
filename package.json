@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "import:spells": "node scripts/import-spells.mjs",
-    "import:perks": "node scripts/import-perks.mjs"
+    "import:perks": "node scripts/import-perks.mjs",
+    "gen:guide": "node scripts/gen-guide-pages.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

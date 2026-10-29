@@ -14,7 +14,7 @@ const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/`;
 // Hash routes: #<doc-id>, or #<doc-id>/<section> for a heading in a sectioned doc.
 function readHash() {
   const [doc, sub] = decodeURIComponent(location.hash.slice(1)).split('/');
-  if (MOVED.includes(doc)) location.replace(`${GUIDE_URL}#${doc}`);
+  if (MOVED.includes(doc)) location.replace(`${GUIDE_URL}${doc === 'spells' ? 'magic' : doc}/`);
   if (!DOCS.some((d) => d.id === doc)) return { doc: 'readme', section: null };
   const section = docSections[doc]?.some((s) => s.id === sub) ? sub : null;
   return { doc, section };
