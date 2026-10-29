@@ -6,31 +6,41 @@ const MAX_POINTS = 30;
 const GOLD = '#e8c46e';
 // The art spans more than the talents, as in game (extent × 1.45 on a square canvas).
 const BG = PROPHECY_EXTENT * 1.45;
-const HOME = { cx: 0, cy: 0, s: PROPHECY_EXTENT + 9 };
+const HOME = { cx: 0, cy: 0, s: PROPHECY_EXTENT + 15 };
 const MIN_S = 4;
 const MAX_S = BG;
 const STORE = 'zen-prophecy-build';
 
-// Map units to move a tree toward the start point, along its spoke. The game places Necromancy's wide scythe
-// well beyond the others (root 20 units out, the rest about 13); on the page it reads better closer in.
-const PULL = { necromancy: 7 };
+// Every tree's root sits on one circle this far from the start point. The game places them anywhere from 19 to 36
+// units out; each tree slides along its own spoke, so it keeps its angle and stays over its wedge of the art.
+const RING = 26;
 
-function pulled(t) {
-  const d = PULL[t.id];
-  if (!d) return t;
+function onRing(t) {
   const root = t.nodes.find((n) => n.parents.length === 0);
-  const a = Math.atan2(root.y, root.x);
-  const [dx, dy] = [-Math.cos(a) * d, -Math.sin(a) * d];
-  const move = ([x, y]) => [x + dx, y + dy];
+  const d = Math.hypot(root.x, root.y);
+  const [dx, dy] = [(root.x / d) * (RING - d), (root.y / d) * (RING - d)];
   return {
     ...t,
-    label: move(t.label),
-    routes: t.routes.map((r) => ({ ...r, via: r.via.map(move) })),
+    routes: t.routes.map((r) => ({ ...r, via: r.via.map(([x, y]) => [x + dx, y + dy]) })),
     nodes: t.nodes.map((n) => ({ ...n, x: n.x + dx, y: n.y + dy })),
   };
 }
 
-const TREES = PROPHECY_TREES.map(pulled);
+// Each tree's name sits just clear of its stars: above them for the top and sideways trees, on the outer side for the
+// upper diagonals (so it doesn't run into the next tree), below them for the lower ones. The game's own label spots
+// overlap the stars once eleven trees share the circle.
+const TREES = PROPHECY_TREES.map(onRing).map((t) => {
+  const xs = t.nodes.map((n) => n.x);
+  const ys = t.nodes.map((n) => n.y);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  const root = t.nodes.find((n) => n.parents.length === 0);
+  const d = Math.hypot(root.x, root.y);
+  const [cos, sin] = [root.x / d, root.y / d];
+  if (sin < -0.3) return { ...t, anchor: 'middle', baseline: 'hanging', label: [(x0 + x1) / 2, y0 - 2.2] };
+  if (Math.abs(cos) > 0.3 && Math.abs(cos) < 0.9)
+    return { ...t, anchor: cos < 0 ? 'end' : 'start', baseline: 'alphabetic', label: [cos < 0 ? x0 - 1 : x1 + 1, y1] };
+  return { ...t, anchor: 'middle', baseline: 'alphabetic', label: [(x0 + x1) / 2, y1 + 2.2] };
+});
 
 // Every node, keyed `<tree id>:<node id>`, with its tree attached.
 const NODES = new Map();
@@ -306,8 +316,8 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
                 className="pmap__tree"
                 fill={t.color}
                 fontSize={px(15)}
-                textAnchor="middle"
-                dominantBaseline="middle"
+                textAnchor={t.anchor}
+                dominantBaseline={t.baseline}
                 onClick={() => onTree(t.id, true)}
               >
                 {t.name}

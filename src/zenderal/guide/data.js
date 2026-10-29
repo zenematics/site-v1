@@ -6,7 +6,11 @@
 // Starting attributes and regen from `EGO SE - DS Movement Stamina UNIQUE RACES.esp`
 // (Half Starling from `Zenderal - Half Starling DS Races.esp`); regen is % of the
 // maximum per second. Cultural bonuses are the FS racial abilities as EGO and
-// `EGO SE - Half Starling.esp` leave them.
+// `EGO SE - Half Starling.esp` leave them; `pools` is the part of a bonus that adds to Health, Mana or Stamina.
+// BASE is what every character gets on top: the Player record's (`Zenderal - 2.1 Levelsystem Cleanup.esp`)
+// Health / Magicka / Stamina offsets and its skill values.
+export const BASE = { health: 50, mana: 55, stamina: 35, skill: 5 };
+
 export const RACES = [
   {
     id: 'arazealean',
@@ -14,7 +18,7 @@ export const RACES = [
     origin: 'Arazeal',
     flavor:
       'Originating in the barren and steppe-like continent Arazeal, the Arazealean are a divided people. While the nomadic natives in the steppes maintain their pantheistic traditions, the coastal inhabitants regard them as primitive and struggle for recognition as a fully-fledged part of the civilized world.',
-    bonus: { name: 'Call of the Steppe', text: 'One-Handed, Two-Handed and Handicraft +2, Health +5.' },
+    bonus: { name: 'Call of the Steppe', text: 'One-Handed, Two-Handed and Handicraft +2, Health +5.', pools: { health: 5 } },
     start: { health: 125, mana: 30, stamina: 180 },
     regen: { health: 0.35, mana: 3, stamina: 10 },
     carry: 130,
@@ -38,7 +42,7 @@ export const RACES = [
     origin: 'Myar-Aranath',
     flavor:
       'Native to the swampy continent Myar-Aranath, the destruction of the land caused by decades of war forced many Aeterna to escape to other countries, where various destinies awaited them. Some persecuted them for their innate magic talent, some revered them for it. Many Aeterna earn their living as travelling minstrels.',
-    bonus: { name: 'Blood of the First Ones', text: 'Elementalism +3, mana regeneration +2, Mana +6.' },
+    bonus: { name: 'Blood of the First Ones', text: 'Elementalism +3, mana regeneration +2, Mana +6.', pools: { mana: 6 } },
     start: { health: 30, mana: 125, stamina: 70 },
     regen: { health: 0.1, mana: 9, stamina: 20 },
     carry: 130,
@@ -50,7 +54,7 @@ export const RACES = [
     origin: 'Qyra',
     flavor:
       'Qyranians originate from the namesake desert continent, which is said to be both barren and inhospitable. At the same time it is known as the cradle of science, mysticism and culture. While many foreign countries admire Qyra for its advanced culture, Qyranians are often deemed heretical and immoral, especially on religious continents like Enderal.',
-    bonus: { name: 'Breath of the Desert', text: 'Mentalism, Alchemy and Enchanting +2, Stamina +7.' },
+    bonus: { name: 'Breath of the Desert', text: 'Mentalism, Alchemy and Enchanting +2, Stamina +7.', pools: { stamina: 7 } },
     start: { health: 60, mana: 75, stamina: 40 },
     regen: { health: 0.2, mana: 7.5, stamina: 50 },
     carry: 130,
