@@ -1,46 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PROPHECY_EXTENT, PROPHECY_TREES } from './prophecy.js';
+import { PROPHECY_EXTENT } from './prophecy.js';
+import { BG, TREES } from './prophecyLayout.js';
 
 const ART = `${import.meta.env.BASE_URL}uploads/guide/prophecy/`;
 const MAX_POINTS = 30;
 const GOLD = '#e8c46e';
-// The art spans more than the talents, as in game (extent × 1.45 on a square canvas).
-const BG = PROPHECY_EXTENT * 1.45;
 const HOME = { cx: 0, cy: 0, s: PROPHECY_EXTENT + 15 };
 const MIN_S = 4;
 const MAX_S = BG;
 const STORE = 'zen-prophecy-build';
-
-// Every tree's root sits on one circle this far from the start point. The game places them anywhere from 19 to 36
-// units out; each tree slides along its own spoke, so it keeps its angle and stays over its wedge of the art.
-const RING = 26;
-
-function onRing(t) {
-  const root = t.nodes.find((n) => n.parents.length === 0);
-  const d = Math.hypot(root.x, root.y);
-  const [dx, dy] = [(root.x / d) * (RING - d), (root.y / d) * (RING - d)];
-  return {
-    ...t,
-    routes: t.routes.map((r) => ({ ...r, via: r.via.map(([x, y]) => [x + dx, y + dy]) })),
-    nodes: t.nodes.map((n) => ({ ...n, x: n.x + dx, y: n.y + dy })),
-  };
-}
-
-// Each tree's name sits just clear of its stars: above them for the top and sideways trees, on the outer side for the
-// upper diagonals (so it doesn't run into the next tree), below them for the lower ones. The game's own label spots
-// overlap the stars once eleven trees share the circle.
-const TREES = PROPHECY_TREES.map(onRing).map((t) => {
-  const xs = t.nodes.map((n) => n.x);
-  const ys = t.nodes.map((n) => n.y);
-  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
-  const root = t.nodes.find((n) => n.parents.length === 0);
-  const d = Math.hypot(root.x, root.y);
-  const [cos, sin] = [root.x / d, root.y / d];
-  if (sin < -0.3) return { ...t, anchor: 'middle', baseline: 'hanging', label: [(x0 + x1) / 2, y0 - 2.2] };
-  if (Math.abs(cos) > 0.3 && Math.abs(cos) < 0.9)
-    return { ...t, anchor: cos < 0 ? 'end' : 'start', baseline: 'alphabetic', label: [cos < 0 ? x0 - 1 : x1 + 1, y1] };
-  return { ...t, anchor: 'middle', baseline: 'alphabetic', label: [(x0 + x1) / 2, y1 + 2.2] };
-});
 
 // Every node, keyed `<tree id>:<node id>`, with its tree attached.
 const NODES = new Map();

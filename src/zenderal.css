@@ -181,6 +181,7 @@ html {
 /* ---------- Overview ---------- */
 .zintro,
 .zexplore,
+.zclips,
 .zcta__body {
   max-width: 1240px;
   margin: 0 auto;
@@ -520,10 +521,245 @@ html {
     width: min(100cqw, 100cqh * (var(--ratio)));
   }
 }
-/* The cards follow the before/after rather than the intro's fade. */
-.zcompare + .zexplore {
-  margin-top: 0;
+/* Gameplay loops: short muted clips in a grid, each linking to its guide section. They play
+   only while on screen (Zenderal.jsx). Placeholder clips (the logo video) sit letterboxed. */
+.zclips {
+  gap: 40px;
   padding-top: 80px;
+}
+.zclips__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.zclips__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zclips__text {
+  margin: 0;
+  max-width: 660px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zclips__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.zclip {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(23, 24, 28, 0.9), rgba(13, 14, 17, 0.9));
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.zclip:hover {
+  border-color: rgba(201, 171, 118, 0.55);
+  transform: translateY(-3px);
+}
+.zclip__media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+}
+.zclip__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85);
+}
+.zclip--placeholder .zclip__video {
+  object-fit: contain;
+  padding: 0 18%;
+  filter: none;
+}
+.zclip__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 24px 24px;
+}
+.zclip__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zclip__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #b3afa7;
+  text-wrap: pretty;
+}
+@media (max-width: 860px) {
+  .zclips__text {
+    font-size: 16px;
+  }
+  .zclips__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .zclip__body {
+    padding: 16px 20px 20px;
+  }
+}
+/* Build crafting (Zenderal.jsx): the perk screenshot zooms into its stone circle and opens into the Prophecy
+   radial art, which rests under the heading with the tree names round it. The shot and the art are 1000px wide
+   and placed with transforms; the heading sits at the top and fades in at the end. Reduced motion shows the end. */
+.zbuild {
+  position: relative;
+  margin-top: 120px;
+}
+.zbuild__pin {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  /* The art runs past the bottom, so it fades out rather than ending on a hard line. */
+  mask-image: linear-gradient(180deg, #000 82%, transparent);
+}
+.zbuild__shot,
+.zbuild__art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1000px;
+  max-width: none;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+.zbuild__shot {
+  height: auto;
+  filter: saturate(0.7) brightness(0.85);
+  /* Fades in from the page above and out at the bottom, so the pin has no hard edges. */
+  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+}
+.zbuild__dark {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.zbuild__art {
+  aspect-ratio: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+/* Its square edges vanish into the page. */
+.zbuild__radial {
+  display: block;
+  width: 100%;
+  height: 100%;
+  mask-image: radial-gradient(closest-side, #000 72%, transparent);
+}
+.zbuild__trees {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+}
+.zbuild__trees text {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  paint-order: stroke;
+  stroke: #07080a;
+  stroke-width: 0.35;
+  stroke-linejoin: round;
+}
+.zbuild__shade {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.zbuild__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 110px 56px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.zbuild__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zbuild__text {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zbuild .actions {
+  justify-content: center;
+  margin-top: 4px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zbuild::after {
+    content: '';
+    display: block;
+    height: 220vh;
+  }
+  .zbuild__pin {
+    position: sticky;
+    top: 0;
+  }
+}
+@media (max-width: 860px) {
+  .zbuild {
+    margin-top: 80px;
+  }
+  .zbuild__head {
+    padding: 88px 24px 0;
+    gap: 12px;
+  }
+  .zbuild__text {
+    font-size: 16px;
+  }
+}
+/* The cards follow the build-crafting section rather than the intro's fade. */
+.zbuild + .zexplore {
+  margin-top: 0;
+  padding-top: 120px;
 }
 
 /* Link cards into the docs and guide, in labelled groups. Pulled up into the intro's
@@ -2826,6 +3062,7 @@ html {
   .docs,
   .zintro,
   .zexplore,
+  .zclips,
   .zcta__body {
     padding-left: 24px;
     padding-right: 24px;

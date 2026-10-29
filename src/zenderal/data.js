@@ -95,6 +95,32 @@ export const OVERVIEW = {
     before: { src: 'screenshots/before-and-after/before.webp', label: 'Enderal' },
     after: { src: 'screenshots/before-and-after/after.webp', label: 'Zenderal' },
   },
+  // The gameplay loops under the before/after: short muted clips that play while on screen.
+  // `video` is a path under public/uploads/zenderal/ without the extension; each needs a .webm
+  // and an .mp4. `placeholder` shows the clip letterboxed (the logo video stands in until the
+  // real footage is recorded, into clips/<name>.webm/.mp4). `guide` links the tile to a guide section.
+  combat: {
+    label: 'Modern combat',
+    title: 'Every fight is a duel.',
+    text: 'For Honor Reforged turns melee into directional, poise-driven duels, with parries, guard breaks and follow-ups. Firearms and spell packs round it out.',
+    clips: [
+      { title: 'Parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'logo-grow', placeholder: true, guide: 'combat' },
+      { title: 'Guard break', text: 'Back + power attack slides a raised guard and opens a follow-up.', video: 'logo-grow', placeholder: true, guide: 'combat' },
+      { title: 'Poise and stumbles', text: 'Chip their poise away, then punish the stumble.', video: 'logo-grow', placeholder: true, guide: 'combat' },
+      { title: 'Firearms', text: 'Pistols and muskets that scale with Archery.', video: 'logo-grow', placeholder: true, guide: 'firearms' },
+    ],
+  },
+  // The build-crafting section: the in-game perk screen zooms into its stone circle, which opens
+  // into the Prophecy radial map. `links` point at guide sections.
+  build: {
+    label: 'Rich build crafting',
+    title: 'Build it your way.',
+    text: 'Perk trees for every skill, then eleven Prophecy talent trees on top, each built around a playstyle.',
+    links: [
+      { guide: 'perks', title: 'Perk trees' },
+      { guide: 'prophecy', title: 'Prophecy planner' },
+    ],
+  },
   // The link cards under the intro, in groups. Each points at a guide section ({ guide: id })
   // or a doc ({ doc: id }).
   explore: [
