@@ -3,7 +3,8 @@ import { ZENDERAL_STAGE, stageLabel } from '../config.js';
 import Emblem from './Emblem.jsx';
 import Logo from './Logo.jsx';
 
-const BACKGROUNDS = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/`;
+const UPLOADS = `${import.meta.env.BASE_URL}uploads/`;
+const BACKGROUNDS = `${UPLOADS}zenderal/screenshots/backgrounds/`;
 
 // The Ark shot split into depth layers, far to near (public/uploads/zenderal/hero/):
 // back is the filled sky, peaks and water; mid the castle, statue and cliffs; front the bridge and town.
@@ -13,7 +14,8 @@ const LAYERS = ['back', 'mid', 'front'];
 // version used on the docs and guide pages; `live` shows the scroll parallax background
 // (and the 3D emblem, if shown), and `emblem={false}` drops the emblem so the wordmark
 // can go full width (overview page).
-// `bg` names the still background in screenshots/backgrounds/ (not used with `live`), and
+// `bg` names the still background in screenshots/backgrounds/, or a path under uploads/ if it
+// has a slash (not used with `live`), and
 // `bgPos` overrides which part of it the crop keeps (CSS object-position).
 export default function ZenHero({ eyebrow, desc, compact = false, live = false, emblem = true, bg = 'ark.webp', bgPos, children }) {
   const hero = useRef(null);
@@ -50,7 +52,7 @@ export default function ZenHero({ eyebrow, desc, compact = false, live = false, 
           />
         ))
       ) : (
-        <img src={`${BACKGROUNDS}${bg}`} alt="" className="zhero__bg" style={{ objectPosition: bgPos }} />
+        <img src={`${bg.includes('/') ? UPLOADS : BACKGROUNDS}${bg}`} alt="" className="zhero__bg" style={{ objectPosition: bgPos }} />
       )}
       <div className="zhero__shade" />
       {emblem && <Emblem live={live} className="zhero__emblem" />}
