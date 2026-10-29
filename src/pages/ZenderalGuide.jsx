@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 import Nav from '../components/Nav.jsx';
-import Footer from '../components/Footer.jsx';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import { SECTIONS, SECTION_GROUPS, SECTION_ALIASES } from '../zenderal/guide/sections.js';
 
@@ -116,7 +115,6 @@ export default function ZenderalGuide({ section }) {
 
       {cur ? <Section id={cur.id} /> : <Overview />}
 
-      <Footer />
     </div>
   );
 }

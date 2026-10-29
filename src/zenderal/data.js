@@ -83,10 +83,18 @@ export const OVERVIEW = {
   body: "It's built on Enderal: Forgotten Stories, SureAI's total conversion for Skyrim, and keeps its story, quests and world as they were made. Around them it brings combat, visuals and character systems up to date, and tunes everything to work together, so you can start a new journey without spending weeks on a load order.",
   facts: [
     { label: 'One-click install', text: 'Wabbajack downloads, patches and sets up the whole list for you.' },
-    { label: 'Current visuals', text: 'An ENB preset with DLSS and frame generation support.' },
+    { label: 'Current visuals', text: 'Community Shaders lighting and weather, with DLSS and frame generation support.' },
     { label: 'Keyboard or controller', text: 'A full controller layout, so every action works on both.' },
     { label: 'In beta', text: 'Playable now and changing fast. Feedback goes through Discord.' },
   ],
+  // The before/after wipe under the intro: the same view in base Enderal and in Zenderal.
+  compare: {
+    label: 'Modern visuals',
+    title: 'The same world, seen anew.',
+    text: 'Community Shaders lighting, shadows, water and weather, with a cinematic grade on top. Scroll to see the change.',
+    before: { src: 'screenshots/before-and-after/before.webp', label: 'Enderal' },
+    after: { src: 'screenshots/before-and-after/after.webp', label: 'Zenderal' },
+  },
   // The link cards under the intro, in groups. Each points at a guide section ({ guide: id })
   // or a doc ({ doc: id }).
   explore: [

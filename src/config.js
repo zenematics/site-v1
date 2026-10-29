@@ -1,7 +1,7 @@
 // Zenderal release stage: 'Alpha' | 'Beta' | 'Release'
 export const ZENDERAL_STAGE = 'Beta';
 
-// Social links, used by the home hero, the Zenderal page and the footer.
+// Social links, used by the home hero and the Zenderal page.
 export const LINKS = {
   twitch: 'https://www.twitch.tv/zenematics',
   youtube: 'https://www.youtube.com/@Zenematics',

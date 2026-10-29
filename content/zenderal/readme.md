@@ -23,7 +23,7 @@ Everything you need to know to install, run and update Zenderal, a Wabbajack mod
 
 ## Recommended specs
 
-Zenderal runs an ENB, so the GPU matters most. These figures are a starting point while we gather data from testers.
+Zenderal runs Community Shaders with a full lighting and effects stack, so the GPU matters most. These figures are a starting point while we gather data from testers.
 
 | Component | Minimum                                    |
 | --------- | ------------------------------------------ |
@@ -103,7 +103,7 @@ Zenderal comes with [Theo's Render Pipeline](#dlss) set up for DLSS and frame ge
 
 - **Update your GPU driver.** Install the latest NVIDIA Game Ready or Studio driver. Older drivers are the most common reason frame generation doesn't start.
 - **Stop the NVIDIA App overriding the game.** Set every **DLSS Override** for `SkyrimSE.exe` to **Use the 3D application setting** and turn **Smooth Motion** off, in both its program and global settings.
-- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools, and don't turn on ENB's own anti-aliasing or frame generation.
+- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools. Zenderal doesn't use an ENB, so don't add one: its anti-aliasing and frame generation clash with Zenderal's.
 - **Stay in borderless windowed mode.** Zenderal ships set to borderless. Frame generation doesn't work in exclusive fullscreen.
 - **Let the game handle display scaling.** If Windows scaling is above 100%, set `SkyrimSE.exe` in the `Stock game` folder to override high DPI scaling with **Application**, and run the game at your monitor's native resolution.
 - **Turn on hardware-accelerated GPU scheduling** in Windows graphics settings, then restart your PC.

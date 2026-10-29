@@ -398,6 +398,134 @@ html {
   position: relative;
 }
 
+/* Before/after: base Enderal and Zenderal from the same spot. Pulled up into the intro's bottom
+   fade so it follows the emblem closely. --split is where the divider sits from the left; Zenderal's
+   shot shows right of it. Zenderal.jsx sweeps it from 100% to 0 while the pin sticks; reduced
+   motion leaves it in the middle. */
+.zcompare {
+  position: relative;
+  z-index: 3;
+  margin-top: -220px;
+}
+.zcompare__pin {
+  --split: 50%;
+  --ratio: 16 / 9;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 120px 56px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+/* Centred over the frame, which is narrower than the column when the height limits it. */
+.zcompare__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.zcompare__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zcompare__text {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zcompare__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--ratio);
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d0e11;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+.zcompare__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% 50%;
+}
+.zcompare__after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--split));
+}
+.zcompare__tag {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c9c5bd;
+  background: rgba(7, 8, 10, 0.7);
+}
+.zcompare__tag--after {
+  left: auto;
+  right: 18px;
+  color: #c9ab76;
+}
+.zcompare__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split);
+  width: 2px;
+  margin-left: -1px;
+  background: #ece9e2;
+  box-shadow: 0 0 18px rgba(201, 171, 118, 0.7);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zcompare::after {
+    content: '';
+    display: block;
+    height: 160vh;
+  }
+  .zcompare__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding-bottom: 48px;
+  }
+  /* The frame fills what the heading leaves, as big as fits at its aspect ratio. */
+  .zcompare__stage {
+    flex: 1;
+    min-height: 0;
+    container-type: size;
+    display: grid;
+    place-items: center;
+  }
+  .zcompare__frame {
+    width: min(100cqw, 100cqh * (var(--ratio)));
+  }
+}
+/* The cards follow the before/after rather than the intro's fade. */
+.zcompare + .zexplore {
+  margin-top: 0;
+  padding-top: 80px;
+}
+
 /* Link cards into the docs and guide, in labelled groups. Pulled up into the intro's
    bottom fade so they follow the emblem closely. */
 .zexplore {
@@ -474,7 +602,7 @@ html {
 }
 
 /* The closing call to action, over the crystal forest backdrop: full-bleed, fading in from
-   the page above and out into the footer, with the knight pushed right and the text on the
+   the page above and out at the page end, with the knight pushed right and the text on the
    left. The violet is toned down towards the site's palette. */
 .zcta {
   --blend: 220px;
@@ -586,7 +714,7 @@ html {
   .zcta__body {
     pointer-events: auto;
   }
-  /* It opens out of the mark rather than fading in, so only the bottom fades (into the footer). */
+  /* It opens out of the mark rather than fading in, so only the bottom fades (into the page end). */
   .zcta__scene {
     mask-image: linear-gradient(180deg, #000 calc(100% - 160px), transparent);
   }
@@ -1072,53 +1200,6 @@ html {
   .gcard__art {
     aspect-ratio: 21 / 9;
   }
-}
-
-/* ---------- Footer ---------- */
-.footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 40px 56px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-.footer__brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.footer__logo {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-.footer__name {
-  font-family: inherit;
-  font-size: 13px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #9b968d;
-}
-.footer__links {
-  display: flex;
-  gap: 28px;
-}
-.footer__links a {
-  font-size: 12px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #9b968d;
-  transition: color 0.2s;
-}
-.footer__links a:hover {
-  color: #ffffff;
-}
-.footer__note {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: #6f6a62;
 }
 
 /* ---------- Shared filters and tables ---------- */
@@ -2745,8 +2826,7 @@ html {
   .docs,
   .zintro,
   .zexplore,
-  .zcta__body,
-  .footer {
+  .zcta__body {
     padding-left: 24px;
     padding-right: 24px;
   }
@@ -2813,6 +2893,28 @@ html {
   .zintro__facts {
     grid-template-columns: minmax(0, 1fr);
     gap: 20px;
+  }
+  /* A taller crop of the shots, centred on the character, so they aren't a thin strip. */
+  .zcompare {
+    margin-top: -240px;
+  }
+  .zcompare__pin {
+    --ratio: 4 / 5;
+    gap: 24px;
+    padding: 96px 24px 32px;
+  }
+  .zcompare__text {
+    font-size: 16px;
+  }
+  .zcompare__tag {
+    top: 12px;
+    left: 12px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .zcompare__tag--after {
+    left: auto;
+    right: 12px;
   }
   /* The knight sits up top and the text over its lower part, on a dark fade. */
   .zcta {
@@ -2895,11 +2997,6 @@ html {
   }
   .zhero .eyebrow {
     letter-spacing: 0.26em;
-  }
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
   }
 }
 

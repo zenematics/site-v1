@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import Nav from '../components/Nav.jsx';
-import Footer from '../components/Footer.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
 
@@ -128,10 +127,39 @@ export default function Zenderal() {
     };
   }, []);
 
+  // The before/after wipe. The pin sticks at the top over the run below it (.zcompare::after) and
+  // the divider sweeps right to left, uncovering Zenderal's shot over base Enderal's. Reduced
+  // motion leaves it split down the middle.
+  useEffect(() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const section = document.querySelector('.zcompare');
+    const pin = section.querySelector('.zcompare__pin');
+    const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+    const ease = (x) => x * x * (3 - 2 * x);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const t = ramp(-section.getBoundingClientRect().top, 0, section.offsetHeight - pin.offsetHeight);
+      pin.style.setProperty('--split', `${(100 * (1 - ease(ramp(t, 0.1, 0.9)))).toFixed(2)}%`);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    return () => {
+      removeEventListener('scroll', onScroll);
+      removeEventListener('resize', onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   // The closing portal: the intro's in reverse. The Zenematics mark arrives as the pin reaches the
   // top, the scene shows through it as its art fades, and it grows over the run (.zcta::after)
   // until the head covers the screen; then the text fades in. It rests as far below the cards as
-  // the intro's emblem does above them, so the pin is pulled up over the cards' end to match.
+  // the intro's emblem does above the before/after heading, so the pin is pulled up over the
+  // cards' end to match.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const cta = document.querySelector('.zcta');
@@ -144,6 +172,8 @@ export default function Zenderal() {
     const stage = document.querySelector('.zstage');
     const stagePin = stage.querySelector('.zstage__pin');
     const cards = document.querySelectorAll('.zcard');
+    const compare = document.querySelector('.zcompare');
+    const compareHead = compare.querySelector('.zcompare__head');
     const pageTop = (el) => el.getBoundingClientRect().top + scrollY;
     const rest = () => {
       const W = pin.offsetWidth;
@@ -153,10 +183,11 @@ export default function Zenderal() {
     };
     const layout = () => {
       // Where the emblem ends: centred in the viewport once the intro's run is scrolled through.
+      // The gap is from it to the before/after heading under it, where that sits before its pin sticks.
       const stick = Math.min(0, innerHeight - stagePin.offsetHeight);
       const end = pageTop(stage) - stick + stage.offsetHeight - stagePin.offsetHeight;
       const ew = Math.min(innerWidth * 0.7, (innerHeight * 0.5) / EMBLEM.ratio) * EMBLEM.ratio;
-      const gap = pageTop(cards[0]) - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
+      const gap = pageTop(compare) + compareHead.offsetTop - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
       const { w0, by } = rest();
       const logoTop = by - (ZEN.boxCy - ZEN.top) * w0;
       const last = cards[cards.length - 1].getBoundingClientRect().bottom + scrollY;
@@ -202,6 +233,7 @@ export default function Zenderal() {
     // The cards and the intro reflow as the fonts load.
     const ro = new ResizeObserver(layout);
     ro.observe(stagePin);
+    ro.observe(compare);
     ro.observe(document.querySelector('.zexplore'));
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', layout);
@@ -245,6 +277,36 @@ export default function Zenderal() {
                 </div>
               ))}
             </dl>
+          </div>
+        </div>
+      </section>
+
+      <section className="zcompare">
+        <div className="zcompare__pin">
+          <div className="zcompare__head">
+            <span className="docs__label">{OVERVIEW.compare.label}</span>
+            <h2 className="zcompare__title">{OVERVIEW.compare.title}</h2>
+            <p className="zcompare__text">{OVERVIEW.compare.text}</p>
+          </div>
+          <div className="zcompare__stage">
+            <figure className="zcompare__frame">
+              <img
+                src={`${import.meta.env.BASE_URL}uploads/zenderal/${OVERVIEW.compare.before.src}`}
+                alt={`${OVERVIEW.compare.before.label}: a lookout over a river valley at sunset`}
+                className="zcompare__img"
+              />
+              <span className="zcompare__tag" aria-hidden="true">{OVERVIEW.compare.before.label}</span>
+              {/* Its tag is clipped with it, so each tag is covered as the divider passes it. */}
+              <div className="zcompare__after">
+                <img
+                  src={`${import.meta.env.BASE_URL}uploads/zenderal/${OVERVIEW.compare.after.src}`}
+                  alt={`${OVERVIEW.compare.after.label}: the same lookout`}
+                  className="zcompare__img"
+                />
+                <span className="zcompare__tag zcompare__tag--after" aria-hidden="true">{OVERVIEW.compare.after.label}</span>
+              </div>
+              <span className="zcompare__divider" aria-hidden="true" />
+            </figure>
           </div>
         </div>
       </section>
@@ -293,7 +355,6 @@ export default function Zenderal() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }
