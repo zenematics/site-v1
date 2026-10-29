@@ -250,8 +250,9 @@ export default function Zenderal() {
       if (!L) return;
       const t = reduce ? 1 : ramp(-section.getBoundingClientRect().top, 0, section.offsetHeight - pin.offsetHeight);
       const { start, peak, end, ring, open } = L;
-      const zin = ease(ramp(t, 0.06, 0.34));
-      const zout = ease(ramp(t, 0.76, 0.92));
+      // Most of the run is the trait ring (0.2 to 0.66), so each trait stays readable for a while.
+      const zin = ease(ramp(t, 0.03, 0.2));
+      const zout = ease(ramp(t, 0.84, 0.95));
       const from = zout ? peak : start;
       const to = zout ? end : peak;
       const k = zout || zin;
@@ -262,30 +263,31 @@ export default function Zenderal() {
       const sw = r / SHOT.radius;
       shot.style.transform = `translate(${x - SHOT.cx * sw}px, ${y - SHOT.cy * sw * SHOT.ratio}px) scale(${sw / BUILD_W})`;
       // Hidden once the iris has opened past it.
-      shot.style.opacity = 1 - ease(ramp(t, 0.72, 0.76));
+      shot.style.opacity = 1 - ease(ramp(t, 0.8, 0.84));
       dark.style.background = `radial-gradient(circle ${r}px at ${x}px ${y}px, #07080a 55%, transparent 100%)`;
-      dark.style.opacity = 0.95 * ease(ramp(t, 0.2, 0.36));
+      dark.style.opacity = 0.95 * ease(ramp(t, 0.1, 0.22));
       const aw = r / RADIAL.void;
       art.style.transform = `translate(${x - aw / 2}px, ${y - aw / 2}px) scale(${aw / BUILD_W})`;
       // The Prophecy art grows out of the stone circle: an iris, starting at the circle's edge (where the art's dark
       // middle matches the darkened floor), opens until it passes the farthest corner, its edge lit as it goes.
       // Sizes in the art's own units are the screen's divided by its scale.
-      const g = reduce ? 1 : ease(ramp(t, 0.6, 0.74));
+      const g = reduce ? 1 : ease(ramp(t, 0.69, 0.82));
       const iris = r * (open / r) ** g;
       const unit = BUILD_W / aw;
-      art.style.opacity = t >= 0.6 || reduce ? 1 : 0;
+      art.style.opacity = t >= 0.69 || reduce ? 1 : 0;
       art.style.maskImage = g < 1
         ? `radial-gradient(circle ${iris * unit}px at 50% 50%, #000 ${(iris - 48) * unit}px, transparent ${iris * unit}px)`
         : '';
       rim.style.width = rim.style.height = `${2 * iris}px`;
       rim.style.transform = `translate(${x - iris}px, ${y - iris}px)`;
       rim.style.opacity = g > 0 && g < 1 ? Math.min(ramp(g, 0, 0.08), 1 - ramp(g, 0.6, 1)) : 0;
-      names.style.opacity = ease(ramp(t, 0.88, 0.96));
+      names.style.opacity = ease(ramp(t, 0.92, 0.99));
 
-      // The ring turns one place per featured trait, resting on each for the first half of its slice.
-      const seg = (featured.length - 0.5) * ramp(t, 0.36, 0.58);
-      const turn = Math.min(Math.floor(seg), featured.length - 1) + (seg < featured.length - 1 ? ease(ramp(seg % 1, 0.5, 1)) : 0);
-      const shown = ease(ramp(t, 0.32, 0.4)) * (1 - ease(ramp(t, 0.56, 0.6)));
+      // The ring turns one place per featured trait, resting on each for the first three quarters of its slice
+      // and turning only in the last quarter.
+      const seg = (featured.length - 0.25) * ramp(t, 0.24, 0.66);
+      const turn = Math.min(Math.floor(seg), featured.length - 1) + (seg < featured.length - 1 ? ease(ramp(seg % 1, 0.75, 1)) : 0);
+      const shown = ease(ramp(t, 0.19, 0.25)) * (1 - ease(ramp(t, 0.65, 0.69)));
       medals.forEach((m, i) => {
         const a = -Math.PI / 2 + (i - turn) * step;
         const near = Math.max(0, 1 - Math.abs(i - turn));
@@ -299,7 +301,7 @@ export default function Zenderal() {
         f.style.opacity = shown * Math.max(0, 1 - Math.abs(i - turn) * 2);
       });
 
-      const on = t < 0.3 ? 0 : t < 0.6 ? 1 : 2;
+      const on = t < 0.19 ? 0 : t < 0.68 ? 1 : 2;
       stages.forEach((s, i) => s.classList.toggle('is-on', i === on));
     };
     const onScroll = () => {
@@ -318,9 +320,9 @@ export default function Zenderal() {
 
   // The closing portal: the intro's in reverse. The Zenematics mark arrives as the pin reaches the
   // top, the scene shows through it as its art fades, and it grows over the run (.zcta::after)
-  // until the head covers the screen; then the text fades in. It rests as far below the spell packs as
+  // until the head covers the screen; then the text fades in. It rests as far below the magic section as
   // the intro's emblem does above the "New to Enderal" heading, so the pin is pulled up over the
-  // packs' end to match.
+  // magic section's end to match.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const cta = document.querySelector('.zcta');
@@ -332,7 +334,7 @@ export default function Zenderal() {
     const ease = (x) => x * x * (3 - 2 * x);
     const stage = document.querySelector('.zstage');
     const stagePin = stage.querySelector('.zstage__pin');
-    const packs = document.querySelector('.zmagic__packs');
+    const magic = document.querySelector('.zmagic');
     const compare = document.querySelector('.zcompare');
     const welcome = document.querySelector('.znew__head');
     const pageTop = (el) => el.getBoundingClientRect().top + scrollY;
@@ -351,7 +353,7 @@ export default function Zenderal() {
       const gap = pageTop(welcome) - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
       const { w0, by } = rest();
       const logoTop = by - (ZEN.boxCy - ZEN.top) * w0;
-      const last = packs.getBoundingClientRect().bottom + scrollY;
+      const last = magic.getBoundingClientRect().bottom + scrollY;
       const margin = parseFloat(getComputedStyle(cta).marginTop);
       cta.style.marginTop = `${last + gap - logoTop - (pageTop(cta) - margin)}px`;
       onScroll();
@@ -363,7 +365,7 @@ export default function Zenderal() {
       // The run is long enough that after the mark has opened the layers keep pulling apart for
       // a while before the text arrives. The portal's own steps keep the pace they had over 120vh.
       pin.style.setProperty('--t', ease(ramp(t, 0, 0.85)).toFixed(4));
-      // Hidden until it fades in, so it can't catch clicks meant for the spell packs under the pin.
+      // Hidden until it fades in, so it can't catch clicks meant for the page under the pin.
       body.style.visibility = t < 0.85 ? 'hidden' : '';
       if (t === 1) {
         portal.style.maskImage = portal.style.maskSize = portal.style.maskPosition = '';

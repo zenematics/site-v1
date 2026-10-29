@@ -1142,7 +1142,7 @@ html {
   .zbuild::after {
     content: '';
     display: block;
-    height: 340vh;
+    height: 560vh;
   }
   .zbuild__pin {
     position: sticky;
@@ -1208,7 +1208,7 @@ html {
   }
 }
 /* Expanded magic (Grimoire.jsx): a pinned grimoire, the spell count climbing as each pack lights up and its spells'
-   names fade in round it (--p on a pack's names and step, 0 → 1), then a card per pack. Reduced motion shows the end. */
+   names fade in round it (--p on a pack's names and step, 0 → 1). Reduced motion shows the end. */
 .zmagic {
   position: relative;
   margin-top: 40px;
@@ -1336,114 +1336,6 @@ html {
     top: 0;
   }
 }
-/* A card per pack: its count, what it adds, and its spells by school as one bar. */
-.zmagic__packs {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 40px 56px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.zmagic__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-.zpack {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 26px 24px 56px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(180deg, rgba(23, 24, 28, 0.9), rgba(13, 14, 17, 0.9));
-  transition: border-color 0.25s ease, transform 0.25s ease;
-}
-.zpack:hover {
-  border-color: rgba(201, 171, 118, 0.55);
-  transform: translateY(-3px);
-}
-.zpack:hover .zcard__go {
-  color: #c9ab76;
-  translate: 4px 0;
-}
-.zpack__count {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #c9ab76;
-}
-.zpack__title {
-  margin: 0;
-  font-family: inherit;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 1.15;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ece9e2;
-}
-.zpack__text {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
-  font-weight: 300;
-  color: #b3afa7;
-  text-wrap: pretty;
-}
-.zpack__bar {
-  display: flex;
-  gap: 2px;
-  height: 6px;
-  margin-top: auto;
-}
-.zpack__bar > span {
-  flex-basis: 0;
-  opacity: 0.85;
-}
-.zmagic__foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px 32px;
-}
-.zmagic__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 13px;
-  color: #9b968d;
-}
-.zmagic__legend li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.zmagic__legend span {
-  width: 10px;
-  height: 10px;
-}
-.zmagic__note {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 300;
-  color: #9b968d;
-}
-.zmagic__note a {
-  color: #c9ab76;
-  white-space: nowrap;
-}
-@media (max-width: 1100px) and (min-width: 861px) {
-  .zmagic__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 860px) {
   .zmagic__name {
     font-size: 11px !important;
@@ -1461,13 +1353,6 @@ html {
   .zmagic__step-label {
     font-size: 10px;
     letter-spacing: 0.14em;
-  }
-  .zmagic__packs {
-    padding: 32px 24px 0;
-  }
-  .zmagic__grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
   }
 }
 

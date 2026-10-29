@@ -2,19 +2,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { SPELL_SOURCES } from './guide/data.js';
 
 // The overview's expanded-magic section. A pinned "grimoire": the spell count starts at the base game's and climbs as
-// each spell pack lights up and its spells' names fade in around it. Then a card per pack, linking to the Magic guide.
+// each spell pack lights up and its spells' names fade in around it.
 
 // Loaded on mount, in its own chunk, so the rest of the page doesn't wait for it (the Magic guide loads it the same way).
 const loadSpells = () => import('../../content/zenderal/spells.json').then((m) => m.default);
 
-const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/magic/`;
 const BACKDROP = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgrounds/mage.webp`;
 // Base Enderal and EGO count as the starting point; the packs light up in this order.
 const BASE = ['Enderal', 'EGO'];
 const PACKS = ['KataPUMB Spell Pack', 'Apocalypse', 'Triumvirate', 'xxOpenSpells'];
-// The packs that get a card; Open Spells is only a handful, so it's a line under them.
-const CARDS = ['Apocalypse', 'Triumvirate', 'KataPUMB Spell Pack'];
-export const SCHOOLS = [
+const SCHOOLS = [
   { id: 'Elementalism', color: '#e0896a' },
   { id: 'Light Magic', color: '#e8c46e' },
   { id: 'Mentalism', color: '#b7a6e0' },
@@ -23,7 +20,6 @@ export const SCHOOLS = [
 ];
 const colorOf = (school) => SCHOOLS.find((s) => s.id === school)?.color ?? '#c9c5bd';
 const label = (id) => SPELL_SOURCES.find((s) => s.id === id)?.label ?? id;
-const blurb = (id) => SPELL_SOURCES.find((s) => s.id === id)?.blurb ?? '';
 
 // A seeded random, so the names land in the same places on every visit.
 function rng(seed) {
@@ -139,8 +135,6 @@ export default function Grimoire() {
     };
   }, [spells]);
 
-  const bySchool = (id) => SCHOOLS.map((s) => ({ ...s, n: spells ? spells.filter((x) => x.source === id && x.school === s.id).length : 0 }));
-
   return (
     <section className="zmagic">
       <div className="zmagic__run">
@@ -179,40 +173,6 @@ export default function Grimoire() {
               ))}
             </ul>
           </div>
-        </div>
-      </div>
-
-      <div className="zmagic__packs">
-        <span className="docs__label">The spell packs</span>
-        <div className="zmagic__grid">
-          {CARDS.map((id) => (
-            <a key={id} href={GUIDE_URL} className="zpack">
-              <span className="zpack__count">{spells ? `${count([id])} spells` : ' '}</span>
-              <h3 className="zpack__title">{label(id)}</h3>
-              <p className="zpack__text">{blurb(id)}</p>
-              {/* Its spells by school, as one bar. */}
-              <span className="zpack__bar" aria-hidden="true">
-                {bySchool(id).map((s) => (
-                  <span key={s.id} style={{ flexGrow: s.n, background: s.color }} />
-                ))}
-              </span>
-              <span className="zcard__go" aria-hidden="true">→</span>
-            </a>
-          ))}
-        </div>
-        <div className="zmagic__foot">
-          <ul className="zmagic__legend" aria-label="Schools">
-            {SCHOOLS.map((s) => (
-              <li key={s.id}>
-                <span style={{ background: s.color }} />
-                {s.id}
-              </li>
-            ))}
-          </ul>
-          <p className="zmagic__note">
-            Plus the base game&apos;s spells, rebalanced by EGO, and a few utility spells from Open Spells.{' '}
-            <a href={GUIDE_URL}>Every spell and where to buy it →</a>
-          </p>
         </div>
       </div>
     </section>
