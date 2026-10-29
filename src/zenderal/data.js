@@ -138,10 +138,10 @@ export const OVERVIEW = {
     title: 'Every fight is a duel.',
     text: 'For Honor Reforged turns melee into directional, poise-driven duels, with parries, guard breaks and follow-ups. Firearms and spell packs round it out.',
     clips: [
+      { title: 'Combos and power attacks', text: 'Every move cancels into the next. Chain lights into directional power attacks for more damage and poise damage.', video: 'logo-grow', placeholder: true, guide: 'combat' },
       { title: 'Parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'logo-grow', placeholder: true, guide: 'combat' },
       { title: 'Guard break', text: 'Back + power attack slides a raised guard and opens a follow-up.', video: 'logo-grow', placeholder: true, guide: 'combat' },
-      { title: 'Poise and stumbles', text: 'Chip their poise away, then punish the stumble.', video: 'logo-grow', placeholder: true, guide: 'combat' },
-      { title: 'Firearms', text: 'Pistols and muskets that scale with Archery.', video: 'logo-grow', placeholder: true, guide: 'firearms' },
+      { title: 'Dodge', text: 'Tap Left Shift or press Left Alt to dodge out of a swing.', video: 'logo-grow', placeholder: true, guide: 'keybindings' },
     ],
   },
   // The build-crafting section: the in-game perk screen zooms into its stone circle, which opens
