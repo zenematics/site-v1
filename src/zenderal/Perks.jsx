@@ -23,6 +23,27 @@ function edgesOf(tree) {
   ]);
 }
 
+// The in-game stars are a little lopsided, so lay each tree out symmetrically:
+// stars sit in evenly spaced rows by how far they are from the class root, each
+// row spread evenly about the middle, left to right as in game.
+function symmetric(perks) {
+  const byId = Object.fromEntries(perks.map((p) => [p.id, p]));
+  const needs = (p) => [...(p.allOf ?? []), ...(p.anyOf ?? []).flat()].map((r) => r.id).filter((id) => byId[id]);
+  const depth = {};
+  const depthOf = (id) => (depth[id] ??= Math.max(-1, ...needs(byId[id]).map(depthOf)) + 1);
+  const rows = {};
+  perks.forEach((p) => (rows[depthOf(p.id)] ??= []).push(p));
+  const top = Math.max(...Object.keys(rows));
+  const placed = {};
+  for (const [d, row] of Object.entries(rows)) {
+    const y = 1 - d / top;
+    [...row]
+      .sort((a, b) => a.x - b.x)
+      .forEach((p, i) => (placed[p.id] = { ...p, x: row.length === 1 ? 0.5 : i / (row.length - 1), y }));
+  }
+  return perks.map((p) => placed[p.id]);
+}
+
 // Everything a star needs, all the way down to the class root.
 function chainOf(id, byId) {
   const seen = new Set();
@@ -102,7 +123,8 @@ function Detail({ perk, byId, unlocks, onPick }) {
 }
 
 function Tree({ tree }) {
-  const byId = useMemo(() => Object.fromEntries(tree.perks.map((p) => [p.id, p])), [tree]);
+  const perks = useMemo(() => symmetric(tree.perks), [tree]);
+  const byId = useMemo(() => Object.fromEntries(perks.map((p) => [p.id, p])), [perks]);
   const edges = useMemo(() => edgesOf(tree), [tree]);
   const [selected, setSelected] = useState(tree.perks[0].id);
   const chain = useMemo(() => chainOf(selected, byId), [selected, byId]);
@@ -121,52 +143,54 @@ function Tree({ tree }) {
         </span>
       </div>
 
-      <div className="ptree__map">
-        <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label={`${tree.name} memory tree`}>
-          {edges.map((e) => {
-            const on = chain.has(e.from) && chain.has(e.to);
-            return (
-              <path
-                key={`${e.from}>${e.to}`}
-                d={line(byId[e.from], byId[e.to])}
-                className={`ptree__edge${e.any ? ' ptree__edge--any' : ''}${on ? ' is-on' : ''}`}
-              />
-            );
-          })}
-          {tree.perks.map((p) => {
-            const a = anchor(p);
-            const r = p.kind === 'talent' ? 9 : 6;
-            const cls = `ptree__star ptree__star--${p.kind}${chain.has(p.id) ? ' is-chain' : ''}${p.id === selected ? ' is-selected' : ''}`;
-            return (
-              <g
-                key={p.id}
-                className={cls}
-                transform={`translate(${px(p)},${py(p)})`}
-                role="button"
-                tabIndex={0}
-                aria-pressed={p.id === selected}
-                aria-label={p.name}
-                onClick={() => pick(p.id)}
-                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), pick(p.id))}
-              >
-                <circle className="ptree__hit" r={22} />
-                <circle className="ptree__halo" r={r + 7} />
-                <circle className="ptree__dot" r={r} />
-                {p.ranks > 1 && (
-                  <text className="ptree__ranks" y={-r - 6} textAnchor="middle">
-                    {'•'.repeat(p.ranks)}
+      <div className="ptree__body">
+        <div className="ptree__map">
+          <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label={`${tree.name} memory tree`}>
+            {edges.map((e) => {
+              const on = chain.has(e.from) && chain.has(e.to);
+              return (
+                <path
+                  key={`${e.from}>${e.to}`}
+                  d={line(byId[e.from], byId[e.to])}
+                  className={`ptree__edge${e.any ? ' ptree__edge--any' : ''}${on ? ' is-on' : ''}`}
+                />
+              );
+            })}
+            {perks.map((p) => {
+              const a = anchor(p);
+              const r = p.kind === 'talent' ? 9 : 6;
+              const cls = `ptree__star ptree__star--${p.kind}${chain.has(p.id) ? ' is-chain' : ''}${p.id === selected ? ' is-selected' : ''}`;
+              return (
+                <g
+                  key={p.id}
+                  className={cls}
+                  transform={`translate(${px(p)},${py(p)})`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={p.id === selected}
+                  aria-label={p.name}
+                  onClick={() => pick(p.id)}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), pick(p.id))}
+                >
+                  <circle className="ptree__hit" r={22} />
+                  <circle className="ptree__halo" r={r + 7} />
+                  <circle className="ptree__dot" r={r} />
+                  {p.ranks > 1 && (
+                    <text className="ptree__ranks" y={-r - 6} textAnchor="middle">
+                      {'•'.repeat(p.ranks)}
+                    </text>
+                  )}
+                  <text className="ptree__label" y={r + 16} dx={a.dx} textAnchor={a.textAnchor}>
+                    {p.name}
                   </text>
-                )}
-                <text className="ptree__label" y={r + 16} dx={a.dx} textAnchor={a.textAnchor}>
-                  {p.name}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
 
-      <Detail perk={byId[selected]} byId={byId} unlocks={unlocks} onPick={pick} />
+        <Detail perk={byId[selected]} byId={byId} unlocks={unlocks} onPick={pick} />
+      </div>
     </section>
   );
 }
@@ -217,8 +241,8 @@ export default function Perks() {
   return (
     <div className="perks">
       <p>
-        Every memory you can unlock with Memory Points in the meditation space, laid out the way the stars sit in
-        game. Select a star to see what it does and what it needs; the path back to the class root lights up. Maxing
+        Every memory you can unlock with Memory Points in the meditation space, laid out like the stars in game,
+        straightened up so each tree is symmetrical. Select a star to see what it does and what it needs; the path back to the class root lights up. Maxing
         everything takes {[...total.values()].reduce((a, b) => a + b, 0)} Memory Points.
       </p>
 
