@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RACES } from './data.js';
+import { BASE, RACES } from './data.js';
 
 const POOLS = [
   { key: 'health', label: 'Health', color: '#c25b4e' },
@@ -7,8 +7,39 @@ const POOLS = [
   { key: 'stamina', label: 'Stamina', color: '#6fa35c' },
 ];
 
+// A race's starting pool in its three parts: the race's own value, the base every character gets, and the part of
+// the cultural bonus that adds to it.
+const parts = (r, key) => [r.start[key], BASE[key], r.bonus.pools?.[key] ?? 0];
+const total = (r, key) => parts(r, key).reduce((a, b) => a + b, 0);
+
 // Bars are scaled against the largest value any race has, so they compare across races.
 const max = (group, key) => Math.max(...RACES.map((r) => r[group][key]));
+const maxTotal = (key) => Math.max(...RACES.map((r) => total(r, key)));
+
+// Race, base and bonus as shades of the pool's colour.
+const SHADES = [1, 0.4, 0.7];
+const SEGMENTS = ['Race', 'Base', 'Cultural bonus'];
+
+function StackBar({ values, of, color }) {
+  return (
+    <span className="g-bar">
+      <span className="g-bar__track g-bar__track--stack">
+        {values.map(
+          (v, i) =>
+            v > 0 && (
+              <span
+                key={i}
+                className="g-bar__fill"
+                title={`${SEGMENTS[i]} ${v}`}
+                style={{ width: `${(v / of) * 100}%`, background: color, opacity: SHADES[i] }}
+              />
+            ),
+        )}
+      </span>
+      <span className="g-bar__value">{values.reduce((a, b) => a + b, 0)}</span>
+    </span>
+  );
+}
 
 function Bar({ value, of, color, unit = '' }) {
   return (
@@ -36,6 +67,40 @@ export default function Races() {
           refill, and a small <strong>cultural bonus</strong> to a few skills. The numbers come from EGO's Dark Souls
           movement and stamina races, so stamina pools and regen are much larger than in vanilla Enderal.
         </p>
+        <p>Your starting Health, Mana and Stamina add up from three parts:</p>
+        <ul>
+          <li>
+            <strong>Base attributes</strong> that every character gets, whatever their race.
+          </li>
+          <li>
+            Your <strong>race's</strong> own starting values.
+          </li>
+          <li>
+            Your <strong>cultural bonus</strong>, for the three races whose bonus adds to one of them.
+          </li>
+        </ul>
+        <h2>Base attributes</h2>
+      </div>
+
+      <div className="g-base">
+        {POOLS.map((p) => (
+          <div key={p.key} className="g-base__item" style={{ borderTopColor: p.color }}>
+            <span className="g-base__value">+{BASE[p.key]}</span>
+            <span className="g-base__name">{p.label}</span>
+          </div>
+        ))}
+        <div className="g-base__item" style={{ borderTopColor: '#c9ab76' }}>
+          <span className="g-base__value">{BASE.skill}</span>
+          <span className="g-base__name">Every skill</span>
+        </div>
+      </div>
+      <p className="g-note">
+        Every character gets these on top of their race. All skills start at {BASE.skill}, and your cultural bonus
+        raises a few of them from there.
+      </p>
+
+      <div className="md">
+        <h2>Racial bonuses</h2>
       </div>
 
       <div className="spells__chips" role="tablist" aria-label="Race">
@@ -72,9 +137,19 @@ export default function Races() {
             {POOLS.map((p) => (
               <div key={p.key} className="g-stat">
                 <span className="g-stat__name">{p.label}</span>
-                <Bar value={race.start[p.key]} of={max('start', p.key)} color={p.color} />
+                <StackBar values={parts(race, p.key)} of={maxTotal(p.key)} color={p.color} />
               </div>
             ))}
+            <span className="g-stat__split">
+              {POOLS.map((p) => {
+                const [r, b, x] = parts(race, p.key);
+                return (
+                  <span key={p.key}>
+                    {p.label}: {r} race + {b} base{x ? ` + ${x} bonus` : ''}
+                  </span>
+                );
+              })}
+            </span>
           </div>
           <div className="g-stats__col">
             <span className="g-label">Regeneration (% of max per second)</span>
@@ -86,11 +161,15 @@ export default function Races() {
             ))}
           </div>
         </div>
-        <p className="g-note">Carry weight {race.carry}. Bars are relative to the highest value among the five races.</p>
+        <p className="g-note">
+          Carry weight {race.carry}. Bars are relative to the highest value among the five races. In the starting
+          bars, the bright part is the race, the dim part the base and the middle shade the cultural bonus.
+        </p>
       </div>
 
       <div className="md">
         <h2>All races at a glance</h2>
+        <p>Starting Health, Mana and Stamina, with the base attributes and cultural bonuses included.</p>
         <div className="spells__scroll">
           <table className="spells__table g-table">
             <thead>
@@ -109,9 +188,11 @@ export default function Races() {
                     <span className="spells__name">{r.name}</span>
                     <span className="spells__desc">{r.bonus.text}</span>
                   </td>
-                  <td className="spells__num">{r.start.health}</td>
-                  <td className="spells__num">{r.start.mana}</td>
-                  <td className="spells__num">{r.start.stamina}</td>
+                  {POOLS.map((p) => (
+                    <td key={p.key} className="spells__num">
+                      {total(r, p.key)}
+                    </td>
+                  ))}
                   <td className="spells__num">
                     {r.regen.health} / {r.regen.mana} / {r.regen.stamina}
                   </td>

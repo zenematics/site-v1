@@ -1412,6 +1412,43 @@ html {
 }
 
 /* Race stat bars */
+.g-base {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+.g-base__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: #17181c;
+  border-top: 3px solid;
+}
+.g-base__value {
+  font-size: 26px;
+  color: #ece9e2;
+  font-variant-numeric: tabular-nums;
+}
+.g-base__name {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9b968d;
+}
+.g-bar__track--stack {
+  display: flex;
+}
+.g-bar__track--stack .g-bar__fill + .g-bar__fill {
+  border-left: 1px solid #0d0e11;
+}
+.g-stat__split {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: #6f6a62;
+}
 .g-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
