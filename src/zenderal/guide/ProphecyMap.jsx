@@ -11,17 +11,14 @@ const MIN_S = 4;
 const MAX_S = BG;
 const STORE = 'zen-prophecy-build';
 
-// Map units to move a tree toward the start point along its spoke (negative moves it out). The game places
-// Druidic's root about 36 units out and Firearms' and Sorcery's about 19 and 21, the rest 22 to 29; on the page
-// they read better in line.
-const PULL = { druidic: 9, firearms: -5, sorcery: -4 };
+// Every tree's root sits on one circle this far from the start point. The game places them anywhere from 19 to 36
+// units out; each tree slides along its own spoke, so it keeps its angle and stays over its wedge of the art.
+const RING = 26;
 
-function pulled(t) {
-  const d = PULL[t.id];
-  if (!d) return t;
+function onRing(t) {
   const root = t.nodes.find((n) => n.parents.length === 0);
-  const a = Math.atan2(root.y, root.x);
-  const [dx, dy] = [-Math.cos(a) * d, -Math.sin(a) * d];
+  const d = Math.hypot(root.x, root.y);
+  const [dx, dy] = [(root.x / d) * (RING - d), (root.y / d) * (RING - d)];
   return {
     ...t,
     routes: t.routes.map((r) => ({ ...r, via: r.via.map(([x, y]) => [x + dx, y + dy]) })),
@@ -32,7 +29,7 @@ function pulled(t) {
 // Each tree's name sits just clear of its stars: above them for the top and sideways trees, on the outer side for the
 // upper diagonals (so it doesn't run into the next tree), below them for the lower ones. The game's own label spots
 // overlap the stars once eleven trees share the circle.
-const TREES = PROPHECY_TREES.map(pulled).map((t) => {
+const TREES = PROPHECY_TREES.map(onRing).map((t) => {
   const xs = t.nodes.map((n) => n.x);
   const ys = t.nodes.map((n) => n.y);
   const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
