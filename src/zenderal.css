@@ -926,9 +926,10 @@ html {
     padding: 16px 20px 20px;
   }
 }
-/* Build crafting (Zenderal.jsx): the perk screenshot zooms into its stone circle and opens into the Prophecy
-   radial art, which rests under the heading with the tree names round it. The shot and the art are 1000px wide
-   and placed with transforms; the heading sits at the top and fades in at the end. Reduced motion shows the end. */
+/* Build crafting (Zenderal.jsx), in three chapters lit in turn on the rail at the left (along the bottom on phones):
+   the perk screenshot zooms into its stone circle, the trait ring turns round it, then it opens into the Prophecy
+   radial art with the tree names round it. The shot and the art are 1000px wide and placed with transforms, as are
+   the trait medallions. Reduced motion shows the end. */
 .zbuild {
   position: relative;
   margin-top: 120px;
@@ -993,78 +994,481 @@ html {
   stroke-width: 0.35;
   stroke-linejoin: round;
 }
-.zbuild__shade {
+/* The trait ring: each medallion is placed by its centre (Zenderal.jsx); the one at the top grows and glows. */
+.zbuild__ring {
   position: absolute;
   inset: 0;
-  opacity: 0;
   pointer-events: none;
 }
-.zbuild__head {
+.zbuild__medal {
   position: absolute;
   left: 0;
-  right: 0;
   top: 0;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 110px 56px 0;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 171, 118, 0.35);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.zbuild__medal.is-on {
+  border-color: #c9ab76;
+  box-shadow: 0 0 24px rgba(201, 171, 118, 0.45);
+}
+/* The trait the ring stops on, in the middle of the circle. */
+.zbuild__feature {
+  position: absolute;
+  translate: -50% -50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   text-align: center;
+  opacity: 0;
+}
+.zbuild__feature-name {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zbuild__feature-up,
+.zbuild__feature-down {
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 300;
+  text-wrap: pretty;
+}
+.zbuild__feature-up {
+  color: #ece9e2;
+}
+.zbuild__feature-down {
+  color: #9b968d;
+}
+/* The lit edge of the iris the Prophecy art grows through, placed and sized by Zenderal.jsx. */
+.zbuild__rim {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 196, 110, 0.85);
+  box-shadow: 0 0 30px rgba(201, 171, 118, 0.6), inset 0 0 30px rgba(201, 171, 118, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, width, height;
+}
+/* Darkens the left of the pin behind the rail. */
+.zbuild__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(7, 8, 10, 0.92) 0, rgba(7, 8, 10, 0.75) 380px, transparent 640px);
+  pointer-events: none;
+}
+.zbuild__rail {
+  position: absolute;
+  left: max(56px, (100% - 1240px) / 2 + 56px);
+  top: 50%;
+  translate: 0 -50%;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 .zbuild__title {
-  margin: 0;
+  margin: 0 0 12px;
   font-family: inherit;
   font-weight: 600;
-  font-size: clamp(30px, 4vw, 52px);
+  font-size: clamp(30px, 3.4vw, 46px);
   line-height: 1.05;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #ece9e2;
   text-wrap: balance;
 }
-.zbuild__text {
+.zbuild__stages {
   margin: 0;
-  max-width: 620px;
-  font-size: 18px;
-  line-height: 1.7;
-  font-weight: 300;
-  color: #9b968d;
-  text-wrap: pretty;
+  padding: 0;
+  list-style: none;
 }
-.zbuild .actions {
-  justify-content: center;
-  margin-top: 4px;
+/* Number and title on one row; the text opens under them while the stage is on. */
+.zbuild__stage {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.45;
+  transition: opacity 0.4s ease;
+}
+.zbuild__stage.is-on {
+  opacity: 1;
+}
+.zbuild__stage-n {
+  font-size: 13px;
+  font-weight: 600;
+  color: #c9ab76;
+  line-height: 22px;
+}
+.zbuild__stage-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  line-height: 22px;
+}
+.zbuild__stage-body {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s ease;
+}
+.zbuild__stage-body > div {
+  overflow: hidden;
+}
+.zbuild__stage.is-on .zbuild__stage-body {
+  grid-template-rows: 1fr;
+}
+.zbuild__stage-text {
+  margin: 0;
+  padding-top: 10px;
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 300;
+  color: #c2beb6;
+  text-wrap: pretty;
 }
 @media (prefers-reduced-motion: no-preference) {
   /* The run is content, not padding: a sticky box can't move into its parent's padding. */
   .zbuild::after {
     content: '';
     display: block;
-    height: 220vh;
+    height: 340vh;
   }
   .zbuild__pin {
     position: sticky;
     top: 0;
   }
 }
+/* Reduced motion shows the end, so every chapter's text shows at once. */
+@media (prefers-reduced-motion: reduce) {
+  .zbuild__stage {
+    opacity: 1;
+  }
+  .zbuild__stage-body {
+    grid-template-rows: 1fr;
+  }
+}
+/* Phones: the rail is a caption along the bottom, showing only the current chapter; the visuals sit above it. */
 @media (max-width: 860px) {
   .zbuild {
     margin-top: 80px;
   }
-  .zbuild__head {
-    padding: 88px 24px 0;
-    gap: 12px;
+  /* Only a short fade, so it doesn't dim the caption. */
+  .zbuild__pin {
+    mask-image: linear-gradient(180deg, #000 calc(100% - 24px), transparent);
   }
-  .zbuild__text {
-    font-size: 16px;
+  .zbuild__shade {
+    background: linear-gradient(180deg, transparent calc(100% - 340px), rgba(7, 8, 10, 0.9) calc(100% - 250px));
+  }
+  .zbuild__rail {
+    left: 24px;
+    right: 24px;
+    top: auto;
+    bottom: 32px;
+    translate: none;
+    width: auto;
+    height: 220px;
+    gap: 6px;
+  }
+  .zbuild__title {
+    display: none;
+  }
+  .zbuild__stage {
+    display: none;
+    border-top: 0;
+    padding: 0;
+  }
+  .zbuild__stage.is-on {
+    display: grid;
+  }
+  .zbuild__stage-text {
+    font-size: 15px;
+  }
+  .zbuild__feature-name {
+    font-size: 15px;
+  }
+  .zbuild__feature-up,
+  .zbuild__feature-down {
+    font-size: 12px;
   }
 }
-/* The cards follow the build-crafting section rather than the intro's fade. */
-.zbuild + .zexplore {
-  margin-top: 0;
-  padding-top: 120px;
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) {
+  .zbuild__stage {
+    display: grid;
+  }
+}
+/* Expanded magic (Grimoire.jsx): a pinned grimoire, the spell count climbing as each pack lights up and its spells'
+   names fade in round it (--p on a pack's names and step, 0 → 1), then a card per pack. Reduced motion shows the end. */
+.zmagic {
+  position: relative;
+  margin-top: 40px;
+}
+.zmagic__pin {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent, #000 140px, #000 calc(100% - 140px), transparent);
+}
+.zmagic__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  filter: brightness(0.5) saturate(0.55);
+  scale: calc(1.1 - var(--t, 1) * 0.08);
+}
+.zmagic__shade {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 40% 38% at 50% 53%, rgba(7, 8, 10, 0.85), rgba(7, 8, 10, 0.55) 70%, rgba(7, 8, 10, 0.4));
+}
+.zmagic__names {
+  position: absolute;
+  inset: 0;
+}
+.zmagic__name {
+  --p: 1;
+  position: absolute;
+  translate: -50% -50%;
+  white-space: nowrap;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 12px rgba(7, 8, 10, 0.9);
+  /* Each name has its own delay (--d) within its pack's slice, so they arrive one by one. */
+  opacity: calc(var(--a) * clamp(0, (var(--p) - var(--d)) / 0.35, 1));
+  filter: blur(calc((1 - clamp(0, (var(--p) - var(--d)) / 0.35, 1)) * 4px));
+}
+.zmagic__name--start {
+  translate: 0 -50%;
+}
+.zmagic__name--end {
+  translate: -100% -50%;
+}
+.zmagic__center {
+  position: absolute;
+  left: 50%;
+  top: 53%;
+  translate: -50% -50%;
+  width: min(640px, 100% - 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.zmagic__count {
+  font-size: clamp(88px, 13vw, 168px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #ece9e2;
+  text-shadow: 0 0 40px rgba(201, 171, 118, 0.25);
+}
+.zmagic__sub {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 300;
+  color: #c2beb6;
+}
+/* The base game, then each pack as it joins the count. */
+.zmagic__steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.zmagic__step {
+  --p: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(201, 171, 118, calc(0.15 + var(--p) * 0.5));
+  background: rgba(7, 8, 10, 0.6);
+  opacity: calc(0.35 + var(--p) * 0.65);
+}
+.zmagic__step.is-base {
+  --p: 1;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.zmagic__step-n {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #c9ab76;
+}
+.zmagic__step.is-base .zmagic__step-n {
+  color: #ece9e2;
+}
+.zmagic__step-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9c5bd;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zmagic__run::after {
+    content: '';
+    display: block;
+    height: 160vh;
+  }
+  .zmagic__pin {
+    position: sticky;
+    top: 0;
+  }
+}
+/* A card per pack: its count, what it adds, and its spells by school as one bar. */
+.zmagic__packs {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 40px 56px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.zmagic__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.zpack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 24px 56px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(23, 24, 28, 0.9), rgba(13, 14, 17, 0.9));
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.zpack:hover {
+  border-color: rgba(201, 171, 118, 0.55);
+  transform: translateY(-3px);
+}
+.zpack:hover .zcard__go {
+  color: #c9ab76;
+  translate: 4px 0;
+}
+.zpack__count {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zpack__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zpack__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #b3afa7;
+  text-wrap: pretty;
+}
+.zpack__bar {
+  display: flex;
+  gap: 2px;
+  height: 6px;
+  margin-top: auto;
+}
+.zpack__bar > span {
+  flex-basis: 0;
+  opacity: 0.85;
+}
+.zmagic__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+.zmagic__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #9b968d;
+}
+.zmagic__legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zmagic__legend span {
+  width: 10px;
+  height: 10px;
+}
+.zmagic__note {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 300;
+  color: #9b968d;
+}
+.zmagic__note a {
+  color: #c9ab76;
+  white-space: nowrap;
+}
+@media (max-width: 1100px) and (min-width: 861px) {
+  .zmagic__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 860px) {
+  .zmagic__name {
+    font-size: 11px !important;
+  }
+  /* Only the names picked to fit a phone (above and below the text, not touching) show. */
+  .zmagic__name--wide {
+    display: none;
+  }
+  .zmagic__sub {
+    font-size: 16px;
+  }
+  .zmagic__step {
+    padding: 6px 9px;
+  }
+  .zmagic__step-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .zmagic__packs {
+    padding: 32px 24px 0;
+  }
+  .zmagic__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
 }
 
 /* Link cards into the docs and guide, in labelled groups. Pulled up into the intro's

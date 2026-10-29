@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
+import Grimoire from '../zenderal/Grimoire.jsx';
 import { BG as PROPHECY_BG, TREES as PROPHECY_TREES } from '../zenderal/guide/prophecyLayout.js';
+import { TRAITS } from '../zenderal/guide/data.js';
 
 const DOCS_URL = `${import.meta.env.BASE_URL}zenderal/docs/`;
 const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/`;
@@ -27,6 +29,10 @@ const LOGO_W = 1000;
 const SHOT = { ratio: 1440 / 3360, cx: 0.5104, cy: 0.554, radius: 0.0946 };
 const RADIAL = { void: 0.23 };
 const BUILD_W = 1000;
+// The trait ring: the featured traits first, in the order the ring stops on them, then the rest.
+const FEATURED = OVERVIEW.build.traits.map((n) => TRAITS.find((t) => t.name === n));
+const RING = [...FEATURED, ...TRAITS.filter((t) => !FEATURED.includes(t))];
+const TRAIT_ART = `${import.meta.env.BASE_URL}uploads/guide/traits/`;
 // The "New to Enderal" switch's two sides, keys into OVERVIEW.welcome.
 const AUDIENCES = ['newcomers', 'veterans'];
 
@@ -182,10 +188,13 @@ export default function Zenderal() {
     return () => io.disconnect();
   }, []);
 
-  // Build crafting. The pin sticks over the run below it (.zbuild::after). The screenshot zooms in until its stone
-  // circle is centred and large while its floor sinks into darkness; the radial art fades in over it, its dark middle
-  // locked to the circle; then the art pulls back to rest under the heading, and the tree names and the heading fade in.
-  // `r` is the circle's on-screen radius throughout, so both layers follow the one value. Reduced motion shows the end.
+  // Build crafting, in three chapters that the rail (.zbuild__rail) lights in turn as the pin sticks over the run
+  // below it (.zbuild::after). Perk trees: the perk screen zooms in until its stone circle is centred in the space
+  // beside the rail, and its floor sinks into darkness. Traits: the trait medallions fade in round the circle and the
+  // ring turns, stopping on each featured trait with its upside and downside in the middle. Prophecy: the ring fades,
+  // the radial art, its dark middle locked to the circle, grows out of the circle through a widening iris, pulls back
+  // to rest, and the tree names fade in. `r` is the circle's on-screen radius throughout, so the layers all follow the one value. Reduced motion
+  // shows the end.
   useEffect(() => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const section = document.querySelector('.zbuild');
@@ -194,32 +203,45 @@ export default function Zenderal() {
     const dark = pin.querySelector('.zbuild__dark');
     const art = pin.querySelector('.zbuild__art');
     const names = art.querySelector('.zbuild__trees');
-    const head = pin.querySelector('.zbuild__head');
-    const shade = pin.querySelector('.zbuild__shade');
+    const rail = pin.querySelector('.zbuild__rail');
+    const stages = [...rail.querySelectorAll('.zbuild__stage')];
+    const medals = [...pin.querySelectorAll('.zbuild__medal')];
+    const featured = [...pin.querySelectorAll('.zbuild__feature')];
+    const rim = pin.querySelector('.zbuild__rim');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
     const mix = (a, b, k) => a + (b - a) * k;
+    const step = (2 * Math.PI) / medals.length;
     let L = null;
-    // The start (the screenshot covering the pin), the peak of the zoom, and the end (the art under the heading,
-    // as big as fits with its names: they reach about 0.26 of its width from the middle, up and down, and to the
-    // sides Necromancy ends 0.19 out, its name about 9 font sizes long beyond that).
+    // The space beside the rail (above it on phones) that the circle, the ring and the art centre in. The start is
+    // the screenshot covering the pin; the peak leaves room round the circle for the ring; the end is the art as
+    // big as fits with its names (they reach about 0.26 of its width from the middle up and down, and to the sides
+    // Necromancy ends 0.19 out, its name about 9 font sizes long beyond that).
     const layout = () => {
       const W = pin.offsetWidth;
       const H = pin.offsetHeight;
+      const phone = W <= 860;
+      const box = { x0: phone ? 0 : rail.offsetLeft + rail.offsetWidth + 24, x1: W, y0: phone ? 64 : 80, y1: phone ? rail.offsetTop - 8 : H - 24 };
+      const aw = box.x1 - box.x0;
+      const ah = box.y1 - box.y0;
+      const c = { x: (box.x0 + box.x1) / 2, y: (box.y0 + box.y1) / 2 };
       const sw = Math.max(W, H / SHOT.ratio);
       const start = { x: (W - sw) / 2 + SHOT.cx * sw, y: (H - sw * SHOT.ratio) / 2 + SHOT.cy * sw * SHOT.ratio, r: SHOT.radius * sw };
-      const peak = { x: W / 2, y: H / 2, r: Math.max(0.6 * Math.min(W, H), 1.5 * start.r) };
-      const top = head.offsetTop + head.offsetHeight;
-      // Clear of the bottom fade (.zbuild__pin).
-      const room = H - top - 0.16 * H;
-      const font = W < 600 ? 11 : 13;
-      const size = Math.min(room / 0.6, (W / 2 - 12 - 9 * font) / 0.19, 1200);
-      // The heading sits on the page colour, fading into the art below it.
-      shade.style.background = `linear-gradient(180deg, rgba(7, 8, 10, 0.94) ${top - 70}px, transparent ${top + 24}px)`;
-      const end = { x: W / 2, y: top + room / 2, r: RADIAL.void * size };
+      const icon = phone ? 34 : 56;
+      const fit = Math.min(aw, ah) / 2 - icon / 2 - 6;
+      const peak = { ...c, r: Math.max(fit / 1.16, start.r * 1.15) };
+      const font = phone ? 11 : 13;
+      const size = Math.min((ah - 24) / 0.56, (aw / 2 - 12 - 9 * font) / 0.19, 1200);
+      const end = { ...c, r: RADIAL.void * size };
       // SVG text is sized in the art's own units.
       names.style.fontSize = `${(font * 2 * PROPHECY_BG) / size}px`;
-      L = { start, peak, end };
+      // The ring sits just outside the stone circle, or inside it where the screen is too small.
+      const ring = Math.min(peak.r * 1.16, fit);
+      for (const m of medals) m.style.width = m.style.height = `${icon}px`;
+      for (const f of featured) f.style.width = `${Math.min(360, (ring - icon) * 1.6)}px`;
+      // The iris has opened once it reaches the farthest corner from the circle's middle.
+      const open = Math.hypot(Math.max(c.x, W - c.x), Math.max(c.y, H - c.y));
+      L = { start, peak, end, ring, open };
       onScroll();
     };
     let frame = 0;
@@ -227,9 +249,9 @@ export default function Zenderal() {
       frame = 0;
       if (!L) return;
       const t = reduce ? 1 : ramp(-section.getBoundingClientRect().top, 0, section.offsetHeight - pin.offsetHeight);
-      const { start, peak, end } = L;
-      const zin = ease(ramp(t, 0.02, 0.45));
-      const zout = ease(ramp(t, 0.5, 0.82));
+      const { start, peak, end, ring, open } = L;
+      const zin = ease(ramp(t, 0.06, 0.34));
+      const zout = ease(ramp(t, 0.76, 0.92));
       const from = zout ? peak : start;
       const to = zout ? end : peak;
       const k = zout || zin;
@@ -239,23 +261,53 @@ export default function Zenderal() {
       const y = mix(from.y, to.y, k);
       const sw = r / SHOT.radius;
       shot.style.transform = `translate(${x - SHOT.cx * sw}px, ${y - SHOT.cy * sw * SHOT.ratio}px) scale(${sw / BUILD_W})`;
-      shot.style.opacity = 1 - ease(ramp(t, 0.42, 0.6));
+      // Hidden once the iris has opened past it.
+      shot.style.opacity = 1 - ease(ramp(t, 0.72, 0.76));
       dark.style.background = `radial-gradient(circle ${r}px at ${x}px ${y}px, #07080a 55%, transparent 100%)`;
-      dark.style.opacity = 0.95 * ease(ramp(t, 0.15, 0.42));
+      dark.style.opacity = 0.95 * ease(ramp(t, 0.2, 0.36));
       const aw = r / RADIAL.void;
       art.style.transform = `translate(${x - aw / 2}px, ${y - aw / 2}px) scale(${aw / BUILD_W})`;
-      art.style.opacity = ease(ramp(t, 0.3, 0.55));
-      names.style.opacity = ease(ramp(t, 0.78, 0.92));
-      head.style.opacity = shade.style.opacity = ease(ramp(t, 0.82, 0.96));
-      // Hidden until it fades in, so its links can't be clicked while invisible.
-      head.style.visibility = t < 0.82 ? 'hidden' : '';
+      // The Prophecy art grows out of the stone circle: an iris, starting at the circle's edge (where the art's dark
+      // middle matches the darkened floor), opens until it passes the farthest corner, its edge lit as it goes.
+      // Sizes in the art's own units are the screen's divided by its scale.
+      const g = reduce ? 1 : ease(ramp(t, 0.6, 0.74));
+      const iris = r * (open / r) ** g;
+      const unit = BUILD_W / aw;
+      art.style.opacity = t >= 0.6 || reduce ? 1 : 0;
+      art.style.maskImage = g < 1
+        ? `radial-gradient(circle ${iris * unit}px at 50% 50%, #000 ${(iris - 48) * unit}px, transparent ${iris * unit}px)`
+        : '';
+      rim.style.width = rim.style.height = `${2 * iris}px`;
+      rim.style.transform = `translate(${x - iris}px, ${y - iris}px)`;
+      rim.style.opacity = g > 0 && g < 1 ? Math.min(ramp(g, 0, 0.08), 1 - ramp(g, 0.6, 1)) : 0;
+      names.style.opacity = ease(ramp(t, 0.88, 0.96));
+
+      // The ring turns one place per featured trait, resting on each for the first half of its slice.
+      const seg = (featured.length - 0.5) * ramp(t, 0.36, 0.58);
+      const turn = Math.min(Math.floor(seg), featured.length - 1) + (seg < featured.length - 1 ? ease(ramp(seg % 1, 0.5, 1)) : 0);
+      const shown = ease(ramp(t, 0.32, 0.4)) * (1 - ease(ramp(t, 0.56, 0.6)));
+      medals.forEach((m, i) => {
+        const a = -Math.PI / 2 + (i - turn) * step;
+        const near = Math.max(0, 1 - Math.abs(i - turn));
+        m.style.transform = `translate(${x + ring * Math.cos(a)}px, ${y + ring * Math.sin(a)}px) translate(-50%, -50%) scale(${1 + 0.45 * near})`;
+        m.style.opacity = shown * (0.45 + 0.55 * near);
+        m.classList.toggle('is-on', near > 0.5);
+      });
+      featured.forEach((f, i) => {
+        f.style.left = `${x}px`;
+        f.style.top = `${y}px`;
+        f.style.opacity = shown * Math.max(0, 1 - Math.abs(i - turn) * 2);
+      });
+
+      const on = t < 0.3 ? 0 : t < 0.6 ? 1 : 2;
+      stages.forEach((s, i) => s.classList.toggle('is-on', i === on));
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
     const ro = new ResizeObserver(layout);
     ro.observe(pin);
-    ro.observe(head);
+    ro.observe(rail);
     if (!reduce) addEventListener('scroll', onScroll, { passive: true });
     return () => {
       ro.disconnect();
@@ -266,9 +318,9 @@ export default function Zenderal() {
 
   // The closing portal: the intro's in reverse. The Zenematics mark arrives as the pin reaches the
   // top, the scene shows through it as its art fades, and it grows over the run (.zcta::after)
-  // until the head covers the screen; then the text fades in. It rests as far below the cards as
+  // until the head covers the screen; then the text fades in. It rests as far below the spell packs as
   // the intro's emblem does above the "New to Enderal" heading, so the pin is pulled up over the
-  // cards' end to match.
+  // packs' end to match.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const cta = document.querySelector('.zcta');
@@ -280,7 +332,7 @@ export default function Zenderal() {
     const ease = (x) => x * x * (3 - 2 * x);
     const stage = document.querySelector('.zstage');
     const stagePin = stage.querySelector('.zstage__pin');
-    const cards = document.querySelectorAll('.zcard');
+    const packs = document.querySelector('.zmagic__packs');
     const compare = document.querySelector('.zcompare');
     const welcome = document.querySelector('.znew__head');
     const pageTop = (el) => el.getBoundingClientRect().top + scrollY;
@@ -299,7 +351,7 @@ export default function Zenderal() {
       const gap = pageTop(welcome) - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
       const { w0, by } = rest();
       const logoTop = by - (ZEN.boxCy - ZEN.top) * w0;
-      const last = cards[cards.length - 1].getBoundingClientRect().bottom + scrollY;
+      const last = packs.getBoundingClientRect().bottom + scrollY;
       const margin = parseFloat(getComputedStyle(cta).marginTop);
       cta.style.marginTop = `${last + gap - logoTop - (pageTop(cta) - margin)}px`;
       onScroll();
@@ -311,7 +363,7 @@ export default function Zenderal() {
       // The run is long enough that after the mark has opened the layers keep pulling apart for
       // a while before the text arrives. The portal's own steps keep the pace they had over 120vh.
       pin.style.setProperty('--t', ease(ramp(t, 0, 0.85)).toFixed(4));
-      // Hidden until it fades in, so it can't catch clicks meant for the cards under the pin.
+      // Hidden until it fades in, so it can't catch clicks meant for the spell packs under the pin.
       body.style.visibility = t < 0.85 ? 'hidden' : '';
       if (t === 1) {
         portal.style.maskImage = portal.style.maskSize = portal.style.maskPosition = '';
@@ -339,14 +391,14 @@ export default function Zenderal() {
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
-    // The cards and the intro reflow as the fonts load.
+    // The sections above reflow as the fonts and the spell list load.
     const ro = new ResizeObserver(layout);
     ro.observe(stagePin);
     ro.observe(document.querySelector('.znew'));
     ro.observe(compare);
     ro.observe(document.querySelector('.zclips'));
     ro.observe(document.querySelector('.zbuild'));
-    ro.observe(document.querySelector('.zexplore'));
+    ro.observe(document.querySelector('.zmagic'));
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', layout);
     return () => {
@@ -535,6 +587,19 @@ export default function Zenderal() {
             className="zbuild__shot"
           />
           <div className="zbuild__dark" />
+          {/* The trait ring, round the stone circle; the trait it stops on is described in the middle. */}
+          <div className="zbuild__ring" aria-hidden="true">
+            {RING.map((t) => (
+              <img key={t.name} src={`${TRAIT_ART}${t.img}`} alt="" className="zbuild__medal" />
+            ))}
+            {FEATURED.map((t) => (
+              <div key={t.name} className="zbuild__feature">
+                <span className="zbuild__feature-name">{t.name}</span>
+                <span className="zbuild__feature-up">+ {t.up}</span>
+                <span className="zbuild__feature-down">− {t.down}</span>
+              </div>
+            ))}
+          </div>
           <div className="zbuild__art">
             <img src={`${import.meta.env.BASE_URL}uploads/guide/prophecy/trees/radial.webp`} alt="" className="zbuild__radial" />
             <svg
@@ -555,46 +620,30 @@ export default function Zenderal() {
               ))}
             </svg>
           </div>
+          <div className="zbuild__rim" aria-hidden="true" />
           <div className="zbuild__shade" />
-          <div className="zbuild__head">
+          {/* The chapter rail: the current stage is lit and shows its text (Zenderal.jsx sets .is-on). */}
+          <div className="zbuild__rail">
             <span className="docs__label">{OVERVIEW.build.label}</span>
             <h2 className="zbuild__title">{OVERVIEW.build.title}</h2>
-            <p className="zbuild__text">{OVERVIEW.build.text}</p>
-            <div className="actions">
-              {OVERVIEW.build.links.map((l, i) => (
-                <a
-                  key={l.guide}
-                  href={GUIDE_URL + l.guide + '/'}
-                  className={`btn ${i === 0 ? 'btn--light-solid' : 'btn--light-outline'}`}
-                >
-                  {l.title}
-                </a>
+            <ol className="zbuild__stages">
+              {OVERVIEW.build.stages.map((s, i) => (
+                <li key={s.title} className={`zbuild__stage${i === 0 ? ' is-on' : ''}`}>
+                  <span className="zbuild__stage-n">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="zbuild__stage-title">{s.title}</span>
+                  <div className="zbuild__stage-body">
+                    <div>
+                      <p className="zbuild__stage-text">{s.text}</p>
+                    </div>
+                  </div>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
         </div>
       </section>
 
-      <section className="zexplore">
-        {OVERVIEW.explore.map((group) => (
-          <div key={group.label} className="zexplore__group">
-            <span className="docs__label">{group.label}</span>
-            <div className="zexplore__grid">
-              {group.links.map((link) => {
-                const { href, page } = resolve(link);
-                return (
-                  <a key={href} href={href} className="zcard">
-                    <span className="zcard__page">{page}</span>
-                    <h3 className="zcard__title">{link.title}</h3>
-                    <p className="zcard__text">{link.text}</p>
-                    <span className="zcard__go" aria-hidden="true">→</span>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </section>
+      <Grimoire />
 
       <section className="zcta">
         <div className="zcta__pin zparallax">

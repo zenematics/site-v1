@@ -146,35 +146,17 @@ export const OVERVIEW = {
   },
   // The build-crafting section: the in-game perk screen zooms into its stone circle, which opens
   // into the Prophecy radial map. `links` point at guide sections.
+  // `stages` are the chapter rail's steps, lit in turn as the section plays: the perk screen, the trait ring
+  // round its stone circle, then the Prophecy map. `traits` are the ones the ring stops on (by name, from the
+  // guide's TRAITS), in order; the rest fill the ring.
   build: {
     label: 'Rich build crafting',
     title: 'Build it your way.',
-    text: 'Perk trees for every skill, then eleven Prophecy talent trees on top, each built around a playstyle.',
-    links: [
-      { guide: 'perks', title: 'Perk trees' },
-      { guide: 'prophecy', title: 'Prophecy planner' },
+    stages: [
+      { title: 'Perk trees', text: 'Every skill has its own memory tree. Unlock its stars with Memory Points in the meditation space, choosing the ones your build needs.' },
+      { title: 'Traits', text: 'Pick a trait at the start: 27 to choose from, 18 of them made for Zenderal, each with an upside and a downside to build around.' },
+      { title: 'Prophecy', text: 'Eleven Prophecy talent trees sit on top, each built around a playstyle. Plan your build before you play.' },
     ],
+    traits: ['Overcharged', 'Cornered Wolf', 'Gravecaller', 'Gunslinger', 'Nightwalker'],
   },
-  // The link cards under the intro, in groups. Each points at a guide section ({ guide: id })
-  // or a doc ({ doc: id }).
-  explore: [
-    {
-      label: 'Get set up',
-      links: [
-        { doc: 'readme', title: 'Readme', text: 'Requirements, install steps and updates. Read it before you install.' },
-        { doc: 'dlss', title: 'DLSS & Frame Gen', text: 'Set up upscaling and frame generation, and fix the common errors.' },
-        { guide: 'keybindings', title: 'Keybindings', text: 'The keyboard and mouse layout, on a map you can hover or tap.' },
-        { guide: 'controller', title: 'Controller Support', text: 'Play on a controller out of the box, with the full button layout.' },
-      ],
-    },
-    {
-      label: 'Learn the game',
-      links: [
-        { guide: 'races', title: 'Character', text: 'The five cultures, their stats and bonuses, and where a build starts.' },
-        { guide: 'combat', title: 'Combat', text: 'For Honor Reforged melee: timing, positioning and poise.' },
-        { guide: 'traits', title: 'Traits', text: 'An upside and a downside each, chosen at the start and built around.' },
-        { guide: 'prophecy', title: 'Prophecy', text: 'Seven talent trees, each built around a playstyle, with a build planner.' },
-      ],
-    },
-  ],
 };
