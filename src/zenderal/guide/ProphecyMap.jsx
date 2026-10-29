@@ -11,10 +11,27 @@ const MIN_S = 4;
 const MAX_S = BG;
 const STORE = 'zen-prophecy-build';
 
+// Map units to move a tree toward the start point, along its spoke. The game places Druidic's root about 36 units
+// out, the rest 19 to 29; on the page it reads better in line with them.
+const PULL = { druidic: 9 };
+
+function pulled(t) {
+  const d = PULL[t.id];
+  if (!d) return t;
+  const root = t.nodes.find((n) => n.parents.length === 0);
+  const a = Math.atan2(root.y, root.x);
+  const [dx, dy] = [-Math.cos(a) * d, -Math.sin(a) * d];
+  return {
+    ...t,
+    routes: t.routes.map((r) => ({ ...r, via: r.via.map(([x, y]) => [x + dx, y + dy]) })),
+    nodes: t.nodes.map((n) => ({ ...n, x: n.x + dx, y: n.y + dy })),
+  };
+}
+
 // Each tree's name sits just clear of its stars: above them for the top and sideways trees, on the outer side for the
 // upper diagonals (so it doesn't run into the next tree), below them for the lower ones. The game's own label spots
 // overlap the stars once eleven trees share the circle.
-const TREES = PROPHECY_TREES.map((t) => {
+const TREES = PROPHECY_TREES.map(pulled).map((t) => {
   const xs = t.nodes.map((n) => n.x);
   const ys = t.nodes.map((n) => n.y);
   const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
