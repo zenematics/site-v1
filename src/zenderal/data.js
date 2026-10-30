@@ -140,7 +140,7 @@ export const OVERVIEW = {
     clips: [
       { title: 'Combos and power attacks', text: 'Every move cancels into the next. Chain lights into directional power attacks for more damage and poise damage.', video: 'logo-grow', placeholder: true, guide: 'combat' },
       { title: 'Parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'logo-grow', placeholder: true, guide: 'combat' },
-      { title: 'Guard break', text: 'Back + power attack slides a raised guard and opens a follow-up.', video: 'logo-grow', placeholder: true, guide: 'combat' },
+      { title: 'First person overhaul', text: 'Fight from your own eyes, with reworked first-person animations and a full body under the camera.', video: 'logo-grow', placeholder: true, guide: 'keybindings' },
       { title: 'Dodge', text: 'Tap Left Shift or press Left Alt to dodge out of a swing.', video: 'logo-grow', placeholder: true, guide: 'keybindings' },
     ],
   },

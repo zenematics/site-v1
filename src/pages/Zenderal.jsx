@@ -192,7 +192,7 @@ export default function Zenderal() {
   // below it (.zbuild::after). Perk trees: the perk screen zooms in until its stone circle is centred in the space
   // beside the rail, and its floor sinks into darkness. Traits: the trait medallions fade in round the circle and the
   // ring turns, stopping on each featured trait with its upside and downside in the middle. Prophecy: the ring fades,
-  // the radial art, its dark middle locked to the circle, grows out of the circle through a widening iris, pulls back
+  // the radial art's dark middle fades in over the circle's, then a widening circle reveals the rest of it, pulls back
   // to rest, and the tree names fade in. `r` is the circle's on-screen radius throughout, so the layers all follow the one value. Reduced motion
   // shows the end.
   useEffect(() => {
@@ -239,7 +239,7 @@ export default function Zenderal() {
       const ring = Math.min(peak.r * 1.16, fit);
       for (const m of medals) m.style.width = m.style.height = `${icon}px`;
       for (const f of featured) f.style.width = `${Math.min(360, (ring - icon) * 1.6)}px`;
-      // The iris has opened once it reaches the farthest corner from the circle's middle.
+      // The hole has opened once it reaches the farthest corner from the circle's middle.
       const open = Math.hypot(Math.max(c.x, W - c.x), Math.max(c.y, H - c.y));
       L = { start, peak, end, ring, open };
       onScroll();
@@ -266,21 +266,24 @@ export default function Zenderal() {
       shot.style.opacity = 1 - ease(ramp(t, 0.8, 0.84));
       dark.style.background = `radial-gradient(circle ${r}px at ${x}px ${y}px, #07080a 55%, transparent 100%)`;
       dark.style.opacity = 0.95 * ease(ramp(t, 0.1, 0.22));
+      // The Prophecy art sits with its own dark middle on the darkened circle. It fades in through a hole the same
+      // shape as the darkness (solid to 0.55 of the circle, gone at its edge), so the two dark middles swap in place,
+      // then the hole widens over the same-sized art until it passes the farthest corner, its edge lit as it goes.
+      // Sizes in the art's own units are the screen's divided by its scale.
       const aw = r / RADIAL.void;
       art.style.transform = `translate(${x - aw / 2}px, ${y - aw / 2}px) scale(${aw / BUILD_W})`;
-      // The Prophecy art grows out of the stone circle: an iris, starting at the circle's edge (where the art's dark
-      // middle matches the darkened floor), opens until it passes the farthest corner, its edge lit as it goes.
-      // Sizes in the art's own units are the screen's divided by its scale.
-      const g = reduce ? 1 : ease(ramp(t, 0.69, 0.82));
-      const iris = r * (open / r) ** g;
+      art.style.opacity = reduce ? 1 : ease(ramp(t, 0.66, 0.7));
+      const g = reduce ? 1 : ease(ramp(t, 0.7, 0.83));
+      const soft = 0.45 * r;
+      const iris = r * ((open + soft) / r) ** g;
       const unit = BUILD_W / aw;
-      art.style.opacity = t >= 0.69 || reduce ? 1 : 0;
       art.style.maskImage = g < 1
-        ? `radial-gradient(circle ${iris * unit}px at 50% 50%, #000 ${(iris - 48) * unit}px, transparent ${iris * unit}px)`
+        ? `radial-gradient(circle ${iris * unit}px at 50% 50%, #000 ${(iris - soft) * unit}px, transparent ${iris * unit}px)`
         : '';
-      rim.style.width = rim.style.height = `${2 * iris}px`;
-      rim.style.transform = `translate(${x - iris}px, ${y - iris}px)`;
-      rim.style.opacity = g > 0 && g < 1 ? Math.min(ramp(g, 0, 0.08), 1 - ramp(g, 0.6, 1)) : 0;
+      const edge = iris - soft / 2;
+      rim.style.width = rim.style.height = `${2 * edge}px`;
+      rim.style.transform = `translate(${x - edge}px, ${y - edge}px)`;
+      rim.style.opacity = g > 0 && g < 1 ? 0.8 * Math.min(ramp(g, 0, 0.1), 1 - ramp(g, 0.6, 1)) : 0;
       names.style.opacity = ease(ramp(t, 0.92, 0.99));
 
       // The ring turns one place per featured trait, resting on each for the first three quarters of its slice
