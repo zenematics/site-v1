@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { BASE, RACES } from './data.js';
 
+const PORTRAITS = `${import.meta.env.BASE_URL}uploads/zenderal/races/`;
+
 const POOLS = [
   { key: 'health', label: 'Health', color: '#c25b4e' },
   { key: 'mana', label: 'Mana', color: '#5b84c4' },
@@ -119,6 +121,7 @@ export default function Races() {
       </div>
 
       <div className="g-card">
+        <img key={race.id} src={`${PORTRAITS}${race.id}.webp`} alt={race.name} className="g-race__art" />
         <div className="g-card__head">
           <h3 className="g-card__title">{race.name}</h3>
           <span className="g-card__meta">{race.origin}</span>

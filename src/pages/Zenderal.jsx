@@ -3,7 +3,7 @@ import Nav from '../components/Nav.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Grimoire from '../zenderal/Grimoire.jsx';
-import { BG as PROPHECY_BG, TREES as PROPHECY_TREES } from '../zenderal/guide/prophecyLayout.js';
+import { BG as PROPHECY_BG, EDGES as PROPHECY_EDGES, TREES as PROPHECY_TREES } from '../zenderal/guide/prophecyLayout.js';
 import { TRAITS } from '../zenderal/guide/data.js';
 
 const DOCS_URL = `${import.meta.env.BASE_URL}zenderal/docs/`;
@@ -316,8 +316,8 @@ export default function Zenderal() {
 
   // The closing portal. The Zenematics mark arrives as the pin reaches the
   // top, the scene shows through it as its art fades, and it grows over the run (.zcta::after)
-  // until the head covers the screen; then the text fades in. Its mark rests GAP below the magic section,
-  // so the pin is pulled up over the magic section's end to match.
+  // until the head covers the screen; then the text fades in. Its mark rests GAP below the build-crafting
+  // section (the last before it), so the pin is pulled up over that section's end to match.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const cta = document.querySelector('.zcta');
@@ -327,7 +327,7 @@ export default function Zenderal() {
     const art = pin.querySelector('.zcta__logo');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
-    const magic = document.querySelector('.zmagic');
+    const last = document.querySelector('.zbuild');
     const compare = document.querySelector('.zcompare');
     const GAP = 240;
     const pageTop = (el) => el.getBoundingClientRect().top + scrollY;
@@ -340,9 +340,9 @@ export default function Zenderal() {
     const layout = () => {
       const { w0, by } = rest();
       const logoTop = by - (ZEN.boxCy - ZEN.top) * w0;
-      const last = magic.getBoundingClientRect().bottom + scrollY;
+      const end = last.getBoundingClientRect().bottom + scrollY;
       const margin = parseFloat(getComputedStyle(cta).marginTop);
-      cta.style.marginTop = `${last + GAP - logoTop - (pageTop(cta) - margin)}px`;
+      cta.style.marginTop = `${end + GAP - logoTop - (pageTop(cta) - margin)}px`;
       onScroll();
     };
     let frame = 0;
@@ -384,7 +384,7 @@ export default function Zenderal() {
     const ro = new ResizeObserver(layout);
     ro.observe(document.querySelector('.znew'));
     ro.observe(compare);
-    ro.observe(document.querySelector('.zclips'));
+    for (const el of document.querySelectorAll('.zclips')) ro.observe(el);
     ro.observe(document.querySelector('.zbuild'));
     ro.observe(document.querySelector('.zmagic'));
     addEventListener('scroll', onScroll, { passive: true });
@@ -511,6 +511,13 @@ export default function Zenderal() {
                             <div className="zpanels__body">
                               <div className="zpanels__inner">
                                 <p className="zpanels__text">{p.text}</p>
+                                {p.road && (
+                                  <div className="zpanels__links">
+                                    <button type="button" className="zpanels__link" tabIndex={open ? undefined : -1} onClick={() => takeRoad(p.road)}>
+                                      {OVERVIEW.welcome[p.road].title} <span aria-hidden="true">→</span>
+                                    </button>
+                                  </div>
+                                )}
                                 {p.links && (
                                   <div className="zpanels__links">
                                     {p.links.map((l) => (
@@ -572,33 +579,11 @@ export default function Zenderal() {
         </div>
       </section>
 
-      <section className="zclips">
-        <div className="zclips__head">
-          <span className="docs__label">{OVERVIEW.combat.label}</span>
-          <h2 className="zclips__title">{OVERVIEW.combat.title}</h2>
-          <p className="zclips__text">{OVERVIEW.combat.text}</p>
-        </div>
-        <div className="zclips__grid">
-          {OVERVIEW.combat.clips.map((clip) => (
-            <a
-              key={clip.title}
-              href={GUIDE_URL + clip.guide + '/'}
-              className={`zclip${clip.placeholder ? ' zclip--placeholder' : ''}`}
-            >
-              <div className="zclip__media">
-                <video className="zclip__video" muted loop playsInline preload="metadata" aria-hidden="true">
-                  <source src={`${import.meta.env.BASE_URL}uploads/zenderal/${clip.video}.webm`} type="video/webm" />
-                  <source src={`${import.meta.env.BASE_URL}uploads/zenderal/${clip.video}.mp4`} type="video/mp4" />
-                </video>
-              </div>
-              <div className="zclip__body">
-                <h3 className="zclip__title">{clip.title}</h3>
-                <p className="zclip__text">{clip.text}</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
+      <Clips {...OVERVIEW.combat} />
+
+      <Grimoire />
+
+      <Clips {...OVERVIEW.firearms} />
 
       <section className="zbuild">
         <div className="zbuild__pin">
@@ -632,6 +617,18 @@ export default function Zenderal() {
               role="img"
               aria-label={`The Prophecy talent trees: ${PROPHECY_TREES.map((t) => t.name).join(', ')}`}
             >
+              {PROPHECY_EDGES.map((e) => (
+                <polyline
+                  key={e.key}
+                  points={e.pts.map(([x, y]) => `${x},${-y}`).join(' ')}
+                  fill="none"
+                  stroke={e.tree.color}
+                  strokeOpacity={e.spoke ? 0.35 : 0.55}
+                  strokeWidth="1.25"
+                  strokeDasharray="4 4"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
               {PROPHECY_TREES.map((t) => (
                 <g key={t.id} fill={t.color}>
                   {t.nodes.map((n) => (
@@ -667,8 +664,6 @@ export default function Zenderal() {
         </div>
       </section>
 
-      <Grimoire />
-
       <section className="zcta">
         <div className="zcta__pin zparallax">
           <div className="zcta__portal">
@@ -693,5 +688,39 @@ export default function Zenderal() {
       </section>
 
     </div>
+  );
+}
+
+// A row of gameplay clips under a heading, each linking to its guide section. Placeholder
+// clips (the logo video) sit letterboxed until real ones are recorded.
+function Clips({ label, title, text, clips }) {
+  return (
+    <section className="zclips">
+      <div className="zclips__head">
+        <span className="docs__label">{label}</span>
+        <h2 className="zclips__title">{title}</h2>
+        <p className="zclips__text">{text}</p>
+      </div>
+      <div className="zclips__grid">
+        {clips.map((clip) => (
+          <a
+            key={clip.title}
+            href={GUIDE_URL + clip.guide + '/'}
+            className={`zclip${clip.placeholder ? ' zclip--placeholder' : ''}`}
+          >
+            <div className="zclip__media">
+              <video className="zclip__video" muted loop playsInline preload="metadata" aria-hidden="true">
+                <source src={`${import.meta.env.BASE_URL}uploads/zenderal/${clip.video}.webm`} type="video/webm" />
+                <source src={`${import.meta.env.BASE_URL}uploads/zenderal/${clip.video}.mp4`} type="video/mp4" />
+              </video>
+            </div>
+            <div className="zclip__body">
+              <h3 className="zclip__title">{clip.title}</h3>
+              <p className="zclip__text">{clip.text}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
   );
 }

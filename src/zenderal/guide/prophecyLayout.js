@@ -36,3 +36,27 @@ export const TREES = PROPHECY_TREES.map(onRing).map((t) => {
     return { ...t, anchor: cos < 0 ? 'end' : 'start', baseline: 'alphabetic', label: [cos < 0 ? x0 - 1 : x1 + 1, y1] };
   return { ...t, anchor: 'middle', baseline: 'alphabetic', label: [(x0 + x1) / 2, y1 + 2.2] };
 });
+
+// The lines between the stars: a spoke from the start point to each tree's root, then each talent to its parents
+// (along the game's route when it bends). `a` and `b` are the `<tree id>:<node id>` keys at each end (`a` is null
+// for a spoke).
+export const EDGES = TREES.flatMap((t) => {
+  const root = t.nodes.find((n) => n.parents.length === 0);
+  const spoke = { key: `${t.id}:spoke`, tree: t, pts: [[0, 0], [root.x, root.y]], a: null, b: `${t.id}:${root.id}`, spoke: true };
+  return [
+    spoke,
+    ...t.nodes.flatMap((n) =>
+      n.parents.map((p) => {
+        const from = t.nodes.find((m) => m.id === p);
+        const route = t.routes.find((r) => r.from === p && r.to === n.id);
+        return {
+          key: `${t.id}:${p}-${n.id}`,
+          tree: t,
+          pts: [[from.x, from.y], ...(route ? route.via : []), [n.x, n.y]],
+          a: `${t.id}:${p}`,
+          b: `${t.id}:${n.id}`,
+        };
+      }),
+    ),
+  ];
+});

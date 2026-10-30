@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PROPHECY_EXTENT } from './prophecy.js';
-import { BG, TREES } from './prophecyLayout.js';
+import { BG, EDGES, TREES } from './prophecyLayout.js';
 
 const ART = `${import.meta.env.BASE_URL}uploads/guide/prophecy/`;
 const MAX_POINTS = 30;
@@ -198,27 +198,6 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
   // The panel opens on the side away from the star, so it never covers what you're pointing at.
   const panelLeft = active && active.x > view.cx;
 
-  const edges = useMemo(() => {
-    const out = [];
-    for (const t of TREES) {
-      const root = t.nodes.find((n) => n.parents.length === 0);
-      out.push({ key: `${t.id}:spoke`, tree: t, pts: [[0, 0], [root.x, root.y]], a: null, b: `${t.id}:${root.id}`, spoke: true });
-      for (const n of t.nodes)
-        for (const p of n.parents) {
-          const from = t.nodes.find((m) => m.id === p);
-          const route = t.routes.find((r) => r.from === p && r.to === n.id);
-          out.push({
-            key: `${t.id}:${p}-${n.id}`,
-            tree: t,
-            pts: [[from.x, from.y], ...(route ? route.via : []), [n.x, n.y]],
-            a: `${t.id}:${p}`,
-            b: `${t.id}:${n.id}`,
-          });
-        }
-    }
-    return out;
-  }, []);
-
   const vb = `${view.cx - view.s} ${-view.cy - view.s} ${2 * view.s} ${2 * view.s}`;
 
   return (
@@ -257,7 +236,7 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
             <image href={`${ART}trees/radial.webp`} x={-BG} y={-BG} width={2 * BG} height={2 * BG} />
             <rect x={-BG} y={-BG} width={2 * BG} height={2 * BG} fill="rgba(7, 8, 10, 0.38)" />
 
-            {edges.map((e) => {
+            {EDGES.map((e) => {
               const on = (e.a === null || learned.has(e.a)) && learned.has(e.b);
               return (
                 <polyline

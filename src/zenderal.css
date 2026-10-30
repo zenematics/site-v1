@@ -720,8 +720,11 @@ html {
   flex-wrap: wrap;
   gap: 8px;
 }
+/* Links, and the button that switches roads. */
 .zpanels__link {
   padding: 7px 12px;
+  font-family: inherit;
+  cursor: pointer;
   border: 1px solid rgba(201, 171, 118, 0.5);
   background: rgba(7, 8, 10, 0.5);
   font-size: 11px;
@@ -850,9 +853,7 @@ html {
 .zcompare__pin {
   --split: 50%;
   --ratio: 16 / 9;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 120px 56px 0;
+  padding: 120px 0 0;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -866,6 +867,7 @@ html {
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  padding-inline: 56px;
   text-align: center;
 }
 .zcompare__title {
@@ -894,9 +896,8 @@ html {
   aspect-ratio: var(--ratio);
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-block: 1px solid rgba(255, 255, 255, 0.1);
   background: #0d0e11;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
 .zcompare__img {
   position: absolute;
@@ -949,7 +950,6 @@ html {
     position: sticky;
     top: 0;
     height: 100vh;
-    padding-bottom: 48px;
     mask-repeat: no-repeat;
   }
   /* The emblem the section opens out of (Zenderal.jsx places and fades it). */
@@ -965,16 +965,36 @@ html {
     transform-origin: 0 0;
     pointer-events: none;
   }
-  /* The frame fills what the heading leaves, as big as fits at its aspect ratio. */
+  /* The shots fill the screen behind the heading, cropped to fit, darkened at the top for the text. */
   .zcompare__stage {
-    flex: 1;
-    min-height: 0;
-    container-type: size;
-    display: grid;
-    place-items: center;
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+  .zcompare__stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.8), rgba(7, 8, 10, 0.45) 30%, transparent 55%);
+    pointer-events: none;
   }
   .zcompare__frame {
-    width: min(100cqw, 100cqh * (var(--ratio)));
+    height: 100%;
+    aspect-ratio: auto;
+    border: 0;
+  }
+  .zcompare__head {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+  }
+  .zcompare__head .zcompare__text {
+    color: #c9c5bd;
+  }
+  /* At the bottom, clear of the heading (more specific so the phone sizes keep it there). */
+  .zcompare__pin .zcompare__tag {
+    top: auto;
+    bottom: 18px;
   }
 }
 /* Gameplay loops: short muted clips in a grid, each linking to its guide section. They play
@@ -2543,6 +2563,27 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.02);
 }
+/* The selected race's portrait, edge to edge across the top of its card. */
+.g-race__art {
+  display: block;
+  width: calc(100% + 48px);
+  max-width: none;
+  margin: -24px -24px 0;
+  aspect-ratio: 8 / 3;
+  object-fit: cover;
+  object-position: 60% 20%;
+  animation: g-race-in 0.4s ease;
+}
+@keyframes g-race-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-race__art {
+    animation: none;
+  }
+}
 .g-card__head {
   display: flex;
   flex-wrap: wrap;
@@ -3875,7 +3916,10 @@ html {
   .zcompare__pin {
     --ratio: 4 / 5;
     gap: 24px;
-    padding: 96px 24px 32px;
+    padding: 96px 0 0;
+  }
+  .zcompare__head {
+    padding-inline: 24px;
   }
   .zcompare__text {
     font-size: 16px;

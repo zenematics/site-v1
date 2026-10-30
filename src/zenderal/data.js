@@ -90,6 +90,7 @@ export const OVERVIEW = {
     text: 'Whether this is your first trip to Vyn or your fifth, Zenderal delivers a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.',
     art: 'layers/crossroads',
     back: 'Back to the crossroads',
+    // A panel with `road` ends its row by switching to the other road's panels.
     newcomers: {
       kicker: 'First time in Vyn',
       label: 'New to Enderal',
@@ -98,10 +99,11 @@ export const OVERVIEW = {
       panels: [
         { title: 'A new world', art: 'zenderal/screenshots/backgrounds/crystal-forest.webp', text: "Enderal is SureAI's free total conversion for Skyrim: a whole new game on its engine, with its own continent, creatures, soundtrack and fully voiced story. You don't need to know Skyrim to play it, and nothing from Tamriel carries over.", links: [{ href: 'https://sureai.net/games/enderal/', label: 'Enderal by SureAI' }] },
         { title: 'The setting', art: 'zenderal/screenshots/backgrounds/meeting.webp', focus: '38% 50%', text: "Vyn is ruled by the Holy Order and its Lightborn priests, built on the ruins of older civilisations. Whispers of the Cleansing, the catastrophe that ended them, are spreading again. You arrive as a stowaway, haunted by nightmares you can't explain.", links: [{ href: 'https://wiki.en.sureai.net/Lore:Enderal', label: 'Read the lore' }] },
-        { title: 'Races', art: 'zenderal/screenshots/backgrounds/races.webp', text: 'Five cultures, from the steppes of Arazeal to the Starlings. Each sets your starting Health, Mana and Stamina and how fast they regenerate, and gives a cultural bonus to a few skills. It nudges a build without locking you in.', links: [{ guide: 'races', label: 'Races' }] },
+        { title: 'Races', art: 'zenderal/screenshots/backgrounds/races-collage.webp', text: 'Five cultures, from the steppes of Arazeal to the Starlings. Each sets your starting Health, Mana and Stamina and how fast they regenerate, and gives a cultural bonus to a few skills. It nudges a build without locking you in.', links: [{ guide: 'races', label: 'Races' }] },
         { title: 'New mechanics', art: 'zenderal/screenshots/backgrounds/sun-temple.webp', text: 'Magic has a price: Arcane Fever builds as you lean on it, and at 100% it kills you, so it has to be kept in check. Food and rest matter more than in Skyrim, and your companions have their own pasts and opinions, with bonds that grow from how you treat them.' },
         { title: 'Progression', art: 'zenderal/screenshots/backgrounds/perks.webp', text: "Skills don't level by use. Experience earns Learning Points for the combat and magic skills and Crafting Points for the crafting ones, and the books you read, from Apprentice to Master, cap how far each can go. Perk trees take Memory Points, and the trees you invest in unlock affinities: 44 bonus profiles that reward a focused build.", links: [{ guide: 'books', label: 'Learning books' }, { guide: 'perks', label: 'Perk trees' }, { guide: 'affinities', label: 'Affinities' }] },
         { title: 'The story', art: 'zenderal/screenshots/backgrounds/calia-wide.webp', focus: '42% 50%', text: "The story is Enderal's heart: dark, personal and psychological, about fate, memory and what drives people. Its characters, from your companion Jespar onwards, have their own doubts and secrets, and the main quest has more than one ending." },
+        { title: 'What Zenderal changes', art: 'zenderal/screenshots/backgrounds/combat.webp', text: 'Played Enderal before, or know the basics now? See what Zenderal adds on top: visuals, combat, magic, firearms, traits and Prophecy.', road: 'veterans' },
       ],
     },
     veterans: {
@@ -117,6 +119,7 @@ export const OVERVIEW = {
         { title: 'Firearms', art: 'zenderal/screenshots/backgrounds/musket.webp', text: 'Eight pistols and fourteen muskets, scaling with Archery and crafted at the forge, with their own ammunition.', links: [{ guide: 'firearms', label: 'Firearms' }] },
         { title: 'Traits', art: 'zenderal/screenshots/backgrounds/traits.webp', text: 'Pick up to two of 27 traits at the start, through Biggie Traits: 18 made for Zenderal and 9 from Zen Traits. Every trait has an upside and a downside, so it shapes a build rather than just adding to it.', links: [{ guide: 'traits', label: 'Traits' }] },
         { title: 'Prophecy', art: 'guide/prophecy/trees/radial.webp', text: "Eleven Prophecy talent trees sit on top of Enderal's perk trees, each built around a playstyle, from Faith and Necromancy to Firearms and Martial Arts. Plan a build on the interactive map before you play.", links: [{ guide: 'prophecy', label: 'Prophecy' }] },
+        { title: 'New to Enderal', art: 'zenderal/screenshots/backgrounds/ark.webp', text: "Never set foot in Vyn, or want a refresher? Start with the world, its people, how it plays and its story.", road: 'newcomers' },
       ],
     },
   },
@@ -137,10 +140,20 @@ export const OVERVIEW = {
     title: 'Every fight is a duel.',
     text: 'For Honor Reforged turns melee into directional, poise-driven duels, with parries, guard breaks and follow-ups. Firearms and spell packs round it out.',
     clips: [
-      { title: 'Combos and power attacks', text: 'Every move cancels into the next. Chain lights into directional power attacks for more damage and poise damage.', video: 'logo-grow', placeholder: true, guide: 'combat' },
+      { title: 'Combos and power attacks', text: 'Every move cancels into the next. Chain lights into directional power attacks for more damage and poise damage.', video: 'clips/combos', guide: 'combat' },
       { title: 'Parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'logo-grow', placeholder: true, guide: 'combat' },
       { title: 'First person overhaul', text: 'Fight from your own eyes, with reworked first-person animations and a full body under the camera.', video: 'logo-grow', placeholder: true, guide: 'keybindings' },
-      { title: 'Dodge', text: 'Tap Left Shift or press Left Alt to dodge out of a swing.', video: 'logo-grow', placeholder: true, guide: 'keybindings' },
+      { title: 'Dodge', text: 'Tap Left Shift or press Left Alt to dodge out of a swing.', video: 'clips/dodge', guide: 'keybindings' },
+    ],
+  },
+  // Placeholder until the firearms clips are recorded.
+  firearms: {
+    label: 'Firearms',
+    title: 'Powder and steel.',
+    text: 'Flintlock pistols and muskets, scaled by Archery and crafted at the forge, from old matchlocks to double-barrel Gewehrs.',
+    clips: [
+      { title: 'Pistols', text: 'A shot at close range, quick to draw between swings.', video: 'logo-grow', placeholder: true, guide: 'firearms' },
+      { title: 'Muskets', text: 'Heavy, slow to reload and devastating when they land.', video: 'logo-grow', placeholder: true, guide: 'firearms' },
     ],
   },
   // The build-crafting section: the in-game perk screen zooms into its stone circle, which opens
