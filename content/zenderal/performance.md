@@ -12,11 +12,11 @@ If DLSS or frame generation won't start at all, work through the [DLSS & Frame G
 | Key                | Opens                                                                     |
 | ------------------ | ------------------------------------------------------------------------- |
 | **End**            | Theo's Render Pipeline: DLSS/DLAA, frame generation, Reflex, Neural Rendering |
-| **Numpad 0**       | Community Shaders (Bottled Shaders): every lighting and shader feature    |
+| **Insert**         | Community Shaders (Bottled Shaders): every lighting and shader feature    |
 | **Numpad \***      | Switches Community Shaders off and on, for a quick before-and-after       |
 | **Shift + Enter**  | The Effects 11 editor, for the ENB-style look                             |
 
-Both mods use **End** by default. Zenderal moves Community Shaders to **Numpad 0** so the two don't clash. On a keyboard without a numpad, change it in the Community Shaders menu under **General → Keybindings**.
+Both mods use **End** by default. Zenderal moves Community Shaders to **Insert** so the two don't clash. To use another key, change it in the Community Shaders menu under **General → Keybindings**.
 
 ---
 
@@ -88,7 +88,7 @@ Neural Rendering, the NVIDIA feature people call "DLSS 5", runs an AI pass over 
 
 ## Community Shaders
 
-Press **Numpad 0** to open it. Search finds individual settings, not just feature names, and **Ctrl + S** saves.
+Press **Insert** to open it. Search finds individual settings, not just feature names, and **Ctrl + S** saves.
 
 ### What costs the most
 
@@ -178,7 +178,7 @@ On a non-NVIDIA GPU, TRP switches to Intel's **XeSS** for anti-aliasing and upsc
 If XeSS or XeFG crashes, flickers or performs badly on your card, you can turn TRP off and use the upscaler built into Community Shaders, which supports **AMD FSR**:
 
 1. In Mod Organizer 2, untick **TheosRenderPipeline Standard** and **TheosRenderPipeline Universal** in the **DLSS 5 - FrameGen - NR** section.
-2. Start the game, press **Numpad 0**, open **Upscaling** and choose **FSR**, with Quality as a starting point. RX 9000-series cards can use **FSR 4**.
+2. Start the game, press **Insert**, open **Upscaling** and choose **FSR**, with Quality as a starting point. RX 9000-series cards can use **FSR 4**.
 3. Save, then restart the game.
 
 This isn't Zenderal's default setup, so mention it if you report a problem. To go back, tick both TRP mods again and set Community Shaders' **Upscaling** back to how it was.
@@ -190,6 +190,6 @@ This isn't Zenderal's default setup, so mention it if you report a problem. To g
 Ask in the Zenderal [Discord](https://discord.com/invite/aunT9MdevX). Include:
 
 - Your **GPU**, **CPU**, **RAM** and **driver version**, and your **resolution**.
-- Screenshots of the **End** menu and the **Numpad 0** menu showing your settings.
+- Screenshots of the **End** menu and the **Insert** menu showing your settings.
 - Where it happens (a city, a dungeon, everywhere) and whether it's low FPS or stutter.
 - Your logs, from `Documents\My Games\Skyrim Special Edition\SKSE`: **`TheosRenderPipeline.log`** and **`BottledShaders.log`**. Copy them **before** you launch the game again, because each launch overwrites them.

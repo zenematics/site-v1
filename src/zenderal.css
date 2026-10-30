@@ -3893,6 +3893,12 @@ html {
     gap: 8px;
     padding: 20px 20px 46px;
   }
+  .gcard {
+    padding-top: 0;
+  }
+  .gcard__art {
+    margin: 0 -20px 4px;
+  }
   .zcard__title {
     font-size: 19px;
   }
