@@ -112,6 +112,23 @@ Updating wipes anything in the install folder that isn't part of the list, inclu
 
 ## Troubleshooting
 
+### Where to find crash logs
+
+Zenderal includes **Crash Logger**, which writes a log every time the game crashes to desktop and opens it in your text editor straight away. You'll find all of them in:
+
+```
+Documents\My Games\Skyrim Special Edition\SKSE
+```
+
+- Each crash is saved as `crash-` followed by the date and time, such as `crash-2026-10-30-00-08-16.log`. Sort the folder by date to find the newest one.
+- It's the **Skyrim** Special Edition folder, not the Enderal one, even though you're playing Enderal.
+- If your Documents folder is synced by **OneDrive**, the path starts with `OneDrive\Documents` instead. Typing `shell:Personal` into File Explorer's address bar opens whichever Documents folder Windows uses, so it finds it either way.
+- The last 20 crash logs are kept, and older ones are deleted.
+
+**If the game freezes** instead of crashing, press **Ctrl + Shift + F12** while it's frozen. Crash Logger then writes a `threaddump-` log to the same folder showing what the game was stuck on.
+
+When you report a crash in the Zenderal [Discord](https://discord.com/invite/aunT9MdevX), attach the whole log file rather than a screenshot or a pasted part of it, and say what you were doing when it happened.
+
 ### "Dismembering Framework.esm is missing"
 
 The game closes on startup with a **DismemberingFramework: Fatal Error** saying the required plugin `Dismembering Framework.esm` is missing.
