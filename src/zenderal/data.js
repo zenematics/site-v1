@@ -93,7 +93,7 @@ export const OVERVIEW = {
     // A panel with `road` ends its row by switching to the other road's panels.
     newcomers: {
       kicker: 'First time in Vyn',
-      label: 'New to Enderal',
+      label: 'New to Enderal?',
       road: { x: 31, y: 62 },
       title: 'Welcome to Vyn',
       panels: [
@@ -115,11 +115,11 @@ export const OVERVIEW = {
       panels: [
         { title: 'Visuals', art: 'zenderal/screenshots/before-and-after/after.webp', text: 'Community Shaders rebuilds the lighting, shadows, water and weather, and improved textures sharpen Vyn up close. DLSS 5 upscaling and frame generation keep it running smoothly on supported cards.', links: [{ doc: 'performance', label: 'Performance' }] },
         { title: 'Combat', art: 'zenderal/screenshots/backgrounds/warrior.webp', text: 'Modern Combat Overhaul and For Honor Reforged turn melee into duels. Attacks come from a direction, every move cancels into the next, and poise decides who staggers. Back + attack parries, back + power attack breaks a guard, and a tap of Left Shift dodges out of a swing.', links: [{ guide: 'combat', label: 'Combat' }] },
-        { title: 'Magic', art: 'zenderal/screenshots/backgrounds/mage.webp', text: "Hundreds of new tome-taught spells: Apocalypse's 175 across all five schools, Triumvirate's 75 built around five mage archetypes, and KataPUMB's ranked spell lines. They're sold by spell vendors across Vyn, and fitted into Enderal's schools and tiers.", links: [{ guide: 'magic', label: 'Magic' }] },
+        { title: 'Magic', art: 'zenderal/screenshots/backgrounds/mage-cast-lightning.webp', text: "Hundreds of new tome-taught spells: Apocalypse's 175 across all five schools, Triumvirate's 75 built around five mage archetypes, and KataPUMB's ranked spell lines. They're sold by spell vendors across Vyn, and fitted into Enderal's schools and tiers.", links: [{ guide: 'magic', label: 'Magic' }] },
         { title: 'Firearms', art: 'zenderal/screenshots/backgrounds/musket.webp', text: 'Eight pistols and fourteen muskets, scaling with Archery and crafted at the forge, with their own ammunition.', links: [{ guide: 'firearms', label: 'Firearms' }] },
         { title: 'Traits', art: 'zenderal/screenshots/backgrounds/traits.webp', text: 'Pick up to two of 27 traits at the start, through Biggie Traits: 18 made for Zenderal and 9 from Zen Traits. Every trait has an upside and a downside, so it shapes a build rather than just adding to it.', links: [{ guide: 'traits', label: 'Traits' }] },
         { title: 'Prophecy', art: 'guide/prophecy/trees/radial.webp', text: "Eleven Prophecy talent trees sit on top of Enderal's perk trees, each built around a playstyle, from Faith and Necromancy to Firearms and Martial Arts. Plan a build on the interactive map before you play.", links: [{ guide: 'prophecy', label: 'Prophecy' }] },
-        { title: 'New to Enderal', art: 'zenderal/screenshots/backgrounds/ark.webp', text: "Never set foot in Vyn, or want a refresher? Start with the world, its people, how it plays and its story.", road: 'newcomers' },
+        { title: 'New to Enderal?', art: 'zenderal/screenshots/backgrounds/ark.webp', text: "Never set foot in Vyn, or want a refresher? Start with the world, its people, how it plays and its story.", road: 'newcomers' },
       ],
     },
   },

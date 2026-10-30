@@ -347,6 +347,19 @@ html {
   object-position: 50% 60%;
   filter: brightness(0.85) saturate(0.8);
 }
+/* Bolder depth than the shared defaults. The far layers sink with the page, so a layer only pulls away from the
+   scene's edge on the side that's off screen (the scene is taller than the viewport). */
+.zfork .zlayer--back {
+  --drift: 0.24;
+}
+.zfork .zlayer--mid {
+  --drift: 0.12;
+  --push: 1;
+}
+.zfork .zlayer--front {
+  --drift: 0;
+  --push: 2;
+}
 .zfork.is-leaning .zfork__scene {
   scale: 1.05;
 }
@@ -773,25 +786,44 @@ html {
   .zfork__shade {
     background: linear-gradient(180deg, rgba(7, 8, 10, 0.85) 15%, rgba(7, 8, 10, 0.6) 40%, transparent 55%, transparent 60%, rgba(7, 8, 10, 0.7));
   }
+  /* Gentler depth: the scene is barely taller than the screen here, so the bold desktop drift would pull the
+     village clear of the near ground and show the far layer between them. */
+  .zfork .zlayer--back {
+    --drift: 0.1;
+  }
+  .zfork .zlayer--mid {
+    --drift: 0.04;
+    --push: 0.5;
+  }
+  .zfork .zlayer--front {
+    --drift: 0.01;
+    --push: 1;
+  }
   .zfork__roads {
     gap: 32px;
-    padding: calc(var(--blend) + 32px) 20px 48px;
+    padding: calc(var(--blend) + 32px) 20px 40px;
   }
+  /* The signs stay side by side under their roads, small enough that the travellers show between the heading and them. */
   .zfork__signs {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 28px;
+    gap: 16px;
   }
-  .zfork__sign--veterans {
-    align-items: flex-start;
-    text-align: left;
+  .zfork__sign {
+    flex: 1 1 0;
+    gap: 6px;
+    padding-bottom: 12px;
   }
-  .zfork__sign--veterans::after {
-    left: 0;
-    right: auto;
+  .zfork__kicker {
+    font-size: 10px;
+    letter-spacing: 0.22em;
   }
   .zfork__label {
-    font-size: 26px;
+    font-size: clamp(17px, 4.6vw, 26px);
+    line-height: 1.15;
+  }
+  .zfork__take {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
   }
   .zfork__views {
     padding: calc(var(--blend) + 24px) 20px 48px;
@@ -799,7 +831,8 @@ html {
   .znew__panel-title {
     font-size: 22px;
   }
-  /* The panels stack as bands; the open one grows tall enough for its picture, line and links. */
+  /* The panels stack as bands, each as tall as its text with the picture behind it, so the whole list fits on
+     screen; the open one grows as its paragraph and links slide open. */
   .zpanels {
     flex-direction: column;
     height: auto;
@@ -807,11 +840,12 @@ html {
   }
   .zpanels__item {
     flex: none;
-    height: 64px;
-    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
   }
-  .zpanels__item.is-open {
-    height: 540px;
+  .zpanels__foot {
+    position: relative;
+  }
+  .zpanels__item.is-open::after {
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.35), rgba(7, 8, 10, 0.85));
   }
   .zpanels__head {
     flex-direction: row;
@@ -1210,8 +1244,22 @@ html {
   text-align: center;
   opacity: 0;
 }
+/* Blurs and darkens the trait art behind the text, strongest in the middle and fading out towards the circle's edge
+   (placed and sized by Zenderal.jsx). */
+.zbuild__veil {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(7, 8, 10, 0.4), rgba(7, 8, 10, 0) 100%);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  mask-image: radial-gradient(closest-side, #000 40%, transparent 100%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
 .zbuild__feature-name {
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1219,9 +1267,9 @@ html {
 }
 .zbuild__feature-up,
 .zbuild__feature-down {
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 300;
+  font-size: 24px;
+  line-height: 1.45;
+  font-weight: 400;
   text-wrap: pretty;
 }
 .zbuild__feature-up {
@@ -1254,7 +1302,7 @@ html {
   left: max(56px, (100% - 1240px) / 2 + 56px);
   top: 50%;
   translate: 0 -50%;
-  width: 360px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1288,18 +1336,18 @@ html {
   opacity: 1;
 }
 .zbuild__stage-n {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #c9ab76;
-  line-height: 22px;
+  line-height: 26px;
 }
 .zbuild__stage-title {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #ece9e2;
-  line-height: 22px;
+  line-height: 26px;
 }
 .zbuild__stage-body {
   grid-column: 2;
@@ -1316,8 +1364,8 @@ html {
 .zbuild__stage-text {
   margin: 0;
   padding-top: 10px;
-  font-size: 16px;
-  line-height: 1.65;
+  font-size: 19px;
+  line-height: 1.6;
   font-weight: 300;
   color: #c2beb6;
   text-wrap: pretty;
@@ -1377,14 +1425,14 @@ html {
     display: grid;
   }
   .zbuild__stage-text {
-    font-size: 15px;
+    font-size: 16px;
   }
   .zbuild__feature-name {
-    font-size: 15px;
+    font-size: 18px;
   }
   .zbuild__feature-up,
   .zbuild__feature-down {
-    font-size: 12px;
+    font-size: 15px;
   }
 }
 @media (max-width: 860px) and (prefers-reduced-motion: reduce) {
@@ -2933,6 +2981,9 @@ html {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* The stars move as the map flies or pans; if the browser anchored the page scroll to one, the page would
+     scroll along with it. */
+  overflow-anchor: none;
 }
 .pmap__bar {
   display: flex;

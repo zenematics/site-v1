@@ -191,6 +191,7 @@ export default function Zenderal() {
     const medals = [...pin.querySelectorAll('.zbuild__medal')];
     const featured = [...pin.querySelectorAll('.zbuild__feature')];
     const portraits = [...pin.querySelectorAll('.zbuild__portrait')];
+    const veil = pin.querySelector('.zbuild__veil');
     const rim = pin.querySelector('.zbuild__rim');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
@@ -222,7 +223,7 @@ export default function Zenderal() {
       // The ring sits just outside the stone circle, or inside it where the screen is too small.
       const ring = Math.min(peak.r * 1.16, fit);
       for (const m of medals) m.style.width = m.style.height = `${icon}px`;
-      for (const f of featured) f.style.width = `${Math.min(360, (ring - icon) * 1.6)}px`;
+      for (const f of featured) f.style.width = `${Math.min(500, (ring - icon) * 1.6)}px`;
       // The hole has opened once it reaches the farthest corner from the circle's middle.
       const open = Math.hypot(Math.max(c.x, W - c.x), Math.max(c.y, H - c.y));
       // The trait art fills the circle, or stops inside the ring where it sits inside the circle.
@@ -296,6 +297,10 @@ export default function Zenderal() {
         p.style.transform = `translate(${x - pr}px, ${y - pr}px)`;
         p.style.opacity = shown * Math.max(0, 1 - Math.abs(i - turn));
       });
+      // The blur behind the text covers the same circle and stays put while the art crossfades under it.
+      veil.style.width = veil.style.height = `${2 * pr}px`;
+      veil.style.transform = `translate(${x - pr}px, ${y - pr}px)`;
+      veil.style.opacity = shown;
 
       const on = t < 0.19 ? 0 : t < 0.68 ? 1 : 2;
       stages.forEach((s, i) => s.classList.toggle('is-on', i === on));
@@ -598,6 +603,7 @@ export default function Zenderal() {
             {FEATURED.map((t) => (
               <img key={t.name} src={`${TRAIT_ART}${t.img}`} alt="" className="zbuild__portrait" />
             ))}
+            <div className="zbuild__veil" />
             {RING.map((t) => (
               <img key={t.name} src={`${TRAIT_ART}${t.img}`} alt="" className="zbuild__medal" />
             ))}
