@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Nav from '../components/Nav.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
@@ -33,7 +33,7 @@ const BUILD_W = 1000;
 const FEATURED = OVERVIEW.build.traits.map((n) => TRAITS.find((t) => t.name === n));
 const RING = [...FEATURED, ...TRAITS.filter((t) => !FEATURED.includes(t))];
 const TRAIT_ART = `${import.meta.env.BASE_URL}uploads/guide/traits/`;
-// The "New to Enderal" switch's two sides, keys into OVERVIEW.welcome.
+// The "New to Enderal" crossroads' two roads, left then right, keys into OVERVIEW.welcome.
 const AUDIENCES = ['newcomers', 'veterans'];
 
 function Layers({ src }) {
@@ -57,7 +57,21 @@ function resolve(link) {
 }
 
 export default function Zenderal() {
-  const [audience, setAudience] = useState('newcomers');
+  // The crossroads: the road taken (null at the fork), the one the scene leans towards (kept after the
+  // pointer leaves, so the zoom's origin doesn't jump), and which of the road's picture panels is open.
+  const [audience, setAudience] = useState(null);
+  const [side, setSide] = useState('newcomers');
+  const [lean, setLean] = useState(false);
+  const [panel, setPanel] = useState(0);
+  const backRef = useRef(null);
+  const takeRoad = (a) => {
+    setSide(a);
+    setAudience(a);
+    setPanel(0);
+  };
+  useEffect(() => {
+    if (audience) backRef.current?.focus({ preventScroll: true });
+  }, [audience]);
   // Feed each parallax backdrop its distance from the viewport centre (px) as --p.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -451,74 +465,127 @@ export default function Zenderal() {
       </section>
 
       <section className="znew">
-        <div className="znew__head">
-          <span className="docs__label">{OVERVIEW.welcome.label}</span>
-          <h2 className="znew__title">{OVERVIEW.welcome.title}</h2>
-          <p className="znew__text">{OVERVIEW.welcome.text}</p>
-        </div>
-        {/* One panel, switched between the two audiences; both views share one grid cell so the panel
-            keeps the taller one's height and doesn't jump when switching. */}
-        <div className={`znew__panel znew__panel--${audience}`}>
-          {AUDIENCES.map((a) => (
-            <img
-              key={a}
-              src={`${import.meta.env.BASE_URL}uploads/zenderal/${OVERVIEW.welcome[a].art}`}
-              alt=""
-              className={`znew__art znew__art--${a}${audience === a ? ' is-on' : ''}`}
-            />
-          ))}
-          <div className="znew__shade" />
-          <div className="znew__switch" role="tablist" aria-label="Who's playing">
-            {AUDIENCES.map((a) => (
-              <button
-                key={a}
-                type="button"
-                role="tab"
-                id={`znew-tab-${a}`}
-                aria-controls={`znew-view-${a}`}
-                aria-selected={audience === a}
-                tabIndex={audience === a ? 0 : -1}
-                className={`znew__option${audience === a ? ' is-on' : ''}`}
-                onClick={() => setAudience(a)}
-                onKeyDown={(e) => {
-                  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-                  const next = AUDIENCES[(AUDIENCES.indexOf(a) + 1) % AUDIENCES.length];
-                  setAudience(next);
-                  document.getElementById(`znew-tab-${next}`).focus();
-                }}
-              >
-                {OVERVIEW.welcome[a].label}
-              </button>
-            ))}
+        {/* The crossroads, full width: the heading sits on the scene over the two roads' signs, and both go
+            when a road is taken. Each sign leans the scene towards its road; taking it zooms down the road
+            and brings up that road's picture panels. The heading and signs and both roads' views share one
+            grid cell, so the scene keeps the tallest one's height. */}
+        <div
+          className={`zfork zfork--${side}${audience ? ' is-taken' : ''}${lean && !audience ? ' is-leaning' : ''}`}
+          style={{
+            '--road-x': `${OVERVIEW.welcome[side].road.x}%`,
+            '--road-y': `${OVERVIEW.welcome[side].road.y}%`,
+          }}
+        >
+          <div className="zfork__scene">
+            <img src={`${import.meta.env.BASE_URL}uploads/zenderal/${OVERVIEW.welcome.art}`} alt="" className="zfork__art" />
           </div>
-          <div className="znew__views">
+          <div className="zfork__shade" />
+          <div className="zfork__roads" aria-hidden={audience ? true : undefined}>
+            <div className="znew__head">
+              <span className="docs__label">{OVERVIEW.welcome.label}</span>
+              <h2 className="znew__title">{OVERVIEW.welcome.title}</h2>
+              <p className="znew__text">{OVERVIEW.welcome.text}</p>
+            </div>
+            <div className="zfork__signs">
+              {AUDIENCES.map((a) => (
+                <button
+                  key={a}
+                  type="button"
+                  id={`znew-road-${a}`}
+                  className={`zfork__sign zfork__sign--${a}`}
+                  tabIndex={audience ? -1 : undefined}
+                  onMouseEnter={() => {
+                    setSide(a);
+                    setLean(true);
+                  }}
+                  onMouseLeave={() => setLean(false)}
+                  onFocus={() => {
+                    setSide(a);
+                    setLean(true);
+                  }}
+                  onBlur={() => setLean(false)}
+                  onClick={() => takeRoad(a)}
+                >
+                  <span className="zfork__kicker">{OVERVIEW.welcome[a].kicker}</span>
+                  <span className="zfork__label">{OVERVIEW.welcome[a].label}</span>
+                  <span className="zfork__take">
+                    {OVERVIEW.welcome[a].title} <span aria-hidden="true">{a === 'newcomers' ? '←' : '→'}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="zfork__views">
             {AUDIENCES.map((a) => {
               const view = OVERVIEW.welcome[a];
-              const rows = a === 'newcomers'
-                ? view.steps.map((s) => ({ ...s, key: s.title }))
-                : view.changes.map((c) => ({ ...c, key: c.area, title: c.area }));
-              const List = a === 'newcomers' ? 'ol' : 'ul';
+              const on = audience === a;
               return (
-                <div
-                  key={a}
-                  id={`znew-view-${a}`}
-                  role="tabpanel"
-                  aria-labelledby={`znew-tab-${a}`}
-                  className={`znew__view${audience === a ? ' is-on' : ''}`}
-                >
-                  <h3 className="znew__panel-title">{view.title}</h3>
-                  <p className="znew__panel-text">{view.text}</p>
-                  <List className={a === 'newcomers' ? 'znew__steps' : 'znew__changes'}>
-                    {rows.map((r) => (
-                      <li key={r.key}>
-                        <a href={resolve(r).href} className="znew__row">
-                          <span className="znew__row-title">{r.title}</span>
-                          <span className="znew__row-text">{r.text}</span>
-                          <span className="znew__go" aria-hidden="true">→</span>
-                        </a>
-                      </li>
-                    ))}
-                  </List>
+                <div key={a} className={`znew__view${on ? ' is-on' : ''}`} aria-hidden={on ? undefined : true}>
+                  <div className="znew__view-head">
+                    <button
+                      ref={on ? backRef : undefined}
+                      type="button"
+                      className="zfork__back"
+                      tabIndex={on ? undefined : -1}
+                      onClick={() => {
+                        setAudience(null);
+                        requestAnimationFrame(() => document.getElementById(`znew-road-${a}`)?.focus({ preventScroll: true }));
+                      }}
+                    >
+                      <span aria-hidden="true">←</span> {OVERVIEW.welcome.back}
+                    </button>
+                    <h3 className="znew__panel-title">{view.title}</h3>
+                  </div>
+                  {/* Picture panels: the open one (hovered, focused or tapped) widens to show its line and links. */}
+                  <ul className="zpanels">
+                    {view.panels.map((p, i) => {
+                      const open = on && panel === i;
+                      return (
+                        <li
+                          key={p.title}
+                          className={`zpanels__item${open ? ' is-open' : ''}`}
+                          style={{ '--n': i }}
+                          onMouseEnter={() => setPanel(i)}
+                        >
+                          <img src={`${import.meta.env.BASE_URL}uploads/${p.art}`} alt="" loading="lazy" className="zpanels__art" />
+                          <div className="zpanels__foot">
+                            <button
+                              type="button"
+                              className="zpanels__head"
+                              aria-expanded={open}
+                              tabIndex={on ? undefined : -1}
+                              onClick={() => setPanel(i)}
+                              onFocus={() => setPanel(i)}
+                            >
+                              <span className="zpanels__n">{String(i + 1).padStart(2, '0')}</span>
+                              <span className="zpanels__title">{p.title}</span>
+                            </button>
+                            <div className="zpanels__body">
+                              <div className="zpanels__inner">
+                                <p className="zpanels__text">{p.text}</p>
+                                {p.links && (
+                                  <div className="zpanels__links">
+                                    {p.links.map((l) => (
+                                      <a
+                                        key={l.label}
+                                        href={l.href ?? resolve(l).href}
+                                        className="zpanels__link"
+                                        tabIndex={open ? undefined : -1}
+                                        {...(l.href && { target: '_blank', rel: 'noopener noreferrer' })}
+                                      >
+                                        {l.label} <span aria-hidden="true">{l.href ? '↗' : '→'}</span>
+                                        {l.href && <span className="sr-only"> (opens in a new tab)</span>}
+                                      </a>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
               );
             })}

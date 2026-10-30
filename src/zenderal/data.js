@@ -87,37 +87,44 @@ export const OVERVIEW = {
     { label: 'Keyboard or controller', text: 'A full controller layout, so every action works on both.' },
     { label: 'In beta', text: 'Playable now and changing fast. Feedback goes through Discord.' },
   ],
-  // "New to Enderal" under the intro: a switch between first-time players (a first-hour path) and
-  // players who know Enderal (what Zenderal changes), each over its own `art` (under uploads/zenderal/).
-  // `label` is the switch's text. Links are { guide: id } or { doc: id }.
+  // "New to Enderal" under the intro (WD-111): a crossroads (`art`, under uploads/zenderal/) whose two roads are
+  // the choice between first-time players (what Enderal is) and players who know it (what Zenderal changes).
+  // Each side's `road` is where its road disappears (percent of the art), which the scene leans and zooms
+  // towards; `kicker` and `label` are its sign. Taking a road opens its `panels`: pictures (`art`, under
+  // uploads/) with a title and a short paragraph, kept brief because the pictures do the work. `links` are
+  // { guide: id }, { doc: id } or { href } (another site, opened in a new tab) with a `label`.
   welcome: {
     label: 'New to Enderal',
     title: 'Made for first-timers and veterans.',
-    text: "Whether this is your first trip to Vyn or your fifth, here's where to start.",
+    text: "Whether this is your first trip to Vyn or your fifth, here's where to start. Pick a road.",
+    art: 'crossroads.webp',
+    back: 'Back to the crossroads',
     newcomers: {
+      kicker: 'First time in Vyn',
       label: 'New to Enderal',
-      art: 'screenshots/backgrounds/ark-with-jespar.webp',
-      title: 'Your first hour',
-      text: "Enderal is SureAI's free total conversion for Skyrim, with its own world and story. You don't need to know Skyrim to play it.",
-      steps: [
-        { doc: 'readme', title: 'Install', text: 'Wabbajack downloads and sets up the whole list. Read the readme first.' },
-        { guide: 'races', title: 'Pick your culture', text: 'Five cultures, each with its own starting stats and bonuses.' },
-        { guide: 'traits', title: 'Choose a trait', text: 'An upside and a downside, picked at the start and built around.' },
-        { guide: 'combat', title: 'Learn to fight', text: 'Directional melee: parries, guard breaks and poise.' },
-        { guide: 'books', title: 'Grow your skills', text: 'Spend Learning and Crafting Points, capped by the books you read.' },
+      road: { x: 31, y: 62 },
+      title: 'Welcome to Vyn',
+      panels: [
+        { title: 'A new world', art: 'zenderal/screenshots/backgrounds/ark.webp', text: "Enderal is SureAI's free total conversion for Skyrim: a whole new game on its engine, with its own continent, creatures, soundtrack and fully voiced story. You don't need to know Skyrim to play it, and nothing from Tamriel carries over.", links: [{ href: 'https://sureai.net/games/enderal/', label: 'Enderal by SureAI' }] },
+        { title: 'The setting', art: 'zenderal/screenshots/backgrounds/castle.webp', text: "Vyn is ruled by the Holy Order and its Lightborn priests, built on the ruins of older civilisations. Whispers of the Cleansing, the catastrophe that ended them, are spreading again. You arrive as a stowaway, haunted by nightmares you can't explain.", links: [{ href: 'https://wiki.en.sureai.net/Lore:Enderal', label: 'Read the lore' }] },
+        { title: 'Races', art: 'zenderal/screenshots/backgrounds/races.webp', text: 'Five cultures, from the steppes of Arazeal to the Starlings. Each sets your starting Health, Mana and Stamina and how fast they regenerate, and gives a cultural bonus to a few skills. It nudges a build without locking you in.', links: [{ guide: 'races', label: 'Races' }] },
+        { title: 'New mechanics', art: 'zenderal/screenshots/backgrounds/magic.webp', text: 'Magic has a price: Arcane Fever builds as you lean on it, and at 100% it kills you, so it has to be kept in check. Food and rest matter more than in Skyrim, and your companions have their own pasts and opinions, with bonds that grow from how you treat them.' },
+        { title: 'Progression', art: 'zenderal/screenshots/backgrounds/perks.webp', text: "Skills don't level by use. Experience earns Learning Points for the combat and magic skills and Crafting Points for the crafting ones, and the books you read, from Apprentice to Master, cap how far each can go. Perk trees take Memory Points, and the trees you invest in unlock affinities: 44 bonus profiles that reward a focused build.", links: [{ guide: 'books', label: 'Learning books' }, { guide: 'perks', label: 'Perk trees' }, { guide: 'affinities', label: 'Affinities' }] },
+        { title: 'The story', art: 'zenderal/screenshots/backgrounds/thief.webp', text: "The story is Enderal's heart: dark, personal and psychological, about fate, memory and what drives people. Its characters, from your companion Jespar onwards, have their own doubts and secrets, and the main quest has more than one ending." },
       ],
     },
     veterans: {
+      kicker: 'Back for more',
       label: 'Played Enderal before',
-      art: 'screenshots/backgrounds/warrior.webp',
+      road: { x: 82, y: 60 },
       title: 'What Zenderal changes',
-      text: 'The story, quests and world are as SureAI made them. Around them:',
-      changes: [
-        { guide: 'combat', area: 'Combat', text: 'For Honor Reforged: directional, poise-driven duels.' },
-        { guide: 'prophecy', area: 'Prophecy', text: 'Eleven talent trees on top of the perk trees, with a build planner.' },
-        { doc: 'performance', area: 'Visuals', text: 'Community Shaders lighting, shadows, water and weather, with DLSS and frame generation.' },
-        { guide: 'firearms', area: 'Arsenal', text: 'Pistols and muskets, new spell packs and armor sets with set bonuses.' },
-        { guide: 'controller', area: 'Controls', text: 'Full controller support, with every action on the pad.' },
+      panels: [
+        { title: 'Visuals', art: 'zenderal/screenshots/before-and-after/after.webp', text: 'Community Shaders rebuilds the lighting, shadows, water and weather, and improved textures sharpen Vyn up close. DLSS 5 upscaling and frame generation keep it running smoothly on supported cards.', links: [{ doc: 'performance', label: 'Performance' }] },
+        { title: 'Combat', art: 'zenderal/screenshots/backgrounds/warrior.webp', text: 'Modern Combat Overhaul and For Honor Reforged turn melee into duels. Attacks come from a direction, every move cancels into the next, and poise decides who staggers. Back + attack parries, back + power attack breaks a guard, and a tap of Left Shift dodges out of a swing.', links: [{ guide: 'combat', label: 'Combat' }] },
+        { title: 'Magic', art: 'zenderal/screenshots/backgrounds/mage.webp', text: "Hundreds of new tome-taught spells: Apocalypse's 175 across all five schools, Triumvirate's 75 built around five mage archetypes, and KataPUMB's ranked spell lines. They're sold by spell vendors across Vyn, and fitted into Enderal's schools and tiers.", links: [{ guide: 'magic', label: 'Magic' }] },
+        { title: 'Firearms', art: 'zenderal/screenshots/backgrounds/musket.webp', text: 'Eight pistols and fourteen muskets, scaling with Archery and crafted at the forge, with their own ammunition.', links: [{ guide: 'firearms', label: 'Firearms' }] },
+        { title: 'Traits', art: 'zenderal/screenshots/backgrounds/traits.webp', text: 'Pick up to two of 27 traits at the start, through Biggie Traits: 18 made for Zenderal and 9 from Zen Traits. Every trait has an upside and a downside, so it shapes a build rather than just adding to it.', links: [{ guide: 'traits', label: 'Traits' }] },
+        { title: 'Prophecy', art: 'guide/prophecy/trees/radial.webp', text: "Eleven Prophecy talent trees sit on top of Enderal's perk trees, each built around a playstyle, from Faith and Necromancy to Firearms and Martial Arts. Plan a build on the interactive map before you play.", links: [{ guide: 'prophecy', label: 'Prophecy' }] },
       ],
     },
   },

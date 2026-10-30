@@ -400,8 +400,8 @@ html {
   position: relative;
 }
 
-/* "New to Enderal": two panels, a first-hour path for new players and what Zenderal changes for
-   returning ones, each row linking into the guide or docs. Pulled up into the intro's bottom fade so
+/* "New to Enderal": a crossroads whose two roads lead to what Enderal is for new players and what Zenderal
+   changes for returning ones, with the heading on the scene. Pulled up into the intro's bottom fade so
    it follows the emblem closely. */
 .znew {
   position: relative;
@@ -435,74 +435,213 @@ html {
   color: #9b968d;
   text-wrap: pretty;
 }
-/* One panel, switched between the audiences (Zenderal.jsx). Each side has its own art, which
-   crossfades in behind a shade that keeps the text on the left readable. */
-.znew__panel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 32px;
-  padding: 36px 40px 28px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #0d0e11;
-}
-/* Right of the text, fading in from its left edge, with each shot's subject in view. */
-.znew__art {
-  position: absolute;
-  top: 0;
-  left: 40%;
-  width: 60%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.9) saturate(0.6);
-  mask-image: linear-gradient(90deg, transparent, #000 35%);
-  opacity: 0;
-  scale: 1.04;
-  transition: opacity 0.6s ease, scale 1.2s ease;
-}
-.znew__art.is-on {
-  opacity: 1;
-  scale: 1;
-}
-.znew__art--newcomers {
-  object-position: 42% 50%;
-}
-.znew__art--veterans {
-  object-position: 18% 40%;
-}
-.znew__shade {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(7, 8, 10, 0.6) 40%, rgba(7, 8, 10, 0.1) 70%, transparent),
-    linear-gradient(180deg, rgba(7, 8, 10, 0.3), transparent 30%, transparent 70%, rgba(7, 8, 10, 0.5));
-}
-/* The two-way switch: a sliding gold bar marks the chosen side. */
-.znew__switch {
+/* The crossroads, full width (Zenderal.jsx): a painted fork in the road, its left road for new players and its
+   right for returning ones. Pointing at a road's sign leans the scene towards where that road disappears
+   (--road-x/y); taking it zooms down the road, dims it and brings up the road's picture panels. Fades into the page above and below. */
+.zfork {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(7, 8, 10, 0.6);
+  min-height: clamp(560px, 43vw, 860px);
+  margin-inline: calc(50% - 50vw);
+  overflow: hidden;
+  background: #07080a;
+  mask-image: linear-gradient(180deg, transparent, #000 10%, #000 88%, transparent);
 }
-.znew__switch::before {
+.zfork__scene {
+  position: absolute;
+  inset: 0;
+  transform-origin: var(--road-x) var(--road-y);
+  transition: scale 1.6s cubic-bezier(0.6, 0, 0.2, 1), filter 1.2s ease, transform-origin 0.8s ease;
+}
+.zfork__art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 60%;
+  filter: brightness(0.85) saturate(0.8);
+}
+.zfork.is-leaning .zfork__scene {
+  scale: 1.05;
+}
+.zfork.is-taken .zfork__scene {
+  scale: 1.9;
+  filter: brightness(0.65) blur(1.5px);
+}
+/* A ceiling for the heading, a floor for the signs, and a darkening over whichever side isn't leaned towards (or both, under a road's panels). */
+.zfork__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(7, 8, 10, 0.85) 10%, rgba(7, 8, 10, 0.5) 30%, transparent 45%, transparent 50%, rgba(7, 8, 10, 0.65));
+}
+.zfork__shade::before,
+.zfork__shade::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
+  width: 65%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.zfork__shade::before {
   left: 0;
-  width: 50%;
-  background: #ece9e2;
-  transition: translate 0.35s ease;
+  background: linear-gradient(90deg, rgba(7, 8, 10, 0.85) 30%, transparent);
 }
-.znew__panel--veterans .znew__switch::before {
-  translate: 100% 0;
+.zfork__shade::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(7, 8, 10, 0.85) 30%, transparent);
 }
-.znew__option {
+.zfork--veterans.is-leaning .zfork__shade::before,
+.zfork--newcomers.is-leaning .zfork__shade::after,
+.zfork.is-taken .zfork__shade::before,
+.zfork.is-taken .zfork__shade::after {
+  opacity: 1;
+}
+/* The two signs, at the bottom corners under their roads; the page's 1240px column sets their inset. */
+.zfork__roads,
+.zfork__views {
+  --inset: max(56px, calc(50vw - 564px));
+  grid-area: 1 / 1;
   position: relative;
-  padding: 14px 26px;
+}
+/* The heading at the top of the scene, the two signs at the bottom corners under their roads. */
+.zfork__roads {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 120px var(--inset) 72px;
+  transition: opacity 0.5s ease 0.3s, visibility 0s;
+}
+.zfork__roads .znew__head {
+  text-shadow: 0 2px 24px rgba(7, 8, 10, 0.8);
+}
+.zfork__roads .znew__text {
+  color: #c9c5bd;
+}
+.zfork__signs {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+}
+.zfork.is-taken .zfork__roads {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+.zfork__sign {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0 0 16px;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  text-shadow: 0 2px 24px rgba(7, 8, 10, 0.8);
+  cursor: pointer;
+}
+.zfork__sign--veterans {
+  align-items: flex-end;
+  text-align: right;
+}
+/* A gold rule that draws out under the sign pointed at. */
+.zfork__sign::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 48px;
+  height: 1px;
+  background: #c9ab76;
+  transition: width 0.5s ease;
+}
+.zfork__sign--veterans::after {
+  left: auto;
+  right: 0;
+}
+.zfork__sign:hover::after,
+.zfork__sign:focus-visible::after {
+  width: 100%;
+}
+.zfork__sign:focus-visible {
+  outline: 2px solid #c9ab76;
+  outline-offset: 8px;
+}
+.zfork__kicker {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zfork__label {
+  font-size: clamp(26px, 3vw, 44px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zfork__take {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9b968d;
+  transition: color 0.3s ease;
+}
+.zfork__take span {
+  display: inline-block;
+  transition: translate 0.3s ease;
+}
+.zfork__sign:hover .zfork__take,
+.zfork__sign:focus-visible .zfork__take {
+  color: #ece9e2;
+}
+.zfork__sign--newcomers:hover .zfork__take span {
+  translate: -4px 0;
+}
+.zfork__sign--veterans:hover .zfork__take span {
+  translate: 4px 0;
+}
+/* A road's view: the back link and title, then its picture panels across the width. Both roads' views share
+   one cell over the darkened scene; each arrives once the zoom is under way. */
+.zfork__views {
+  display: grid;
+  align-items: center;
+  padding: 88px var(--inset) 72px;
+  pointer-events: none;
+}
+.znew__view {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 12px;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0.3s;
+}
+.znew__view.is-on {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  pointer-events: auto;
+  transition: opacity 0.6s ease 0.7s, translate 0.6s ease 0.7s, visibility 0s;
+}
+.znew__view-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.zfork__back {
+  padding: 0;
   border: 0;
   background: none;
   font: inherit;
@@ -510,129 +649,202 @@ html {
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  white-space: nowrap;
   color: #9b968d;
   cursor: pointer;
-  transition: color 0.35s ease;
+  transition: color 0.3s ease;
 }
-.znew__option:hover {
-  color: #ece9e2;
+.zfork__back:hover {
+  color: #c9ab76;
 }
-.znew__option.is-on {
-  color: #07080a;
-}
-.znew__option:focus-visible {
+.zfork__back:focus-visible {
   outline: 2px solid #c9ab76;
-  outline-offset: 2px;
-}
-/* Both views share one cell, so the panel keeps the taller one's height. */
-.znew__views {
-  position: relative;
-  display: grid;
-  width: 100%;
-  max-width: 580px;
-}
-.znew__view {
-  grid-area: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  opacity: 0;
-  visibility: hidden;
-  translate: 0 12px;
-  transition: opacity 0.4s ease, translate 0.4s ease, visibility 0s 0.4s;
-}
-.znew__view.is-on {
-  opacity: 1;
-  visibility: visible;
-  translate: 0 0;
-  transition: opacity 0.4s ease 0.1s, translate 0.4s ease 0.1s, visibility 0s;
+  outline-offset: 6px;
 }
 .znew__panel-title {
   margin: 0;
   font-family: inherit;
   font-weight: 600;
-  font-size: 26px;
-  line-height: 1.15;
-  letter-spacing: 0.08em;
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #ece9e2;
 }
-.znew__panel-text {
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 1.6;
-  font-weight: 300;
-  color: #b3afa7;
-  text-wrap: pretty;
-}
-.znew__steps,
-.znew__changes {
+/* The picture panels: the open one takes most of the row; the others stay narrow strips of their picture
+   with a number and title. Each picture comes up from dim as its panel opens. */
+.zpanels {
+  display: flex;
+  gap: 8px;
+  height: clamp(460px, 38vw, 580px);
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.znew__steps {
-  counter-reset: step;
-}
-.znew__steps li {
-  counter-increment: step;
-}
-/* One row per step or change: number (steps only) or area, then the line, then an arrow. */
-.znew__row {
+.zpanels__item {
   position: relative;
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) 20px;
-  align-items: baseline;
-  gap: 16px;
-  padding: 14px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  transition: color 0.25s ease;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d0e11;
+  transition: flex-grow 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
 }
-.znew__steps .znew__row {
-  grid-template-columns: 28px 150px minmax(0, 1fr) 20px;
+.zpanels__item.is-open {
+  flex-grow: 5;
+  border-color: rgba(201, 171, 118, 0.5);
 }
-.znew__steps .znew__row::before {
-  content: counter(step);
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border: 1px solid rgba(201, 171, 118, 0.6);
+.zpanels__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) saturate(0.55);
+  scale: 1.08;
+  transition: filter 0.6s ease, scale 1.2s ease;
+}
+.zpanels__item:hover .zpanels__art {
+  filter: brightness(0.75) saturate(0.65);
+}
+.zpanels__item.is-open .zpanels__art {
+  filter: brightness(0.85) saturate(0.75);
+  scale: 1;
+}
+.zpanels__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(7, 8, 10, 0.9));
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+/* Darker under the open panel's paragraph. */
+.zpanels__item.is-open::after {
+  background: linear-gradient(180deg, transparent 20%, rgba(7, 8, 10, 0.7) 50%, rgba(7, 8, 10, 0.95));
+}
+/* The number and title, then the open panel's paragraph and links, stacked at the bottom. */
+.zpanels__foot {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zpanels__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 20px 18px;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: padding 0.5s ease;
+}
+.zpanels__item.is-open .zpanels__head {
+  padding: 24px 28px 14px;
+  cursor: default;
+}
+.zpanels__head:focus-visible {
+  outline: 2px solid #c9ab76;
+  outline-offset: -6px;
+}
+.zpanels__n {
   font-size: 12px;
-  color: #c9ab76;
-  align-self: start;
-  margin-top: -3px;
-}
-.znew__row-title {
-  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
+  color: #c9ab76;
+}
+.zpanels__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #ece9e2;
+  white-space: nowrap;
 }
-.znew__row-text {
+/* Closed panels' titles run up the strip, like spines on a shelf. */
+.zpanels__item:not(.is-open) .zpanels__title {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+}
+.zpanels__item.is-open .zpanels__title {
+  white-space: normal;
+  font-size: clamp(22px, 2.2vw, 32px);
+  letter-spacing: 0.06em;
+}
+.zpanels__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease;
+}
+.zpanels__item.is-open .zpanels__body {
+  grid-template-rows: 1fr;
+}
+.zpanels__inner {
+  min-height: 0;
+  overflow: hidden;
+  width: max(100%, 300px);
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 28px;
+  opacity: 0;
+  transition: opacity 0.2s ease, padding 0.4s ease;
+}
+.zpanels__item.is-open .zpanels__inner {
+  padding-bottom: 24px;
+  opacity: 1;
+  transition: opacity 0.4s ease 0.45s, padding 0.4s ease;
+}
+.zpanels__text {
+  margin: 0;
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.5;
   font-weight: 300;
-  color: #b3afa7;
+  color: #d6d2ca;
+  text-wrap: pretty;
 }
-.znew__go {
-  font-size: 16px;
-  color: #6f6a62;
-  transition: color 0.25s ease, translate 0.25s ease;
+.zpanels__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.znew__row:hover .znew__row-title {
-  color: #c9ab76;
+.zpanels__link {
+  padding: 7px 12px;
+  border: 1px solid rgba(201, 171, 118, 0.5);
+  background: rgba(7, 8, 10, 0.5);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  transition: background 0.25s ease, color 0.25s ease;
 }
-.znew__row:hover .znew__go {
-  color: #c9ab76;
-  translate: 4px 0;
+.zpanels__link:hover,
+.zpanels__link:focus-visible {
+  background: #c9ab76;
+  color: #07080a;
 }
 @media (prefers-reduced-motion: reduce) {
-  .znew__art,
+  .zfork__scene,
+  .zfork__shade::before,
+  .zfork__shade::after,
+  .zfork__roads,
   .znew__view,
-  .znew__switch::before {
+  .znew__view.is-on,
+  .zpanels__item,
+  .zpanels__art,
+  .zpanels__head,
+  .zpanels__title,
+  .zpanels__body,
+  .zpanels__inner {
     transition: none;
   }
 }
@@ -645,62 +857,75 @@ html {
   .znew__text {
     font-size: 16px;
   }
-  /* The art shows as a band at the top, under the switch; the text sits below it on the shade. */
-  .znew__panel {
-    gap: 24px;
-    padding: 20px 20px 12px;
+  /* The heading stays at the top and the signs stack at the bottom, over the middle of the scene; the lists fill the width over the darkened road. */
+  .zfork {
+    min-height: 600px;
   }
-  .znew__art {
+  .zfork__roads {
+    gap: 32px;
+    padding: 80px 20px 48px;
+  }
+  .zfork__signs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+  }
+  .zfork__sign--veterans {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .zfork__sign--veterans::after {
     left: 0;
-    width: 100%;
-    height: 260px;
-    mask-image: none;
+    right: auto;
   }
-  .znew__art--newcomers {
-    object-position: 45% 40%;
+  .zfork__label {
+    font-size: 26px;
   }
-  .znew__art--veterans {
-    object-position: 25% 40%;
-  }
-  .znew__shade {
-    background: linear-gradient(180deg, rgba(7, 8, 10, 0.35) 0, rgba(7, 8, 10, 0.2) 80px, #0d0e11 260px);
-  }
-  .znew__switch {
-    width: 100%;
-  }
-  .znew__option {
-    padding: 12px 8px;
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    white-space: normal;
-  }
-  .znew__views {
-    margin-top: 110px;
+  .zfork__views {
+    padding: 64px 20px 48px;
   }
   .znew__panel-title {
-    font-size: 21px;
+    font-size: 22px;
   }
-  /* The title goes above the line. */
-  .znew__row,
-  .znew__steps .znew__row {
-    grid-template-columns: minmax(0, 1fr) 20px;
-    gap: 4px 12px;
+  /* The panels stack as bands; the open one grows tall enough for its picture, line and links. */
+  .zpanels {
+    flex-direction: column;
+    height: auto;
+    gap: 6px;
   }
-  .znew__steps .znew__row {
-    grid-template-columns: 28px minmax(0, 1fr) 20px;
+  .zpanels__item {
+    flex: none;
+    height: 64px;
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
   }
-  .znew__steps .znew__row::before {
-    grid-row: span 2;
-    align-self: start;
+  .zpanels__item.is-open {
+    height: 540px;
   }
-  .znew__row-text {
-    grid-column: -3 / -2;
-    font-size: 14px;
+  .zpanels__head {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+    padding: 22px 16px;
   }
-  .znew__go {
-    grid-column: -2;
-    grid-row: 1 / span 2;
-    align-self: center;
+  .zpanels__item.is-open .zpanels__head {
+    padding: 18px 16px 10px;
+  }
+  .zpanels__item:not(.is-open) .zpanels__title {
+    writing-mode: horizontal-tb;
+    rotate: none;
+  }
+  .zpanels__item.is-open .zpanels__title {
+    font-size: 22px;
+  }
+  .zpanels__inner {
+    width: 100%;
+    padding-inline: 16px;
+  }
+  .zpanels__item.is-open .zpanels__inner {
+    padding-bottom: 18px;
+  }
+  .zpanels__text {
+    font-size: 15px;
   }
 }
 
