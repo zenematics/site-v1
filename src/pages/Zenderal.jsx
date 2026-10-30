@@ -11,8 +11,8 @@ const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/`;
 // Parallax backdrops: a shot split into depth layers, far to near, as
 // public/uploads/zenderal/<layers>-back/mid/front.webp.
 const LAYERS = ['back', 'mid', 'front'];
-// The intro closes into the emblem: its silhouette (the art's alpha with the holes filled) masks
-// the scene. `ratio` is the art's height / width; the sphere's centre is a fraction of the art's
+// "Modern visuals" opens out of the emblem: its silhouette (the art's alpha with the holes filled) masks
+// the section. `ratio` is the art's height / width; the sphere's centre is a fraction of the art's
 // width/height and its radius a fraction of the width. ART_W is the emblem <img>'s unscaled CSS width.
 const EMBLEM_MASK = `${import.meta.env.BASE_URL}uploads/zenderal/emblem-mask.png`;
 const EMBLEM = { ratio: 1141 / 1378, cx: 0.494, cy: 0.486, radius: 0.22 };
@@ -33,7 +33,7 @@ const BUILD_W = 1000;
 const FEATURED = OVERVIEW.build.traits.map((n) => TRAITS.find((t) => t.name === n));
 const RING = [...FEATURED, ...TRAITS.filter((t) => !FEATURED.includes(t))];
 const TRAIT_ART = `${import.meta.env.BASE_URL}uploads/guide/traits/`;
-// The "New to Enderal" crossroads' two roads, left then right, keys into OVERVIEW.welcome.
+// The "What Zenderal is" crossroads' two roads, left then right, keys into OVERVIEW.welcome.
 const AUDIENCES = ['newcomers', 'veterans'];
 
 function Layers({ src }) {
@@ -97,80 +97,49 @@ export default function Zenderal() {
     };
   }, []);
 
-  // The emblem portal. The intro pins with its bottom on the viewport's, then over the scroll run
-  // below it (.zstage::after) the text fades, the scene shrinks into the emblem's silhouette and
-  // the emblem art fades in over it. The emblem then scrolls away with the page.
-  useEffect(() => {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const stage = document.querySelector('.zstage');
-    const pin = stage.querySelector('.zstage__pin');
-    const scene = pin.querySelector('.zstage__scene');
-    const intro = pin.querySelector('.zintro');
-    const art = pin.querySelector('.zstage__emblem');
-    const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
-    const ease = (x) => x * x * (3 - 2 * x);
-    let frame = 0;
-    let stick = 0;
-    const update = () => {
-      frame = 0;
-      const t = ramp(stick - stage.getBoundingClientRect().top, 0, stage.offsetHeight - pin.offsetHeight);
-      if (t === 0) {
-        scene.style.maskImage = scene.style.maskSize = scene.style.maskPosition = '';
-        intro.style.opacity = art.style.opacity = '';
-        return;
-      }
-      // Placed in the scene's own coordinates as they are while pinned (its top at `stick`),
-      // so once the run ends the emblem scrolls away with it.
-      const left = scene.getBoundingClientRect().left;
-      // From wide enough that the sphere covers the screen, down to its resting size.
-      const w0 = Math.hypot(innerWidth, innerHeight) / 2 / EMBLEM.radius;
-      const w1 = Math.min(innerWidth * 0.7, (innerHeight * 0.5) / EMBLEM.ratio);
-      const w = w0 * (w1 / w0) ** ease(ramp(t, 0.1, 0.85));
-      const h = w * EMBLEM.ratio;
-      const x = innerWidth / 2 - left - EMBLEM.cx * w;
-      const y = innerHeight / 2 - stick - EMBLEM.cy * h;
-      scene.style.maskImage = `url(${EMBLEM_MASK})`;
-      scene.style.maskSize = `${w}px ${h}px`;
-      scene.style.maskPosition = `${x}px ${y}px`;
-      intro.style.opacity = 1 - ramp(t, 0, 0.22);
-      art.style.opacity = ease(ramp(t, 0.55, 0.9));
-      art.style.transform = `translate(${x}px, ${y}px) scale(${w / ART_W})`;
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    // Sticks once its bottom reaches the viewport's.
-    const layout = () => {
-      stick = Math.min(0, innerHeight - pin.offsetHeight);
-      pin.style.top = `${stick}px`;
-      onScroll();
-    };
-    const ro = new ResizeObserver(layout);
-    ro.observe(pin);
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', layout);
-    return () => {
-      ro.disconnect();
-      removeEventListener('scroll', onScroll);
-      removeEventListener('resize', layout);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  // The before/after wipe. The pin sticks at the top over the run below it (.zcompare::after) and
-  // the divider sweeps right to left, uncovering Zenderal's shot over base Enderal's. Reduced
-  // motion leaves it split down the middle.
+  // "Modern visuals", opening out of the emblem, then the before/after wipe. The solid emblem sits under the
+  // crossroads and scrolls up with the pin; once the pin sticks at the top (over the run below it,
+  // .zcompare::after) the art fades as the section shows through its silhouette, which grows until the
+  // sphere covers the pin, and the heading fades in. Then the divider sweeps right to left, uncovering
+  // Zenderal's shot over base Enderal's. The mask is on from the start, so its image has loaded before it
+  // shows. Reduced motion leaves a plain section split down the middle.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const section = document.querySelector('.zcompare');
     const pin = section.querySelector('.zcompare__pin');
+    const head = pin.querySelector('.zcompare__head');
+    const art = pin.querySelector('.zcompare__emblem');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
     let frame = 0;
     const update = () => {
       frame = 0;
       const t = ramp(-section.getBoundingClientRect().top, 0, section.offsetHeight - pin.offsetHeight);
-      pin.style.setProperty('--split', `${(100 * (1 - ease(ramp(t, 0.1, 0.9)))).toFixed(2)}%`);
+      pin.style.setProperty('--split', `${(100 * (1 - ease(ramp(t, 0.42, 0.95)))).toFixed(2)}%`);
+      head.style.opacity = ease(ramp(t, 0.28, 0.4));
+      const open = ease(ramp(t, 0.02, 0.34));
+      if (open === 1) {
+        pin.style.maskImage = pin.style.maskSize = pin.style.maskPosition = '';
+        art.style.opacity = '0';
+        return;
+      }
+      // In the pin's own coordinates, centred as it is once stuck, so it scrolls in with the pin first.
+      // From its resting size up to where the sphere covers the pin's farthest corner.
+      const W = pin.offsetWidth;
+      const H = pin.offsetHeight;
+      const w0 = Math.min(innerWidth * 0.7, (innerHeight * 0.5) / EMBLEM.ratio);
+      const cx = W / 2;
+      const cy = H / 2;
+      const w1 = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) / EMBLEM.radius;
+      const w = w0 * (w1 / w0) ** open;
+      const h = w * EMBLEM.ratio;
+      const x = cx - EMBLEM.cx * w;
+      const y = cy - EMBLEM.cy * h;
+      pin.style.maskImage = `url(${EMBLEM_MASK})`;
+      pin.style.maskSize = `${w}px ${h}px`;
+      pin.style.maskPosition = `${x}px ${y}px`;
+      art.style.opacity = 1 - ease(ramp(t, 0.04, 0.2));
+      art.style.transform = `translate(${x}px, ${y}px) scale(${w / ART_W})`;
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -221,6 +190,7 @@ export default function Zenderal() {
     const stages = [...rail.querySelectorAll('.zbuild__stage')];
     const medals = [...pin.querySelectorAll('.zbuild__medal')];
     const featured = [...pin.querySelectorAll('.zbuild__feature')];
+    const portraits = [...pin.querySelectorAll('.zbuild__portrait')];
     const rim = pin.querySelector('.zbuild__rim');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
@@ -255,7 +225,9 @@ export default function Zenderal() {
       for (const f of featured) f.style.width = `${Math.min(360, (ring - icon) * 1.6)}px`;
       // The hole has opened once it reaches the farthest corner from the circle's middle.
       const open = Math.hypot(Math.max(c.x, W - c.x), Math.max(c.y, H - c.y));
-      L = { start, peak, end, ring, open };
+      // The trait art fills the circle, or stops inside the ring where it sits inside the circle.
+      const inner = ring - icon * 0.7;
+      L = { start, peak, end, ring, inner, open };
       onScroll();
     };
     let frame = 0;
@@ -263,7 +235,7 @@ export default function Zenderal() {
       frame = 0;
       if (!L) return;
       const t = reduce ? 1 : ramp(-section.getBoundingClientRect().top, 0, section.offsetHeight - pin.offsetHeight);
-      const { start, peak, end, ring, open } = L;
+      const { start, peak, end, ring, inner, open } = L;
       // Most of the run is the trait ring (0.2 to 0.66), so each trait stays readable for a while.
       const zin = ease(ramp(t, 0.03, 0.2));
       const zout = ease(ramp(t, 0.84, 0.95));
@@ -317,6 +289,13 @@ export default function Zenderal() {
         f.style.top = `${y}px`;
         f.style.opacity = shown * Math.max(0, 1 - Math.abs(i - turn) * 2);
       });
+      // Its art fills the dark circle behind the text, crossfading as the ring turns.
+      const pr = Math.min(r, inner);
+      portraits.forEach((p, i) => {
+        p.style.width = p.style.height = `${2 * pr}px`;
+        p.style.transform = `translate(${x - pr}px, ${y - pr}px)`;
+        p.style.opacity = shown * Math.max(0, 1 - Math.abs(i - turn));
+      });
 
       const on = t < 0.19 ? 0 : t < 0.68 ? 1 : 2;
       stages.forEach((s, i) => s.classList.toggle('is-on', i === on));
@@ -335,11 +314,10 @@ export default function Zenderal() {
     };
   }, []);
 
-  // The closing portal: the intro's in reverse. The Zenematics mark arrives as the pin reaches the
+  // The closing portal. The Zenematics mark arrives as the pin reaches the
   // top, the scene shows through it as its art fades, and it grows over the run (.zcta::after)
-  // until the head covers the screen; then the text fades in. It rests as far below the magic section as
-  // the intro's emblem does above the "New to Enderal" heading, so the pin is pulled up over the
-  // magic section's end to match.
+  // until the head covers the screen; then the text fades in. Its mark rests GAP below the magic section,
+  // so the pin is pulled up over the magic section's end to match.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const cta = document.querySelector('.zcta');
@@ -349,11 +327,9 @@ export default function Zenderal() {
     const art = pin.querySelector('.zcta__logo');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
-    const stage = document.querySelector('.zstage');
-    const stagePin = stage.querySelector('.zstage__pin');
     const magic = document.querySelector('.zmagic');
     const compare = document.querySelector('.zcompare');
-    const welcome = document.querySelector('.znew__head');
+    const GAP = 240;
     const pageTop = (el) => el.getBoundingClientRect().top + scrollY;
     const rest = () => {
       const W = pin.offsetWidth;
@@ -362,17 +338,11 @@ export default function Zenderal() {
       return { W, H, w0, by: W <= 860 ? H * 0.34 : H / 2 };
     };
     const layout = () => {
-      // Where the emblem ends: centred in the viewport once the intro's run is scrolled through.
-      // The gap is from it to the "New to Enderal" heading under it.
-      const stick = Math.min(0, innerHeight - stagePin.offsetHeight);
-      const end = pageTop(stage) - stick + stage.offsetHeight - stagePin.offsetHeight;
-      const ew = Math.min(innerWidth * 0.7, (innerHeight * 0.5) / EMBLEM.ratio) * EMBLEM.ratio;
-      const gap = pageTop(welcome) - (end + innerHeight / 2 + (1 - EMBLEM.cy) * ew);
       const { w0, by } = rest();
       const logoTop = by - (ZEN.boxCy - ZEN.top) * w0;
       const last = magic.getBoundingClientRect().bottom + scrollY;
       const margin = parseFloat(getComputedStyle(cta).marginTop);
-      cta.style.marginTop = `${last + gap - logoTop - (pageTop(cta) - margin)}px`;
+      cta.style.marginTop = `${last + GAP - logoTop - (pageTop(cta) - margin)}px`;
       onScroll();
     };
     let frame = 0;
@@ -412,7 +382,6 @@ export default function Zenderal() {
     };
     // The sections above reflow as the fonts and the spell list load.
     const ro = new ResizeObserver(layout);
-    ro.observe(stagePin);
     ro.observe(document.querySelector('.znew'));
     ro.observe(compare);
     ro.observe(document.querySelector('.zclips'));
@@ -439,31 +408,6 @@ export default function Zenderal() {
         desc="A Wabbajack modlist for Enderal: Forgotten Stories — installed in one click and playable on keyboard or controller."
       />
 
-      <section className="zstage">
-        <div className="zstage__pin zparallax">
-          <div className="zstage__scene">
-            {/* The river landscape: back is the sky and mountains, mid the forest, front the rocks and water. */}
-            <Layers src="layers/river" />
-            <div className="zstage__shade" />
-            <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.webp`} alt="" className="zstage__emblem" />
-          </div>
-          <div className="zintro">
-            <span className="docs__label">What Zenderal is</span>
-            <h2 className="zintro__title">{OVERVIEW.headline}</h2>
-            <p className="zintro__lede">{OVERVIEW.lede}</p>
-            <p className="zintro__body">{OVERVIEW.body}</p>
-            <dl className="zintro__facts">
-              {OVERVIEW.facts.map((f) => (
-                <div key={f.label} className="zintro__fact">
-                  <dt>{f.label}</dt>
-                  <dd>{f.text}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </div>
-      </section>
-
       <section className="znew">
         {/* The crossroads, full width: the heading sits on the scene over the two roads' signs, and both go
             when a road is taken. Each sign leans the scene towards its road; taking it zooms down the road
@@ -476,10 +420,14 @@ export default function Zenderal() {
             '--road-y': `${OVERVIEW.welcome[side].road.y}%`,
           }}
         >
-          <div className="zfork__scene">
-            <img src={`${import.meta.env.BASE_URL}uploads/zenderal/${OVERVIEW.welcome.art}`} alt="" className="zfork__art" />
+          <div className="zfork__backdrop">
+            <div className="zfork__scene zparallax">
+              {/* Back is the sky, mountains and valley, mid the village and castle cliff, front the travellers,
+                  the signpost and the near ground. */}
+              <Layers src={OVERVIEW.welcome.art} />
+            </div>
+            <div className="zfork__shade" />
           </div>
-          <div className="zfork__shade" />
           <div className="zfork__roads" aria-hidden={audience ? true : undefined}>
             <div className="znew__head">
               <span className="docs__label">{OVERVIEW.welcome.label}</span>
@@ -509,7 +457,7 @@ export default function Zenderal() {
                   <span className="zfork__kicker">{OVERVIEW.welcome[a].kicker}</span>
                   <span className="zfork__label">{OVERVIEW.welcome[a].label}</span>
                   <span className="zfork__take">
-                    {OVERVIEW.welcome[a].title} <span aria-hidden="true">{a === 'newcomers' ? '←' : '→'}</span>
+                    {OVERVIEW.welcome[a].take ?? OVERVIEW.welcome[a].title} <span aria-hidden="true">{a === 'newcomers' ? '←' : '→'}</span>
                   </span>
                 </button>
               ))}
@@ -547,7 +495,7 @@ export default function Zenderal() {
                           style={{ '--n': i }}
                           onMouseEnter={() => setPanel(i)}
                         >
-                          <img src={`${import.meta.env.BASE_URL}uploads/${p.art}`} alt="" loading="lazy" className="zpanels__art" />
+                          <img src={`${import.meta.env.BASE_URL}uploads/${p.art}`} alt="" loading="lazy" className="zpanels__art" style={p.focus && { objectPosition: p.focus }} />
                           <div className="zpanels__foot">
                             <button
                               type="button"
@@ -595,6 +543,7 @@ export default function Zenderal() {
 
       <section className="zcompare">
         <div className="zcompare__pin">
+          <img src={`${import.meta.env.BASE_URL}uploads/zenderal-emblem.webp`} alt="" className="zcompare__emblem" />
           <div className="zcompare__head">
             <span className="docs__label">{OVERVIEW.compare.label}</span>
             <h2 className="zcompare__title">{OVERVIEW.compare.title}</h2>
@@ -659,8 +608,11 @@ export default function Zenderal() {
             className="zbuild__shot"
           />
           <div className="zbuild__dark" />
-          {/* The trait ring, round the stone circle; the trait it stops on is described in the middle. */}
+          {/* The trait ring, round the stone circle; the trait it stops on fills the middle with its art and text. */}
           <div className="zbuild__ring" aria-hidden="true">
+            {FEATURED.map((t) => (
+              <img key={t.name} src={`${TRAIT_ART}${t.img}`} alt="" className="zbuild__portrait" />
+            ))}
             {RING.map((t) => (
               <img key={t.name} src={`${TRAIT_ART}${t.img}`} alt="" className="zbuild__medal" />
             ))}

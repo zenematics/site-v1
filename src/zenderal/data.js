@@ -76,28 +76,19 @@ export const PAD = {
   },
 };
 
-// Overview page (/zenderal/). `body` and `facts` sit under the lede in the intro.
+// Overview page (/zenderal/).
 export const OVERVIEW = {
-  headline: 'Enderal, rebuilt for today.',
-  lede: "Zenderal's goal is to deliver a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.",
-  body: "It's built on Enderal: Forgotten Stories, SureAI's total conversion for Skyrim, and keeps its story, quests and world as they were made. Around them it brings combat, visuals and character systems up to date, and tunes everything to work together, so you can start a new journey without spending weeks on a load order.",
-  facts: [
-    { label: 'One-click install', text: 'Wabbajack downloads, patches and sets up the whole list for you.' },
-    { label: 'Current visuals', text: 'Community Shaders lighting and weather, with DLSS and frame generation support.' },
-    { label: 'Keyboard or controller', text: 'A full controller layout, so every action works on both.' },
-    { label: 'In beta', text: 'Playable now and changing fast. Feedback goes through Discord.' },
-  ],
-  // "New to Enderal" under the intro (WD-111): a crossroads (`art`, under uploads/zenderal/) whose two roads are
+  // "What Zenderal is", under the hero (WD-111): a crossroads (`art`, parallax layers under uploads/zenderal/) whose two roads are
   // the choice between first-time players (what Enderal is) and players who know it (what Zenderal changes).
   // Each side's `road` is where its road disappears (percent of the art), which the scene leans and zooms
-  // towards; `kicker` and `label` are its sign. Taking a road opens its `panels`: pictures (`art`, under
-  // uploads/) with a title and a short paragraph, kept brief because the pictures do the work. `links` are
+  // towards; `kicker`, `label` and `take` (else `title`) are its sign. Taking a road opens its `panels`: pictures (`art`, under
+  // uploads/, with an optional `focus` object-position to keep the subject centred) with a title and a short paragraph, kept brief because the pictures do the work. `links` are
   // { guide: id }, { doc: id } or { href } (another site, opened in a new tab) with a `label`.
   welcome: {
-    label: 'New to Enderal',
-    title: 'Made for first-timers and veterans.',
-    text: "Whether this is your first trip to Vyn or your fifth, here's where to start. Pick a road.",
-    art: 'crossroads.webp',
+    label: 'What Zenderal is',
+    title: 'A Modern Enderal Modlist',
+    text: 'Whether this is your first trip to Vyn or your fifth, Zenderal delivers a modern combat, graphics and gameplay experience that enables rich build crafting, while introducing new players to the world of Enderal.',
+    art: 'layers/crossroads',
     back: 'Back to the crossroads',
     newcomers: {
       kicker: 'First time in Vyn',
@@ -105,17 +96,18 @@ export const OVERVIEW = {
       road: { x: 31, y: 62 },
       title: 'Welcome to Vyn',
       panels: [
-        { title: 'A new world', art: 'zenderal/screenshots/backgrounds/ark.webp', text: "Enderal is SureAI's free total conversion for Skyrim: a whole new game on its engine, with its own continent, creatures, soundtrack and fully voiced story. You don't need to know Skyrim to play it, and nothing from Tamriel carries over.", links: [{ href: 'https://sureai.net/games/enderal/', label: 'Enderal by SureAI' }] },
-        { title: 'The setting', art: 'zenderal/screenshots/backgrounds/castle.webp', text: "Vyn is ruled by the Holy Order and its Lightborn priests, built on the ruins of older civilisations. Whispers of the Cleansing, the catastrophe that ended them, are spreading again. You arrive as a stowaway, haunted by nightmares you can't explain.", links: [{ href: 'https://wiki.en.sureai.net/Lore:Enderal', label: 'Read the lore' }] },
+        { title: 'A new world', art: 'zenderal/screenshots/backgrounds/crystal-forest.webp', text: "Enderal is SureAI's free total conversion for Skyrim: a whole new game on its engine, with its own continent, creatures, soundtrack and fully voiced story. You don't need to know Skyrim to play it, and nothing from Tamriel carries over.", links: [{ href: 'https://sureai.net/games/enderal/', label: 'Enderal by SureAI' }] },
+        { title: 'The setting', art: 'zenderal/screenshots/backgrounds/meeting.webp', focus: '38% 50%', text: "Vyn is ruled by the Holy Order and its Lightborn priests, built on the ruins of older civilisations. Whispers of the Cleansing, the catastrophe that ended them, are spreading again. You arrive as a stowaway, haunted by nightmares you can't explain.", links: [{ href: 'https://wiki.en.sureai.net/Lore:Enderal', label: 'Read the lore' }] },
         { title: 'Races', art: 'zenderal/screenshots/backgrounds/races.webp', text: 'Five cultures, from the steppes of Arazeal to the Starlings. Each sets your starting Health, Mana and Stamina and how fast they regenerate, and gives a cultural bonus to a few skills. It nudges a build without locking you in.', links: [{ guide: 'races', label: 'Races' }] },
-        { title: 'New mechanics', art: 'zenderal/screenshots/backgrounds/magic.webp', text: 'Magic has a price: Arcane Fever builds as you lean on it, and at 100% it kills you, so it has to be kept in check. Food and rest matter more than in Skyrim, and your companions have their own pasts and opinions, with bonds that grow from how you treat them.' },
+        { title: 'New mechanics', art: 'zenderal/screenshots/backgrounds/sun-temple.webp', text: 'Magic has a price: Arcane Fever builds as you lean on it, and at 100% it kills you, so it has to be kept in check. Food and rest matter more than in Skyrim, and your companions have their own pasts and opinions, with bonds that grow from how you treat them.' },
         { title: 'Progression', art: 'zenderal/screenshots/backgrounds/perks.webp', text: "Skills don't level by use. Experience earns Learning Points for the combat and magic skills and Crafting Points for the crafting ones, and the books you read, from Apprentice to Master, cap how far each can go. Perk trees take Memory Points, and the trees you invest in unlock affinities: 44 bonus profiles that reward a focused build.", links: [{ guide: 'books', label: 'Learning books' }, { guide: 'perks', label: 'Perk trees' }, { guide: 'affinities', label: 'Affinities' }] },
-        { title: 'The story', art: 'zenderal/screenshots/backgrounds/thief.webp', text: "The story is Enderal's heart: dark, personal and psychological, about fate, memory and what drives people. Its characters, from your companion Jespar onwards, have their own doubts and secrets, and the main quest has more than one ending." },
+        { title: 'The story', art: 'zenderal/screenshots/backgrounds/calia-wide.webp', focus: '42% 50%', text: "The story is Enderal's heart: dark, personal and psychological, about fate, memory and what drives people. Its characters, from your companion Jespar onwards, have their own doubts and secrets, and the main quest has more than one ending." },
       ],
     },
     veterans: {
       kicker: 'Back for more',
-      label: 'Played Enderal before',
+      label: 'What Zenderal changes',
+      take: 'Played Enderal before',
       road: { x: 82, y: 60 },
       title: 'What Zenderal changes',
       panels: [
