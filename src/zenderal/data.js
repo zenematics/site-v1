@@ -141,8 +141,8 @@ export const OVERVIEW = {
     text: 'For Honor Reforged turns melee into directional, poise-driven duels, with parries, guard breaks and follow-ups. Firearms and spell packs round it out.',
     clips: [
       { title: 'Combos and power attacks', text: 'Every move cancels into the next. Chain lights into directional power attacks for more damage and poise damage.', video: 'clips/combos', guide: 'combat' },
-      { title: 'Parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'logo-grow', placeholder: true, guide: 'combat' },
-      { title: 'First person overhaul', text: 'Fight from your own eyes, with reworked first-person animations and a full body under the camera.', video: 'logo-grow', placeholder: true, guide: 'keybindings' },
+      { title: 'Knockdown and parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'clips/parry', guide: 'combat' },
+      { title: 'First person overhaul', text: 'Fight from your own eyes, with reworked first-person animations and a full body under the camera.', video: 'clips/first-person', guide: 'keybindings' },
       { title: 'Dodge', text: 'Tap Left Shift or press Left Alt to dodge out of a swing.', video: 'clips/dodge', guide: 'keybindings' },
     ],
   },
