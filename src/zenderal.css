@@ -724,6 +724,17 @@ html {
   color: #ece9e2;
   line-height: 1.1;
 }
+.doc__subtitle,
+.zcard__subtitle {
+  display: block;
+  margin-top: 0.35em;
+  font-size: 0.42em;
+  letter-spacing: 0.24em;
+  color: #c9ab76;
+}
+.zcard__subtitle {
+  font-size: 0.6em;
+}
 .doc-h3 {
   margin: 16px 0 0;
   font-family: inherit;
@@ -2148,6 +2159,16 @@ html {
 }
 .g-trait__down .g-trait__sign {
   color: #d27a6a;
+}
+.g-set__art {
+  display: flex;
+  justify-content: center;
+  margin: -4px 0 4px;
+  background: radial-gradient(ellipse at 50% 55%, rgba(201, 171, 118, 0.1), transparent 65%);
+}
+.g-set__art img {
+  height: 260px;
+  width: auto;
 }
 .g-sets {
   display: grid;

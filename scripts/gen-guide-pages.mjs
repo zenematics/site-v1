@@ -9,8 +9,8 @@ import { SECTIONS } from '../src/zenderal/guide/sections.js';
 const ROOT = resolve(import.meta.dirname, '../zenderal/guide');
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
-const page = ({ id, title, desc }) => {
-  const t = esc(`${title} — Zenderal Guide`);
+const page = ({ id, title, subtitle, desc }) => {
+  const t = esc(`${title}${subtitle ? `: ${subtitle}` : ''} — Zenderal Guide`);
   const d = esc(desc);
   const url = `https://zenematics.com/zenderal/guide/${id}/`;
   return `<!DOCTYPE html>
