@@ -4,23 +4,29 @@ import { useEffect, useRef, useState } from 'react';
 // sticks over the run below it (.zsword__run::after). It opens on the section's label either side of the upright
 // sword; the words part and fade, the sword turns level, its runes light and the heading fades in under it. Then four
 // swings: each time the sword sweeps across the screen along a slanted line, with the next clip on the side it has
-// passed (and a gold slash past its ends), until the clip fills the screen. The first swing starts from where the
-// sword rests and wipes the heading away; the rest alternate direction. Reduced motion skips all of it: the sword
+// passed (and a gold slash past its ends), until the clip fills the screen. The first swing winds up first, the sword
+// rising off the top of the screen as the heading fades, then comes down; the rest alternate direction. Reduced motion skips all of it: the sword
 // shows settled and the clips follow as a grid (Zenderal.jsx).
 
 const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/`;
 const CLIPS_AT = 0.32; // where the swings start, as a fraction of the run
 const SWEEP = 0.45; // the part of each clip's slice its swing takes; it holds for the rest
+const FIRST = 0.7; // the same for the first clip, whose swing includes the wind-up
+const WINDUP = 0.3; // the part of the first swing spent rising
 const ANGLES = [-0.21, 0.17, -0.15, 0.2]; // each cut's slant, radians clockwise on screen
 
 const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
 const ease = (x) => x * x * (3 - 2 * x);
 
-// The clip on screen and how far the swing into it has got, at run position t.
+// The clip on screen and how far the swing into it has got, at run position t; for the first clip, up is how far
+// the sword has risen before it swings.
 function swingAt(t) {
   const slice = (1 - CLIPS_AT) / ANGLES.length;
   const k = Math.min(ANGLES.length - 1, Math.floor(Math.max(0, t - CLIPS_AT) / slice));
-  return { k, s: t < CLIPS_AT ? 0 : ease(ramp(t - CLIPS_AT - k * slice, 0, slice * SWEEP)) };
+  if (t < CLIPS_AT) return { k, s: 0, up: 0 };
+  const r = ramp(t - CLIPS_AT - k * slice, 0, slice * (k === 0 ? FIRST : SWEEP));
+  if (k > 0) return { k, s: ease(r), up: 1 };
+  return { k, s: ease(ramp(r, WINDUP, 1)), up: ease(ramp(r, 0, WINDUP)) };
 }
 
 export default function Sword({ label, title, text, clips }) {
@@ -48,13 +54,21 @@ export default function Sword({ label, title, text, clips }) {
       const H = pin.clientHeight;
       // How far the cut line must travel from the middle to clear the screen with the sword's crossguard.
       const reach = Math.hypot(W, H) / 2 + 0.12 * W;
-      const { k, s } = swingAt(t);
+      const { k, s, up } = swingAt(t);
       const swinging = t >= CLIPS_AT;
-      // Even swings travel down the normal, odd ones back up; the first starts from the middle, where the sword rests.
+      const fr = frameEl.getBoundingClientRect();
+      const pr = pin.getBoundingClientRect();
+      // Even swings travel down the normal, odd ones back up. The first rises from the middle, where the sword rests,
+      // tilting into its slant, just until its line clears the frame's top corner, then comes down.
       const dir = k % 2 === 0 ? 1 : -1;
-      const from = k === 0 ? 0 : -dir * reach;
-      const p = swinging ? from + (dir * reach - from) * s : 0;
-      const a = swinging ? ANGLES[k] : 0;
+      let from = -dir * reach;
+      if (k === 0) {
+        const n0 = [-Math.sin(ANGLES[0]), Math.cos(ANGLES[0])];
+        const corners = [fr.left, fr.right].flatMap((x) => [fr.top, fr.bottom].map((y) => [x - pr.left, y - pr.top]));
+        from = Math.min(...corners.map(([x, y]) => (x - W / 2) * n0[0] + (y - H / 2) * n0[1])) - 0.02 * H;
+      }
+      const p = !swinging ? 0 : k === 0 && s === 0 ? from * up : from + (dir * reach - from) * s;
+      const a = swinging ? ANGLES[k] * (k === 0 ? up : 1) : 0;
       const u = [Math.cos(a), Math.sin(a)];
       const n = [-Math.sin(a), Math.cos(a)];
       const cx = W / 2 + n[0] * p;
@@ -63,8 +77,6 @@ export default function Sword({ label, title, text, clips }) {
       // Clip k shows on the side the sword has passed (behind it, against dir); earlier clips fill the rest, the
       // latest of them on top. The clips sit in a frame, so the cut is drawn in the frame's own coordinates.
       const L = 4 * Math.max(W, H);
-      const fr = frameEl.getBoundingClientRect();
-      const pr = pin.getBoundingClientRect();
       const fx = cx - (fr.left - pr.left);
       const fy = cy - (fr.top - pr.top);
       const half = (side) => {
@@ -77,7 +89,7 @@ export default function Sword({ label, title, text, clips }) {
         return `polygon(${pts.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',')})`;
       };
       layers.forEach((l, i) => {
-        const vis = !swinging ? 'hidden' : i < k ? (i === k - 1 ? 'full' : 'hidden') : i === k ? 'cut' : 'hidden';
+        const vis = !swinging || (k === 0 && s === 0) ? 'hidden' : i < k ? (i === k - 1 ? 'full' : 'hidden') : i === k ? 'cut' : 'hidden';
         l.style.visibility = vis === 'hidden' ? 'hidden' : 'visible';
         l.style.clipPath = vis === 'cut' && s < 1 ? half(-dir) : 'none';
       });
@@ -98,8 +110,8 @@ export default function Sword({ label, title, text, clips }) {
         zoom: 1 + 0.65 * close,
       });
       pin.style.setProperty('--words', ramp(t, 0.01, 0.08).toFixed(3));
-      // The heading goes over the first half of the first swing, before that clip's caption comes in.
-      const head = ramp(t, 0.22, 0.28) * (1 - (t >= CLIPS_AT && k === 0 ? ramp(s, 0, 0.45) : t >= CLIPS_AT ? 1 : 0));
+      // The heading fades as the sword rises for the first swing, before that clip's caption comes in.
+      const head = ramp(t, 0.22, 0.28) * (1 - (t >= CLIPS_AT && k === 0 ? ramp(up, 0, 0.6) : t >= CLIPS_AT ? 1 : 0));
       pin.style.setProperty('--head', head.toFixed(3));
 
       // The clip in view plays (and the one being cut away, mid-swing); the rest wait.
@@ -156,7 +168,7 @@ export default function Sword({ label, title, text, clips }) {
     const run = box.current.closest('.zsword__run');
     const pin = run.querySelector('.zsword__pin');
     const slice = (1 - CLIPS_AT) / clips.length;
-    const t = CLIPS_AT + (i + SWEEP + 0.05) * slice;
+    const t = CLIPS_AT + (i + (i ? SWEEP : FIRST) + 0.05) * slice;
     scrollTo({ top: run.getBoundingClientRect().top + scrollY + t * (run.offsetHeight - pin.offsetHeight), behavior: 'smooth' });
   };
 
