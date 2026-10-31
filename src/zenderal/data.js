@@ -149,9 +149,13 @@ export const OVERVIEW = {
   },
   // The firearms section's heading, under the 3D gun (Musket.jsx).
   firearms: {
+    // `label` is the word the gun first aims through; `title` and `text` (paragraphs) fade in under it once level.
     label: 'Firearms',
-    title: 'Powder and steel.',
-    text: 'Flintlock pistols and muskets, scaled by Archery and crafted at the forge, from old matchlocks to double-barrel Gewehrs.',
+    title: 'Why?',
+    text: [
+      'With gunpowder and cannons already mounted around the city of Ark and other structures, Zenderal expands on Enderal’s setting by adding firearms to its weapon roster.',
+      'This addition helps make the world distinct from the Elder Scrolls universe. We want you to feel like you’re playing Enderal, not Skyrim.',
+    ],
   },
   // The build-crafting section: the in-game perk screen zooms into its stone circle, which opens
   // into the Prophecy radial map. `links` point at guide sections.

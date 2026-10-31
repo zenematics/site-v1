@@ -1399,6 +1399,13 @@ html {
   flex-direction: column;
   gap: 16px;
 }
+/* The section's words, larger than a heading's line and across the full width. */
+.zmusket__head .zclips__text {
+  max-width: none;
+  font-size: clamp(19px, 1.9vw, 28px);
+  line-height: 1.55;
+  color: #c9c5bd;
+}
 @media (prefers-reduced-motion: no-preference) {
   .zmusket__run::after {
     content: '';

@@ -41,7 +41,8 @@ export default function Musket({ label, title, text }) {
       const top = next ? next.getBoundingClientRect().top : vh;
       const kick = ramp(t, SHOT, SHOT + 0.025) * (1 - ease(ramp(t, SHOT + 0.025, SHOT + 0.2)));
       const flash = ramp(t, SHOT - 0.01, SHOT + 0.01) * (1 - ramp(t, SHOT + 0.01, SHOT + 0.09));
-      gun?.set({ turn: ramp(t, 0.03, 0.3), zoom: 1 + 0.08 * ease(ramp(t, 0.38, SHOT)), kick });
+      // Level, it sits a little high, leaving room for the words under it.
+      gun?.set({ turn: ramp(t, 0.03, 0.3), y: -0.11 * vh * ease(ramp(t, 0.15, 0.3)), zoom: 1 + 0.08 * ease(ramp(t, 0.38, SHOT)), kick });
 
       const w = ramp(t, 0.01, 0.15);
       word.style.opacity = (0.9 * (1 - w)).toFixed(3);
@@ -107,9 +108,12 @@ export default function Musket({ label, title, text }) {
           <div ref={box} className="zmusket__stage" aria-hidden="true" />
           <div className="zmusket__flash" aria-hidden="true" />
           <div className="zmusket__head">
-            <span className="docs__label">{label}</span>
             <h2 className="zclips__title">{title}</h2>
-            <p className="zclips__text">{text}</p>
+            {text.map((p) => (
+              <p key={p} className="zclips__text">
+                {p}
+              </p>
+            ))}
           </div>
         </div>
       </div>
