@@ -1571,11 +1571,6 @@ html {
     bottom: 6vh;
   }
 }
-.zclips__head {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 .zclips__title {
   margin: 0;
   font-family: inherit;
@@ -1623,11 +1618,6 @@ html {
   height: 100%;
   object-fit: cover;
   filter: saturate(0.85);
-}
-.zclip--placeholder .zclip__video {
-  object-fit: contain;
-  padding: 0 18%;
-  filter: none;
 }
 .zclip__body {
   display: flex;

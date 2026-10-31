@@ -619,7 +619,7 @@ export default function Zenderal() {
 
       {/* The sword carries the combat heading and cuts between the clips; the grid stands in with reduced motion. */}
       <Sword {...OVERVIEW.combat} />
-      <Clips {...OVERVIEW.combat} bare />
+      <Clips clips={OVERVIEW.combat.clips} />
 
       <Grimoire />
 
@@ -734,24 +734,17 @@ export default function Zenderal() {
   );
 }
 
-// A row of gameplay clips under a heading, each linking to its guide section. Placeholder
-// clips (the logo video) sit letterboxed until real ones are recorded. `bare` leaves the heading out.
-function Clips({ label, title, text, clips, bare }) {
+// The combat clips as a grid, each linking to its guide section, standing in for the sword's cuts with reduced motion
+// (the sword carries the heading).
+function Clips({ clips }) {
   return (
-    <section className={`zclips${bare ? ' zclips--bare' : ''}`}>
-      {!bare && (
-        <div className="zclips__head">
-          <span className="docs__label">{label}</span>
-          <h2 className="zclips__title">{title}</h2>
-          <p className="zclips__text">{text}</p>
-        </div>
-      )}
+    <section className="zclips zclips--bare">
       <div className="zclips__grid">
         {clips.map((clip) => (
           <a
             key={clip.title}
             href={GUIDE_URL + clip.guide + '/'}
-            className={`zclip${clip.placeholder ? ' zclip--placeholder' : ''}`}
+            className="zclip"
           >
             <div className="zclip__media">
               <video className="zclip__video" muted loop playsInline preload="metadata" aria-hidden="true">

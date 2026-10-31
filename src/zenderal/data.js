@@ -135,8 +135,7 @@ export const OVERVIEW = {
   },
   // The gameplay loops under the before/after: short muted clips that play while on screen.
   // `video` is a path under public/uploads/zenderal/ without the extension; each needs a .webm
-  // and an .mp4. `placeholder` shows the clip letterboxed (the logo video stands in until the
-  // real footage is recorded, into clips/<name>.webm/.mp4). `guide` links the tile to a guide section.
+  // and an .mp4. `guide` links the tile to a guide section.
   combat: {
     label: 'Modern combat',
     title: 'Every fight is a duel.',
