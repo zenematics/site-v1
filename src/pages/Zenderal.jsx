@@ -3,6 +3,7 @@ import Nav from '../components/Nav.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Grimoire from '../zenderal/Grimoire.jsx';
+import Sword from '../zenderal/Sword.jsx';
 import { BG as PROPHECY_BG, EDGES as PROPHECY_EDGES, TREES as PROPHECY_TREES } from '../zenderal/guide/prophecyLayout.js';
 import { TRAITS } from '../zenderal/guide/data.js';
 
@@ -584,7 +585,9 @@ export default function Zenderal() {
         </div>
       </section>
 
-      <Clips {...OVERVIEW.combat} />
+      {/* The sword carries the combat heading, so its clips follow without one. */}
+      <Sword {...OVERVIEW.combat} />
+      <Clips {...OVERVIEW.combat} bare />
 
       <Grimoire />
 
@@ -698,15 +701,17 @@ export default function Zenderal() {
 }
 
 // A row of gameplay clips under a heading, each linking to its guide section. Placeholder
-// clips (the logo video) sit letterboxed until real ones are recorded.
-function Clips({ label, title, text, clips }) {
+// clips (the logo video) sit letterboxed until real ones are recorded. `bare` leaves the heading out.
+function Clips({ label, title, text, clips, bare }) {
   return (
-    <section className="zclips">
-      <div className="zclips__head">
-        <span className="docs__label">{label}</span>
-        <h2 className="zclips__title">{title}</h2>
-        <p className="zclips__text">{text}</p>
-      </div>
+    <section className={`zclips${bare ? ' zclips--bare' : ''}`}>
+      {!bare && (
+        <div className="zclips__head">
+          <span className="docs__label">{label}</span>
+          <h2 className="zclips__title">{title}</h2>
+          <p className="zclips__text">{text}</p>
+        </div>
+      )}
       <div className="zclips__grid">
         {clips.map((clip) => (
           <a

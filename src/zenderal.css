@@ -1041,6 +1041,108 @@ html {
   gap: 40px;
   padding-top: 80px;
 }
+.zclips--bare {
+  padding-top: 24px;
+}
+/* Relentless (Sword.jsx): the 3D sword fills the pin and turns over the run below it; the combat heading fades in
+   under it once it has settled. */
+.zsword {
+  position: relative;
+  margin-top: 40px;
+}
+.zsword__pin {
+  --head: 1;
+  --words: 1;
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  /* A warm pool of light behind the blade, fading to the page at the top and bottom. */
+  background: radial-gradient(ellipse 55% 40% at 50% 42%, rgba(201, 171, 118, 0.1), transparent 70%);
+}
+.zsword__stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.zsword__pin.is-live .zsword__stage {
+  opacity: 1;
+}
+.zsword__stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* The opening words, either side of the upright sword (its crossguard is about 18vh wide); they part and fade as
+   --words runs 0 → 1. */
+.zsword__words {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(28vh + var(--words) * 16vw);
+  opacity: calc(1 - var(--words));
+  pointer-events: none;
+}
+.zsword__word {
+  font-size: clamp(40px, 7vw, 128px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zsword__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9vh;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: var(--head);
+  translate: 0 calc((1 - var(--head)) * 20px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .zsword__run::after {
+    content: '';
+    display: block;
+    height: 180vh;
+  }
+  .zsword__pin {
+    position: sticky;
+    top: 0;
+  }
+}
+@media (max-width: 860px) {
+  .zsword__head {
+    padding: 0 20px;
+    bottom: 6vh;
+  }
+  /* Too narrow for a row: one word above the crossguard on the left, the other below it on the right. */
+  .zsword__words {
+    flex-direction: column;
+    justify-content: center;
+    gap: calc(30vh + var(--words) * 20vh);
+  }
+  .zsword__word {
+    font-size: 28px;
+  }
+  .zsword__word:first-child {
+    align-self: flex-start;
+    margin-left: 20px;
+  }
+  .zsword__word:last-child {
+    align-self: flex-end;
+    margin-right: 20px;
+  }
+}
 .zclips__head {
   display: flex;
   flex-direction: column;
