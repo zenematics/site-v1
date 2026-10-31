@@ -2609,19 +2609,139 @@ html {
   color: #9b968d;
 }
 
-/* Brand logos (uploads/brands/) head the table that follows them. */
-.md p > img[src*='uploads/brands/']:only-child {
-  height: 26px;
+/* Tabs (##### headings in Md.jsx): big buttons, brand logos on the Performance page, then the picked panel. */
+.md .md-tabs {
+  margin: 28px 0 8px;
+}
+.md .md-tabs__picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-auto-flow: column;
+  gap: 12px;
+}
+.md .md-tabs__pick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 112px;
+  padding: 20px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.025);
+  color: #ece9e2;
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, opacity 0.2s;
+}
+.md .md-tabs__pick img {
+  height: 44px;
   width: auto;
-  margin: 8px 0 -10px;
+  max-width: 100%;
+  margin: 0;
   border-radius: 0;
   box-shadow: none;
+  transition: transform 0.25s;
 }
-.md p > img[src$='amd.svg']:only-child {
-  height: 18px;
+.md .md-tabs__pick--amd img {
+  height: 30px;
 }
-.md p > img[src$='intel.svg']:only-child {
-  height: 24px;
+.md .md-tabs__pick--intel img {
+  height: 40px;
+}
+.md .md-tabs__pick:hover {
+  border-color: rgba(201, 171, 118, 0.5);
+  background: rgba(255, 255, 255, 0.045);
+}
+.md .md-tabs__pick:hover img {
+  transform: scale(1.05);
+}
+.md .md-tabs__pick:focus-visible {
+  outline: 1px solid #c9ab76;
+  outline-offset: 3px;
+}
+.md .md-tabs__pick[aria-selected='true'] {
+  border-color: #c9ab76;
+  background: rgba(201, 171, 118, 0.08);
+  box-shadow: inset 0 0 0 1px #c9ab76, 0 0 28px rgba(201, 171, 118, 0.12);
+}
+/* Once one is picked, the others step back. */
+.md .md-tabs__picks:has([aria-selected='true']) .md-tabs__pick:not([aria-selected='true']):not(:hover) {
+  opacity: 0.55;
+}
+.md .md-tabs__detected {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.md .md-tabs__hint {
+  margin: 16px 0 0;
+  text-align: center;
+  color: #9b968d;
+}
+.md .md-tabs__panel {
+  margin-top: 18px;
+  padding: 4px 24px 12px;
+  border: 1px solid rgba(201, 171, 118, 0.25);
+  background: rgba(255, 255, 255, 0.015);
+  animation: md-tab-in 0.25s ease-out;
+}
+/* "Your card" / "Set it up": a bold line on its own labels the part below it. */
+.md .md-tabs__panel > p:has(> strong:only-child) {
+  margin: 26px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.md .md-tabs__panel > p:has(> strong:only-child) > strong {
+  color: #c9ab76;
+  font-weight: 500;
+}
+.md .md-tabs__panel td:first-child {
+  width: auto;
+}
+@keyframes md-tab-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .md .md-tabs__panel {
+    animation: none;
+  }
+}
+@media (max-width: 600px) {
+  .md .md-tabs__picks {
+    gap: 8px;
+  }
+  .md .md-tabs__pick {
+    min-height: 76px;
+    padding: 14px 8px;
+  }
+  .md .md-tabs__pick img {
+    height: 28px;
+  }
+  .md .md-tabs__pick--amd img {
+    height: 19px;
+  }
+  .md .md-tabs__pick--intel img {
+    height: 25px;
+  }
+  .md .md-tabs__panel {
+    padding: 2px 0 8px;
+    border-width: 1px 0 0;
+    background: none;
+    overflow-x: auto;
+  }
+  .md .md-tabs__panel th,
+  .md .md-tabs__panel td {
+    padding-right: 12px;
+  }
 }
 
 /* Section heading icons (DocIcons.jsx) in a gold-edged tile. */

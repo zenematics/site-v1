@@ -23,7 +23,7 @@ DLSS, frame generation and Neural Rendering need an **NVIDIA RTX** card. Zendera
 | GTX 16-series and older | No          | No                                                  | No                               |
 | AMD and Intel           | No          | Experimental Intel XeFG instead                     | No                               |
 
-On an **AMD or Intel GPU**, set Bottled Shaders' upscaling to **AMD FSR**. The steps are on the [Performance](#performance/amd-and-intel-gpus) page.
+On an **AMD or Intel GPU**, set Bottled Shaders' upscaling to **AMD FSR**. The steps are on the [Performance](#performance/recommended-settings) page.
 
 Our [recommended specs](#readme/recommended-specs) still apply. Frame generation can't make up for a GPU that's too weak to run the list.
 

@@ -161,7 +161,6 @@ export const HEADING_ICONS = {
   'theo-s-render-pipeline': 'layers',
   'bottled-shaders': 'sun',
   stuttering: 'pulse',
-  'amd-and-intel-gpus': 'gpu',
   'reporting-a-problem': 'message',
   'what-your-gpu-can-run': 'gpu',
   'before-you-start': 'checklist',
