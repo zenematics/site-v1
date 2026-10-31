@@ -4,6 +4,7 @@ import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Grimoire from '../zenderal/Grimoire.jsx';
 import Sword from '../zenderal/Sword.jsx';
+import Musket from '../zenderal/Musket.jsx';
 import { BG as PROPHECY_BG, EDGES as PROPHECY_EDGES, TREES as PROPHECY_TREES } from '../zenderal/guide/prophecyLayout.js';
 import { TRAITS } from '../zenderal/guide/data.js';
 
@@ -595,7 +596,8 @@ export default function Zenderal() {
 
       <Grimoire />
 
-      <Clips {...OVERVIEW.firearms} />
+      {/* The gun swings round to the firearms heading and fires; the build-crafting section comes out of the flash. */}
+      <Musket {...OVERVIEW.firearms} />
 
       <section className="zbuild">
         <div className="zbuild__pin">

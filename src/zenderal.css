@@ -1316,6 +1316,118 @@ html {
     margin-right: 20px;
   }
 }
+/* Firearms (Musket.jsx): the 3D gun fills the pin, aimed at the viewer over the section's label, then swings round to
+   lie level as the label fades and the heading fades in under it. Then it fires: a burst at the muzzle and a fixed
+   whiteout that thins as the build-crafting section rises into place. Musket.jsx sets their opacity and transform. */
+.zmusket {
+  position: relative;
+  margin-top: 40px;
+}
+.zmusket__pin {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: radial-gradient(ellipse 55% 40% at 50% 42%, rgba(201, 171, 118, 0.1), transparent 70%);
+}
+.zmusket__stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.zmusket__pin.is-live .zmusket__stage {
+  opacity: 1;
+}
+.zmusket__stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* A burst of fire out of the muzzle, longer along the barrel, with a hot core; placed at the muzzle by transform. */
+.zmusket__flash {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 52vmin;
+  height: 24vmin;
+  margin: -12vmin 0 0 -6vmin;
+  transform-origin: 6vmin 12vmin;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 22% 30% at 18% 50%, #fffaf0, rgba(255, 220, 150, 0.9) 45%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 40% 50%, rgba(255, 170, 70, 0.85), rgba(214, 110, 40, 0.4) 50%, transparent 72%);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+/* The whiteout, over the page under the nav; brightest towards the right, where the muzzle is, warm at its edges. */
+.zmusket__white {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  opacity: 0;
+  background: radial-gradient(circle at 72% 45%, #fffaf0, #f3e2c2 40%, #c9ab76 110%);
+  will-change: opacity;
+  pointer-events: none;
+}
+.zmusket__word {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(56px, 13vw, 240px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.zmusket__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9vh;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .zmusket__run::after {
+    content: '';
+    display: block;
+    /* The turn and the shot (the white is full at 0.64 of this, WHITE in Musket.jsx), then the rest under the white. */
+    height: 300vh;
+  }
+  .zmusket__pin {
+    position: sticky;
+    top: 0;
+  }
+  /* Build crafting sits behind the end of the run, pinning when the white is full: (1 - 0.64) × 300vh = 108vh before
+     the run ends. */
+  .zmusket + .zbuild {
+    margin-top: calc(-1 * (max(100vh, 600px) + 108vh));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zmusket__flash,
+  .zmusket__white {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
+  .zmusket__head {
+    padding: 0 20px;
+    bottom: 6vh;
+  }
+}
 .zclips__head {
   display: flex;
   flex-direction: column;

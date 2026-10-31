@@ -147,15 +147,11 @@ export const OVERVIEW = {
       { title: 'Knockdown and parry', text: 'Back + attack hits through their swing and knocks them down if their poise breaks.', video: 'clips/parry', guide: 'combat' },
     ],
   },
-  // Placeholder until the firearms clips are recorded.
+  // The firearms section's heading, under the 3D gun (Musket.jsx).
   firearms: {
     label: 'Firearms',
     title: 'Powder and steel.',
     text: 'Flintlock pistols and muskets, scaled by Archery and crafted at the forge, from old matchlocks to double-barrel Gewehrs.',
-    clips: [
-      { title: 'Pistols', text: 'A shot at close range, quick to draw between swings.', video: 'logo-grow', placeholder: true, guide: 'firearms' },
-      { title: 'Muskets', text: 'Heavy, slow to reload and devastating when they land.', video: 'logo-grow', placeholder: true, guide: 'firearms' },
-    ],
   },
   // The build-crafting section: the in-game perk screen zooms into its stone circle, which opens
   // into the Prophecy radial map. `links` point at guide sections.
