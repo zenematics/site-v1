@@ -1,51 +1,176 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-// The combat section's opener: Relentless, Zen's sword, in 3D (sword3d.js). The pin sticks over the run below it
-// (.zsword__run::after): it opens on the section's label either side of the upright sword, the words part and fade,
-// then the sword turns level, its runes light, and the heading fades in under it. Reduced motion shows it settled,
-// without the pin.
-export default function Sword({ label, title, text }) {
+// The combat section: Relentless, Zen's sword, in 3D (sword3d.js), and the combat clips it cuts between. The pin
+// sticks over the run below it (.zsword__run::after). It opens on the section's label either side of the upright
+// sword; the words part and fade, the sword turns level, its runes light and the heading fades in under it. Then four
+// swings: each time the sword sweeps across the screen along a slanted line, with the next clip on the side it has
+// passed (and a gold slash past its ends), until the clip fills the screen. The first swing starts from where the
+// sword rests and wipes the heading away; the rest alternate direction. Reduced motion skips all of it: the sword
+// shows settled and the clips follow as a grid (Zenderal.jsx).
+
+const GUIDE_URL = `${import.meta.env.BASE_URL}zenderal/guide/`;
+const CLIPS_AT = 0.32; // where the swings start, as a fraction of the run
+const SWEEP = 0.45; // the part of each clip's slice its swing takes; it holds for the rest
+const ANGLES = [-0.21, 0.17, -0.15, 0.2]; // each cut's slant, radians clockwise on screen
+
+const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+const ease = (x) => x * x * (3 - 2 * x);
+
+// The clip on screen and how far the swing into it has got, at run position t.
+function swingAt(t) {
+  const slice = (1 - CLIPS_AT) / ANGLES.length;
+  const k = Math.min(ANGLES.length - 1, Math.floor(Math.max(0, t - CLIPS_AT) / slice));
+  return { k, s: t < CLIPS_AT ? 0 : ease(ramp(t - CLIPS_AT - k * slice, 0, slice * SWEEP)) };
+}
+
+export default function Sword({ label, title, text, clips }) {
   const box = useRef(null);
+  const [current, setCurrent] = useState(-1);
 
   useEffect(() => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const run = box.current.closest('.zsword__run');
     const pin = run.querySelector('.zsword__pin');
-    const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+    const layers = [...pin.querySelectorAll('.zsword__clip')];
+    const videos = layers.map((l) => l.querySelector('video'));
+    const slash = pin.querySelector('.zsword__slash');
     let sword;
     let cancelled = false;
     let frame = 0;
-    const update = () => {
-      frame = 0;
-      const t = reduce ? 1 : ramp(-run.getBoundingClientRect().top, 0, run.offsetHeight - pin.offsetHeight);
-      sword?.set(ramp(t, 0.15, 0.75), ramp(t, 0.6, 0.85));
-      pin.style.setProperty('--words', ramp(t, 0.03, 0.22).toFixed(3));
-      pin.style.setProperty('--head', ramp(t, 0.75, 0.92).toFixed(3));
+    let shown = 0;
+    let on = false;
+    let shownK = -2;
+    const target = () => (reduce ? 1 : ramp(-run.getBoundingClientRect().top, 0, run.offsetHeight - pin.offsetHeight));
+
+    const draw = (t) => {
+      const W = pin.clientWidth;
+      const H = pin.clientHeight;
+      // How far the cut line must travel from the middle to clear the screen with the sword's crossguard.
+      const reach = Math.hypot(W, H) / 2 + 0.12 * W;
+      const { k, s } = swingAt(t);
+      const swinging = t >= CLIPS_AT;
+      // Even swings travel down the normal, odd ones back up; the first starts from the middle, where the sword rests.
+      const dir = k % 2 === 0 ? 1 : -1;
+      const from = k === 0 ? 0 : -dir * reach;
+      const p = swinging ? from + (dir * reach - from) * s : 0;
+      const a = swinging ? ANGLES[k] : 0;
+      const u = [Math.cos(a), Math.sin(a)];
+      const n = [-Math.sin(a), Math.cos(a)];
+      const cx = W / 2 + n[0] * p;
+      const cy = H / 2 + n[1] * p;
+
+      // Clip k shows on the side the sword has passed (behind it, against dir); earlier clips fill the rest, the
+      // latest of them on top.
+      const L = 4 * Math.max(W, H);
+      const half = (side) => {
+        const pts = [
+          [cx + u[0] * L, cy + u[1] * L],
+          [cx - u[0] * L, cy - u[1] * L],
+          [cx - u[0] * L + side * n[0] * L, cy - u[1] * L + side * n[1] * L],
+          [cx + u[0] * L + side * n[0] * L, cy + u[1] * L + side * n[1] * L],
+        ];
+        return `polygon(${pts.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',')})`;
+      };
+      layers.forEach((l, i) => {
+        const vis = !swinging ? 'hidden' : i < k ? (i === k - 1 ? 'full' : 'hidden') : i === k ? 'cut' : 'hidden';
+        l.style.visibility = vis === 'hidden' ? 'hidden' : 'visible';
+        l.style.clipPath = vis === 'cut' && s < 1 ? half(-dir) : 'none';
+      });
+      // The slash runs along the cut, visible only mid-swing.
+      slash.style.opacity = swinging && s > 0 && s < 1 ? Math.min(1, Math.sin(Math.PI * s) * 2).toFixed(3) : 0;
+      slash.style.transform = `translate(${cx}px, ${cy}px) rotate(${a}rad)`;
+
+      sword?.set({
+        turn: ramp(t, 0.06, 0.24),
+        glow: ramp(t, 0.18, 0.28),
+        x: n[0] * p,
+        y: n[1] * p,
+        angle: a,
+        // Closer as the first swing starts, so the blade spans the screen for the cuts.
+        zoom: 1 + 0.35 * ease(ramp(t, CLIPS_AT, CLIPS_AT + 0.03)),
+      });
+      pin.style.setProperty('--words', ramp(t, 0.01, 0.08).toFixed(3));
+      // The heading goes over the first half of the first swing, before that clip's caption comes in.
+      const head = ramp(t, 0.22, 0.28) * (1 - (t >= CLIPS_AT && k === 0 ? ramp(s, 0, 0.45) : t >= CLIPS_AT ? 1 : 0));
+      pin.style.setProperty('--head', head.toFixed(3));
+
+      // The clip in view plays (and the one being cut away, mid-swing); the rest wait.
+      const live = swinging ? k : -1;
+      videos.forEach((v, i) => {
+        const want = on && (i === live || (i === live - 1 && s < 1));
+        if (want && v.paused) v.play().catch(() => {});
+        else if (!want && !v.paused) v.pause();
+      });
+      const caption = swinging && s >= 0.5 ? k : swinging && k > 0 ? k - 1 : -1;
+      if (caption !== shownK) setCurrent((shownK = caption));
     };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+
+    // Eased towards the scroll, so a flick of the wheel glides rather than jumps; the sword and the cut share it.
+    const loop = () => {
+      const goal = target();
+      shown += (goal - shown) * 0.14;
+      if (Math.abs(goal - shown) < 0.0005) shown = goal;
+      draw(shown);
+      frame = shown === goal ? 0 : requestAnimationFrame(loop);
     };
+    const kick = () => {
+      if (!frame) frame = requestAnimationFrame(loop);
+    };
+    const seen = new IntersectionObserver(([e]) => {
+      on = e.isIntersecting;
+      kick();
+    });
+    seen.observe(pin);
+
     import('./sword3d.js')
       .then(({ mount }) => {
         if (cancelled) return;
         sword = mount(box.current, () => pin.classList.add('is-live'));
-        update();
+        draw(shown);
       })
       .catch(() => {});
-    update();
-    if (!reduce) addEventListener('scroll', onScroll, { passive: true });
+    shown = target();
+    draw(shown);
+    if (!reduce) addEventListener('scroll', kick, { passive: true });
+    addEventListener('resize', kick);
     return () => {
       cancelled = true;
       sword?.dispose();
-      removeEventListener('scroll', onScroll);
+      seen.disconnect();
+      removeEventListener('scroll', kick);
+      removeEventListener('resize', kick);
       cancelAnimationFrame(frame);
     };
   }, []);
+
+  // A rail step jumps to where its clip has just been cut in.
+  const jump = (i) => {
+    const run = box.current.closest('.zsword__run');
+    const pin = run.querySelector('.zsword__pin');
+    const slice = (1 - CLIPS_AT) / clips.length;
+    const t = CLIPS_AT + (i + SWEEP + 0.05) * slice;
+    scrollTo({ top: run.getBoundingClientRect().top + scrollY + t * (run.offsetHeight - pin.offsetHeight), behavior: 'smooth' });
+  };
 
   return (
     <section className="zsword">
       <div className="zsword__run">
         <div className="zsword__pin">
+          <div className="zsword__head">
+            <h2 className="zclips__title">{title}</h2>
+            <p className="zclips__text">{text}</p>
+          </div>
+          <div className="zsword__clips" aria-hidden="true">
+            {clips.map((clip) => (
+              <div key={clip.title} className="zsword__clip">
+                <video className="zsword__video" muted loop playsInline preload="metadata">
+                  <source src={`${import.meta.env.BASE_URL}uploads/zenderal/${clip.video}.webm`} type="video/webm" />
+                  <source src={`${import.meta.env.BASE_URL}uploads/zenderal/${clip.video}.mp4`} type="video/mp4" />
+                </video>
+              </div>
+            ))}
+          </div>
+          <div className="zsword__slash" aria-hidden="true" />
           <div ref={box} className="zsword__stage" aria-hidden="true" />
           {/* The label's two words, either side of the sword. */}
           <p className="zsword__words">
@@ -55,9 +180,30 @@ export default function Sword({ label, title, text }) {
               </span>
             ))}
           </p>
-          <div className="zsword__head">
-            <h2 className="zclips__title">{title}</h2>
-            <p className="zclips__text">{text}</p>
+          <div className={`zsword__caption${current >= 0 ? ' is-on' : ''}`}>
+            {clips.map((clip, i) => (
+              <div key={clip.title} className={`zsword__about${i === current ? ' is-on' : ''}`} aria-hidden={i !== current}>
+                <h3 className="zclip__title">{clip.title}</h3>
+                <p className="zclip__text">{clip.text}</p>
+                <a href={GUIDE_URL + clip.guide + '/'} className="zsword__guide" tabIndex={i === current ? 0 : -1}>
+                  Read the guide →
+                </a>
+              </div>
+            ))}
+            <ol className="zsword__rail">
+              {clips.map((clip, i) => (
+                <li key={clip.title}>
+                  <button
+                    type="button"
+                    className={`zsword__step${i === current ? ' is-on' : ''}`}
+                    onClick={() => jump(i)}
+                    aria-label={clip.title}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </button>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </div>

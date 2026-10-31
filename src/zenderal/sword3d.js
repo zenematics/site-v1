@@ -1,7 +1,8 @@
 // Relentless, Zen's sword (public/uploads/zenderal/relentless.glb, from the mod's mesh and 4K textures), loaded on
 // demand by Sword.jsx so three.js stays out of the main bundle. The page sets its pose from the scroll: it turns from
 // hanging tip-down to lying level, tip left (the way its runes read), spinning once about its blade on the way, and
-// the runes light up as it settles.
+// the runes light up as it settles. Once level the page can slide it, angle it and bring it closer, for the swings
+// that cut between the combat clips.
 import {
   ACESFilmicToneMapping,
   AmbientLight,
@@ -24,8 +25,10 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 const MODEL_URL = `${import.meta.env.BASE_URL}uploads/zenderal/relentless.glb`;
 const GLOW = new Color(0xffb35c);
 
-// Mounts the sword into `box`. Calls `onReady` once it's on screen; returns { set(t, glow), dispose }, where t runs
-// 0 → 1 over the turn and glow 0 → 1 lights the runes.
+// Mounts the sword into `box`. Calls `onReady` once it's on screen; returns { set(pose), dispose }. The pose's `turn`
+// runs 0 → 1 over the turn and `glow` 0 → 1 lights the runes; `x`/`y` (px from the middle, y down), `angle` (radians,
+// clockwise on screen) and `zoom` (1 = the level fit, larger is closer) place it once level. The page smooths the
+// scroll itself, so the pose is drawn as given.
 export function mount(box, onReady) {
   const renderer = new WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -57,8 +60,7 @@ export function mount(box, onReady) {
   let length = 1;
   let runes = [];
 
-  const want = { t: 0, glow: 0 };
-  const now = { t: 0, glow: 0 };
+  const pose = { turn: 0, glow: 0, x: 0, y: 0, angle: 0, zoom: 1 };
   let fitH = 1;
   let fitW = 1;
 
@@ -80,17 +82,18 @@ export function mount(box, onReady) {
   function tick(time) {
     frame = requestAnimationFrame(tick);
     if (!visible || !loaded) return;
-    // Eased towards the scroll, so a flick of the wheel glides rather than jumps.
-    now.t += (want.t - now.t) * 0.12;
-    now.glow += (want.glow - now.glow) * 0.1;
-    const t = now.t;
+    const t = pose.turn;
     const e = t * t * (3 - 2 * t);
-    turn.rotation.z = Math.PI - (Math.PI / 2) * e;
+    const dist = MathUtils.lerp(fitH, fitW, e) / pose.zoom;
+    // World units per screen pixel on the sword's plane.
+    const unit = (2 * dist * Math.tan(MathUtils.degToRad(camera.fov / 2))) / (renderer.domElement.clientHeight || 1);
+    turn.position.set(pose.x * unit, -pose.y * unit, 0);
+    turn.rotation.z = Math.PI - (Math.PI / 2) * e - pose.angle;
     turn.rotation.x = -0.25 * Math.sin(Math.PI * e);
     spin.rotation.y = Math.PI * 2 * e + Math.sin(time / 2400) * 0.06;
-    camera.position.set(0, 0, MathUtils.lerp(fitH, fitW, e));
+    camera.position.set(0, 0, dist);
     const pulse = 0.92 + Math.sin(time / 1600) * 0.08;
-    for (const m of runes) m.emissiveIntensity = now.glow * pulse * 2.2;
+    for (const m of runes) m.emissiveIntensity = pose.glow * pulse * 2.2;
     rim.position.x = -3 + Math.sin(spin.rotation.y) * 2;
     renderer.render(scene, camera);
   }
@@ -118,17 +121,14 @@ export function mount(box, onReady) {
     });
     spin.add(model);
     resize();
-    now.t = want.t;
-    now.glow = want.glow;
     loaded = true;
     onReady();
   });
   frame = requestAnimationFrame(tick);
 
   return {
-    set(t, glow) {
-      want.t = t;
-      want.glow = glow;
+    set(next) {
+      Object.assign(pose, next);
     },
     dispose() {
       disposed = true;

@@ -585,7 +585,7 @@ export default function Zenderal() {
         </div>
       </section>
 
-      {/* The sword carries the combat heading, so its clips follow without one. */}
+      {/* The sword carries the combat heading and cuts between the clips; the grid stands in with reduced motion. */}
       <Sword {...OVERVIEW.combat} />
       <Clips {...OVERVIEW.combat} bare />
 

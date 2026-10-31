@@ -1045,7 +1045,7 @@ html {
   padding-top: 24px;
 }
 /* Relentless (Sword.jsx): the 3D sword fills the pin and turns over the run below it; the combat heading fades in
-   under it once it has settled. */
+   under it once it has settled, then the sword cuts between the combat clips. */
 .zsword {
   position: relative;
   margin-top: 40px;
@@ -1109,21 +1109,154 @@ html {
   opacity: var(--head);
   translate: 0 calc((1 - var(--head)) * 20px);
 }
+/* The clips the sword cuts between, full screen under it; Sword.jsx clips the one being cut in to the side the blade
+   has passed. Darkened at the bottom for the caption. */
+.zsword__clips,
+.zsword__clip {
+  position: absolute;
+  inset: 0;
+}
+.zsword__clip {
+  visibility: hidden;
+  background: #07080a;
+}
+.zsword__clip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 8, 10, 0.25), transparent 30%, transparent 55%, rgba(7, 8, 10, 0.85));
+}
+.zsword__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9);
+}
+/* A gold streak along the cut, centred on the blade (placed by Sword.jsx) and reaching past both its ends. */
+.zsword__slash {
+  position: absolute;
+  left: -200vmax;
+  top: -1px;
+  width: 400vmax;
+  height: 2px;
+  opacity: 0;
+  transform-origin: 200vmax 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 226, 166, 0.9) 40%, #fff3d6 50%, rgba(255, 226, 166, 0.9) 60%, transparent);
+  box-shadow: 0 0 12px 2px rgba(214, 160, 80, 0.7);
+  pointer-events: none;
+}
+/* The clip in view: its title, line and guide link, with a numbered rail to jump between them. */
+.zsword__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7vh;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.zsword__caption.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+.zsword__about {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+  opacity: 0;
+  translate: 0 10px;
+  transition: opacity 0.35s ease, translate 0.35s ease;
+  pointer-events: none;
+}
+.zsword__about.is-on {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+}
+.zsword__about .zclip__title {
+  font-size: clamp(22px, 2.4vw, 30px);
+}
+.zsword__about .zclip__text {
+  color: #c9c5bd;
+}
+.zsword__guide {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zsword__rail {
+  grid-area: 1 / 2;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zsword__step {
+  padding: 8px 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #6f6a62;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.zsword__step:hover,
+.zsword__step.is-on {
+  color: #ece9e2;
+  border-color: #c9ab76;
+}
 @media (prefers-reduced-motion: no-preference) {
+  /* The turn, then a slice per clip. */
   .zsword__run::after {
     content: '';
     display: block;
-    height: 180vh;
+    height: 560vh;
   }
   .zsword__pin {
     position: sticky;
     top: 0;
+  }
+  /* The grid only stands in for the cuts with reduced motion. */
+  .zclips--bare {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zsword__clips,
+  .zsword__slash,
+  .zsword__caption {
+    display: none;
   }
 }
 @media (max-width: 860px) {
   .zsword__head {
     padding: 0 20px;
     bottom: 6vh;
+  }
+  .zsword__caption {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 20px;
+    bottom: 5vh;
+  }
+  .zsword__rail {
+    grid-area: 2 / 1;
   }
   /* Too narrow for a row: one word above the crossguard on the left, the other below it on the right. */
   .zsword__words {
