@@ -44,7 +44,10 @@ function Overview() {
                 <span className={`gcard__art${s.img ? '' : ' gcard__art--none'}`}>
                   <img src={`${UPLOADS}${s.img ?? 'zenderal-emblem.webp'}`} alt="" loading="lazy" />
                 </span>
-                <h3 className="zcard__title">{s.title}</h3>
+                <h3 className="zcard__title">
+                  {s.title}
+                  {s.subtitle && <span className="zcard__subtitle">{s.subtitle}</span>}
+                </h3>
                 <p className="zcard__text">{s.desc}</p>
                 <span className="zcard__go" aria-hidden="true">→</span>
               </a>
@@ -70,7 +73,10 @@ function Section({ id }) {
           <span className="docs__label">
             <a href={GUIDE_URL} className="doc__crumb">Guide</a> · {cur.group}
           </span>
-          <h2 className="doc__title">{cur.title}</h2>
+          <h2 className="doc__title">
+            {cur.title}
+            {cur.subtitle && <span className="doc__subtitle">{cur.subtitle}</span>}
+          </h2>
         </div>
 
         <Suspense fallback={null}>

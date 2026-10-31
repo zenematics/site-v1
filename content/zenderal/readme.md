@@ -74,23 +74,6 @@ Zenderal is listed in the Wabbajack gallery as a non-featured list, so it's hidd
 
 Always launch the game through Mod Organizer 2. Starting Enderal from Steam runs the unmodded game.
 
-### The CRDW cache prompt
-
-The first time you start the game, a window titled **Cache Recursive Directory Walk** asks whether to generate CRDW cache files. **Click Yes.**
-
-![The Cache Recursive Directory Walk prompt, asking "Do you want to generate CRDW cache files?" with Yes and No buttons](uploads/crdw-prompt.png)
-
-On every launch the game scans the whole `Data` folder to find its files. With a list as large as Zenderal that takes a long time. CRDW saves the results of that scan to a cache so later launches can skip it and start much faster.
-
-The cache only helps if it matches what's actually installed. There's no cache yet on a fresh install, so **Yes** builds one from your files. Pressing **No** leaves the game without an up-to-date list of its files, which can mean missing content or a broken start.
-
-Click **Yes** again whenever your files change:
-
-- the first launch after installing or updating Zenderal
-- after adding, removing or changing mods, or changing their order in Mod Organizer 2
-
-Click **No** only when nothing has changed since the last time you clicked Yes. The game then reuses the cache and starts faster. If you're unsure, click **Yes**. It only costs a slower start that one time.
-
 ### Starting a new game
 
 When you start a new game, Zenderal runs a few setup tasks in the background. **Let them finish before you enter a new cell**, meaning before you go through a door or into a new area. Moving on too early can leave parts of the list unconfigured.
@@ -128,6 +111,23 @@ Updating wipes anything in the install folder that isn't part of the list, inclu
 ---
 
 ## Troubleshooting
+
+### Where to find crash logs
+
+Zenderal includes **Crash Logger**, which writes a log every time the game crashes to desktop and opens it in your text editor straight away. You'll find all of them in:
+
+```
+Documents\My Games\Skyrim Special Edition\SKSE
+```
+
+- Each crash is saved as `crash-` followed by the date and time, such as `crash-2026-10-30-00-08-16.log`. Sort the folder by date to find the newest one.
+- It's the **Skyrim** Special Edition folder, not the Enderal one, even though you're playing Enderal.
+- If your Documents folder is synced by **OneDrive**, the path starts with `OneDrive\Documents` instead. Typing `shell:Personal` into File Explorer's address bar opens whichever Documents folder Windows uses, so it finds it either way.
+- The last 20 crash logs are kept, and older ones are deleted.
+
+**If the game freezes** instead of crashing, press **Ctrl + Shift + F12** while it's frozen. Crash Logger then writes a `threaddump-` log to the same folder showing what the game was stuck on.
+
+When you report a crash in the Zenderal [Discord](https://discord.com/invite/aunT9MdevX), attach the whole log file rather than a screenshot or a pasted part of it, and say what you were doing when it happened.
 
 ### "Dismembering Framework.esm is missing"
 

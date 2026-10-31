@@ -11,6 +11,7 @@ export const FAQ = [
   { q: 'Do I need Nexus Premium?', a: 'No. Without Premium, Wabbajack opens each download page and you click through them manually. Premium makes it fully automatic.' },
   { q: 'Can I add my own mods?', a: "Not during beta. Adding or removing mods is unsupported and bug reports from modified installs can't be investigated." },
   { q: 'The game crashes on startup.', a: 'Make sure Enderal SE has been launched once through Steam, then always start the game from Mod Organizer 2 using the provided launcher.' },
+  { q: 'Where are the crash logs?', a: 'In Documents\\My Games\\Skyrim Special Edition\\SKSE (the Skyrim folder, not the Enderal one), named crash- plus the date and time. Crash Logger also opens each one when the game crashes. Attach the whole file when you report a crash in the Discord. More on crash logs and freezes is under Troubleshooting in the', link: { doc: 'readme', label: 'Readme' } },
   { q: "DLSS or frame generation isn't working.", a: 'Check that your NVIDIA driver is up to date, hardware-accelerated GPU scheduling is on and the NVIDIA App isn\'t overriding DLSS for the game. The full checklist and fixes for common errors are on the', link: { doc: 'dlss', label: 'DLSS & Frame Gen page' } },
   { q: 'Will my saves survive updates?', a: 'Not guaranteed during beta. Each update notes whether a new game is required.' },
   { q: 'Where do I report bugs?', a: 'In the Zenderal beta channel on Discord — include your crash log if you have one.' },

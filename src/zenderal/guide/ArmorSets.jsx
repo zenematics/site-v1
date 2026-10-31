@@ -2,12 +2,25 @@ import { useState } from 'react';
 import { ARMOR_SETS } from './data.js';
 
 const TYPES = ['Heavy', 'Light', 'Mage'];
+
+// Each set rendered as worn (Blender with PyNifly, from the meshes and textures that win in the installed list,
+// arms lowered from the bind pose); one file per set, named after it.
+const ART = `${import.meta.env.BASE_URL}uploads/guide/armor/`;
+const slug = (name) =>
+  name
+    .toLowerCase()
+    .replace(/'/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
 function SetCard({ set }) {
   const [shown, setShown] = useState(false);
   return (
     <div className="g-card g-set">
+      <div className="g-set__art">
+        <img src={`${ART}${slug(set.name)}.webp`} alt={`The ${set.name} set, worn`} loading="lazy" />
+      </div>
       <div className="g-card__head">
         <h3 className="g-card__title">{set.name}</h3>
         <span className="g-card__meta">
