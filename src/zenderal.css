@@ -1053,6 +1053,8 @@ html {
 .zsword__pin {
   --head: 1;
   --words: 1;
+  /* The clip frame's width: up to 1240px, and short enough to leave room for the nav above and the caption below. */
+  --fw: min(84vw, 1240px, (100vh - 360px) * 2.33);
   position: relative;
   height: 100vh;
   min-height: 600px;
@@ -1111,20 +1113,22 @@ html {
 }
 /* The clips the sword cuts between, full screen under it; Sword.jsx clips the one being cut in to the side the blade
    has passed. Darkened at the bottom for the caption. */
-.zsword__clips,
+/* On wide screens they sit in a frame no wider than 1240px (the clips are 960px wide, so they stay sharp), leaving
+   room for the caption below; phones show them full screen. */
+.zsword__clips {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: var(--fw);
+  aspect-ratio: 960 / 412;
+  translate: -50% -50%;
+}
 .zsword__clip {
   position: absolute;
   inset: 0;
-}
-.zsword__clip {
   visibility: hidden;
   background: #07080a;
-}
-.zsword__clip::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(7, 8, 10, 0.25), transparent 30%, transparent 55%, rgba(7, 8, 10, 0.85));
+  box-shadow: 0 0 0 1px rgba(201, 171, 118, 0.25), 0 30px 90px rgba(0, 0, 0, 0.7);
 }
 .zsword__video {
   display: block;
@@ -1152,9 +1156,8 @@ html {
   left: 0;
   right: 0;
   bottom: 7vh;
-  max-width: 1240px;
+  max-width: var(--fw);
   margin: 0 auto;
-  padding: 0 56px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
@@ -1252,8 +1255,25 @@ html {
   }
   .zsword__caption {
     grid-template-columns: minmax(0, 1fr);
+    max-width: none;
     padding: 0 20px;
     bottom: 5vh;
+  }
+  /* Full screen, darkened at the bottom for the caption. */
+  .zsword__clips {
+    inset: 0;
+    width: auto;
+    aspect-ratio: auto;
+    translate: none;
+  }
+  .zsword__clip {
+    box-shadow: none;
+  }
+  .zsword__clip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.25), transparent 30%, transparent 55%, rgba(7, 8, 10, 0.85));
   }
   .zsword__rail {
     grid-area: 2 / 1;

@@ -31,6 +31,7 @@ export default function Sword({ label, title, text, clips }) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const run = box.current.closest('.zsword__run');
     const pin = run.querySelector('.zsword__pin');
+    const frameEl = pin.querySelector('.zsword__clips');
     const layers = [...pin.querySelectorAll('.zsword__clip')];
     const videos = layers.map((l) => l.querySelector('video'));
     const slash = pin.querySelector('.zsword__slash');
@@ -60,14 +61,18 @@ export default function Sword({ label, title, text, clips }) {
       const cy = H / 2 + n[1] * p;
 
       // Clip k shows on the side the sword has passed (behind it, against dir); earlier clips fill the rest, the
-      // latest of them on top.
+      // latest of them on top. The clips sit in a frame, so the cut is drawn in the frame's own coordinates.
       const L = 4 * Math.max(W, H);
+      const fr = frameEl.getBoundingClientRect();
+      const pr = pin.getBoundingClientRect();
+      const fx = cx - (fr.left - pr.left);
+      const fy = cy - (fr.top - pr.top);
       const half = (side) => {
         const pts = [
-          [cx + u[0] * L, cy + u[1] * L],
-          [cx - u[0] * L, cy - u[1] * L],
-          [cx - u[0] * L + side * n[0] * L, cy - u[1] * L + side * n[1] * L],
-          [cx + u[0] * L + side * n[0] * L, cy + u[1] * L + side * n[1] * L],
+          [fx + u[0] * L, fy + u[1] * L],
+          [fx - u[0] * L, fy - u[1] * L],
+          [fx - u[0] * L + side * n[0] * L, fy - u[1] * L + side * n[1] * L],
+          [fx + u[0] * L + side * n[0] * L, fy + u[1] * L + side * n[1] * L],
         ];
         return `polygon(${pts.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',')})`;
       };
@@ -80,14 +85,17 @@ export default function Sword({ label, title, text, clips }) {
       slash.style.opacity = swinging && s > 0 && s < 1 ? Math.min(1, Math.sin(Math.PI * s) * 2).toFixed(3) : 0;
       slash.style.transform = `translate(${cx}px, ${cy}px) rotate(${a}rad)`;
 
+      // As the first swing starts the sword comes closer and slides along the cut towards its hilt, so the blade
+      // spans the screen and the grip is off the right-hand edge, with the crossguard at it.
+      const close = ease(ramp(t, CLIPS_AT, CLIPS_AT + 0.03));
+      const along = 0.06 * W * close;
       sword?.set({
         turn: ramp(t, 0.06, 0.24),
         glow: ramp(t, 0.18, 0.28),
-        x: n[0] * p,
-        y: n[1] * p,
+        x: n[0] * p + u[0] * along,
+        y: n[1] * p + u[1] * along,
         angle: a,
-        // Closer as the first swing starts, so the blade spans the screen for the cuts.
-        zoom: 1 + 0.35 * ease(ramp(t, CLIPS_AT, CLIPS_AT + 0.03)),
+        zoom: 1 + 0.65 * close,
       });
       pin.style.setProperty('--words', ramp(t, 0.01, 0.08).toFixed(3));
       // The heading goes over the first half of the first swing, before that clip's caption comes in.
