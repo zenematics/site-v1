@@ -4580,3 +4580,7 @@ html {
     padding: 18px;
   }
 }
+/* The label's I, hidden while the gun stands in for it (Musket.jsx); eased so it crossfades with the gun as it loads. */
+.zmusket__i {
+  transition: opacity 0.6s ease;
+}

@@ -2,7 +2,8 @@
 // Ordo Legionis' mesh exported with
 // NifSkope and its PBR textures), loaded on demand by Musket.jsx so three.js stays out of the main bundle. The page
 // sets its pose from the scroll: it starts aimed at the viewer, muzzle-on and close, then swings round to lie level in
-// profile, muzzle right, rolling once about its barrel on the way. Once level the page can move it, bring it closer
+// profile, muzzle right, rolling once about its barrel on the way. Before that it can stand upright in profile, muzzle
+// up and small, as the I of the section's label, then tip forward out of the word into the aimed pose. Once level the page can move it, bring it closer
 // and fire it (a recoil kick), and asks where its muzzle is on screen to place the flash.
 import {
   ACESFilmicToneMapping,
@@ -28,7 +29,8 @@ const LEVEL = -Math.PI / 2;
 
 // Mounts the musket into `box`. Calls `onReady` once it's on screen; returns { set(pose), muzzle(), dispose }. The
 // pose's `turn` runs 0 (aimed at the viewer) → 1 (level, in profile); `x`/`y` (px from the middle, y down) and
-// `zoom` (1 = the level fit, larger is closer) place it, and `kick` (0 → 1 → 0) is the recoil. muzzle() gives the
+// `zoom` (1 = the level fit, larger is closer) place it, and `kick` (0 → 1 → 0) is the recoil. `stand` (1 → 0) blends
+// in from standing upright as a letter: `sx`/`sy` (px from the middle) is the letter's centre and `sh` its height. muzzle() gives the
 // muzzle's position in px within `box`, as of the last frame drawn. It only draws when the pose or size changes.
 export function mount(box, onReady) {
   const renderer = new WebGLRenderer({ antialias: true, alpha: true });
@@ -53,15 +55,18 @@ export function mount(box, onReady) {
   scene.add(key, rim, fill, new AmbientLight(0xffffff, 0.2));
 
   const camera = new PerspectiveCamera(24, 1, 0.1, 1000);
-  // aim: swings the barrel from the camera round to the side; roll: about the barrel.
+  // lift: tips the aimed gun up to stand muzzle-up; aim: swings the barrel from the camera round to the side; roll:
+  // about the barrel.
+  const lift = new Group();
   const aim = new Group();
   const roll = new Group();
   aim.add(roll);
-  scene.add(aim);
+  lift.add(aim);
+  scene.add(lift);
   let length = 1;
   let height = 1;
 
-  const pose = { turn: 0, x: 0, y: 0, zoom: 1, kick: 0 };
+  const pose = { turn: 0, x: 0, y: 0, zoom: 1, kick: 0, stand: 0, sx: 0, sy: 0, sh: 1 };
   const tip = new Vector3();
   const muzzleAt = new Vector3();
   let fitNear = 1;
@@ -93,16 +98,25 @@ export function mount(box, onReady) {
     dirty = false;
     const t = pose.turn;
     const e = t * t * (3 - 2 * t);
-    const dist = MathUtils.lerp(fitNear, fitW, e) / pose.zoom;
+    const half = Math.tan(MathUtils.degToRad(camera.fov / 2));
+    // Standing, the camera backs off until the gun's length is the letter's height (blended in log space, so the
+    // zoom out of the word runs evenly).
+    const s = pose.stand * pose.stand * (3 - 2 * pose.stand);
+    const standDist = (length * boxH) / (2 * half * Math.max(1, pose.sh));
+    const near = MathUtils.lerp(fitNear, fitW, e) / pose.zoom;
+    const dist = Math.exp(MathUtils.lerp(Math.log(near), Math.log(standDist), s));
     camera.position.set(0, 0, dist);
     // World units per screen pixel on the gun's plane.
-    const unit = (2 * dist * Math.tan(MathUtils.degToRad(camera.fov / 2))) / boxH;
+    const unit = (2 * dist * half) / boxH;
+    lift.position.set(pose.sx * unit * s, -pose.sy * unit * s, 0);
+    lift.rotation.x = (-Math.PI / 2) * s;
     // The recoil shoves the gun back along its barrel and throws the muzzle up.
     aim.position.set(pose.x * unit - pose.kick * 0.06 * length, -pose.y * unit, 0);
     aim.rotation.z = pose.kick * 0.12;
     aim.rotation.y = (-Math.PI / 2) * (1 - e);
     aim.rotation.x = 0.18 * Math.sin(Math.PI * e);
-    roll.rotation.x = Math.PI * 2 * e;
+    // Standing, it rolls a quarter turn so its side faces the viewer.
+    roll.rotation.x = Math.PI * 2 * e + (Math.PI / 2) * s;
     rim.position.x = -3 + Math.sin(roll.rotation.x) * 2;
     renderer.render(scene, camera);
     muzzleAt.copy(tip);
