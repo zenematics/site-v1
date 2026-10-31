@@ -1,6 +1,9 @@
-Zenderal ships with [Theo's Render Pipeline](https://www.nexusmods.com/skyrimspecialedition/mods/191382) (TRP) by theosw. It replaces the game's anti-aliasing with **NVIDIA DLSS or DLAA** and adds **frame generation**, **NVIDIA Reflex** and optional **Neural Rendering**, the NVIDIA runtime people call "DLSS 5". Menus and the HUD stay at your screen's full resolution.
+Zenderal's DLSS and frame generation come from two mods working together:
 
-It's installed and set up already, so you don't need the download or DLL steps from the mod page. This page covers what your PC needs and what to do when it doesn't work.
+- **Bottled Shaders** (Insert → **Upscaling**) does the upscaling: **NVIDIA DLSS**, or **AMD FSR** on other cards.
+- **[Theo's Render Pipeline](https://www.nexusmods.com/skyrimspecialedition/mods/191382)** (TRP, by theosw, **End**) adds **frame generation** and **Neural Rendering**, the NVIDIA runtime people call "DLSS 5". Menus and the HUD stay at your screen's full resolution.
+
+Both are installed and set up already, so you don't need the download or DLL steps from the mod pages. This page covers what your PC needs and what to do when it doesn't work. For settings and FPS, see [Performance](#performance).
 
 > **Early release**
 > TRP is an early test release and some of its features are still experimental. If something on this page doesn't fix your problem, see **Reporting a problem** at the bottom.
@@ -20,7 +23,7 @@ DLSS, frame generation and Neural Rendering need an **NVIDIA RTX** card. Zendera
 | GTX 16-series and older | No          | No                                                  | No                               |
 | AMD and Intel           | No          | Experimental Intel XeFG instead                     | No                               |
 
-On an **AMD or Intel GPU**, TRP switches to Intel's experimental XeSS upscaling and XeFG frame generation by itself. You don't need to change anything.
+On an **AMD or Intel GPU**, set Bottled Shaders' upscaling to **AMD FSR**. The steps are on the [Performance](#performance/amd-and-intel-gpus) page.
 
 Our [recommended specs](#readme/recommended-specs) still apply. Frame generation can't make up for a GPU that's too weak to run the list.
 
@@ -53,7 +56,7 @@ Tools that override DLSS for every game, such as global profiles in NVIDIA Profi
 
 ### 4. Turn off other frame generation
 
-Only one thing can generate frames. Close or disable **Lossless Scaling**, **AMD Fluid Motion Frames**, **NVIDIA Smooth Motion**, **OptiScaler** and any other upscaler or frame-generation injector. Zenderal's ENB doesn't use its own anti-aliasing or frame generation, so leave those off if you change ENB settings.
+Only one thing can generate frames. Close or disable **Lossless Scaling**, **AMD Fluid Motion Frames**, **NVIDIA Smooth Motion**, **OptiScaler** and any other upscaler or frame-generation injector. On NVIDIA, leave **Frame Generation** off in Bottled Shaders' Upscaling page too. TRP does it.
 
 ### 5. Play in borderless or windowed mode
 
@@ -65,7 +68,7 @@ If Windows display scaling is above 100% (**Settings → System → Display → 
 
 1. In Zenderal's `Stock game` folder, right-click `SkyrimSE.exe` and open **Properties → Compatibility → Change high DPI settings**.
 2. Tick **Override high DPI scaling behavior** and set **Scaling performed by** to **Application**.
-3. Make sure the game's resolution matches your monitor's native resolution. In borderless mode a lower resolution is stretched, which has the same effect. Use the DLSS render scale to lower the cost instead.
+3. Make sure the game's resolution matches your monitor's native resolution. In borderless mode a lower resolution is stretched, which has the same effect. Lower the **Upscale Preset** in Bottled Shaders instead.
 
 You can keep your desktop scaling as it is. This only changes how Windows treats the game.
 
@@ -77,25 +80,31 @@ On a laptop with two GPUs, open **Settings → System → Display → Graphics**
 
 ## Checking it works
 
-Launch Zenderal from Mod Organizer 2 as usual and press **End** in game to open TRP's settings. The panel shows live FPS beside the settings, and the bar above the tabs shows what's running and in what order.
+![Theo's Render Pipeline menu with the pipeline bar along the top and Healthy in the top right](uploads/trp-menu.webp)
 
-Zenderal starts with **DLSS at 67% render scale**, **frame generation at x2** and **Neural Rendering off**.
+*Launch Zenderal from Mod Organizer 2 and press End. The bar along the top shows the chain, and the top right should say Healthy.*
 
-- **Apply** changes settings for this session only.
-- **Save as default** keeps them for next time.
-- **Changing the DLSS/DLAA mode or the render scale needs a restart** of the game. Everything else applies straight away.
+What Zenderal starts with:
 
-If **End** clashes with another mod, change the key under **Advanced → Menu key**.
+| Stage                | Setting                                         | Where              |
+| -------------------- | ----------------------------------------------- | ------------------ |
+| Upscaling            | **NVIDIA DLSS, Balanced** (renders at about 59%) | Insert → Upscaling |
+| Neural Rendering     | **On**, one pass after upscaling                | End → Neural Rendering |
+| Frame generation     | **DLSS-G x2**                                   | End → Frame generation |
+
+In TRP, **Apply** changes settings for this session and **Save as default** keeps them. In Bottled Shaders, press **Ctrl + S**. If **End** clashes with another mod, change the key under **Advanced → Menu key**.
 
 ---
 
 ## Common problems
 
-### End doesn't open anything
+Open the one that matches what you see.
+
+#### End doesn't open anything
 
 TRP didn't load. In Mod Organizer 2, open the **DLSS 5 - FrameGen - NR** section and check that both **TheosRenderPipeline Standard** and **TheosRenderPipeline Universal** are ticked, with Universal below Standard in the left pane. Then launch the game from MO2 again, not from Steam.
 
-### An error appears when the game starts
+#### An error appears when the game starts
 
 TRP explains startup problems in its error message, under **Likely causes and what to try**. The most common ones:
 
@@ -107,7 +116,7 @@ TRP explains startup problems in its error message, under **Likely causes and wh
 | The driver did not identify the GPU                   | Update your NVIDIA driver. On a laptop, set the game to use the NVIDIA GPU                                                                          |
 | The runtime files differ from the supported version   | Something replaced TRP's NVIDIA files, such as DLSS Swapper or a DLL copied in by hand. Undo that, or reinstall Zenderal                           |
 
-### "nvngx_dlssg.dll was not loaded"
+#### "nvngx_dlssg.dll was not loaded"
 
 This is the most common startup error. A box titled **TheosRenderPipeline.dll** says TRP **could not start rendering**, then the game closes when you click OK.
 
@@ -123,31 +132,32 @@ To fix it:
 
 If none of that helps, send `TheosRenderPipeline.log` as described in **Reporting a problem**. It lists every folder TRP tried to load the file from.
 
-### Frame generation multipliers are greyed out
+#### Frame generation multipliers are greyed out
 
 The multipliers you can pick depend on your card. See **What your GPU can run** above. On RTX 20 and 30-series cards frame generation is experimental and may not work on every card.
 
-### Neural Rendering is greyed out or tanks performance
+#### Neural Rendering is greyed out or tanks performance
 
-Neural Rendering needs an NVIDIA RTX card, and its file ships in the **TheosRenderPipeline Standard** mod, so keep that ticked. It's off by default because it's demanding. If you turn it on:
+Neural Rendering needs an NVIDIA RTX card, and its file ships in the **TheosRenderPipeline Standard** mod, so keep that ticked. Zenderal turns it on with one pass after upscaling. It's demanding, so if it costs too much:
 
-- Use **one pass**, placed **before DLSS**. That's the cheapest setup.
-- Two passes after DLSS are very expensive, even on high-end cards.
-- On RTX 20 and 30-series cards, expect a large hit.
+- Set **Placement** to **Before upscaling**, so it works on the smaller image.
+- Set **Model rate** to **Every other frame**.
+- Don't add a second pass. Two passes after upscaling are very expensive, even on high-end cards.
+- On RTX 20 and 30-series cards, turn it off.
 
-### Frame generation feels laggy or the image smears
+#### Frame generation feels laggy or the image smears
 
-Frame generation adds frames between the ones your GPU renders. It doesn't make the game respond faster. It feels best when the game already runs at around **60 FPS or more** before frame generation. Below that, lower the DLSS render scale or other graphics settings first, or use x2 instead of a higher multiplier.
+Frame generation adds frames between the ones your GPU renders. It doesn't make the game respond faster. It feels best when the game already runs at around **60 FPS or more** before frame generation. Below that, lower the **Upscale Preset** in Bottled Shaders (Insert → Upscaling) or other graphics settings first, or use x2 instead of a higher multiplier.
 
 The FPS shown with frame generation counts the generated frames too, so it can read high while the game still feels uneven.
 
-### Black screen or the game freezes on a GPU error
+#### Black screen or the game freezes on a GPU error
 
 If the screen goes black or the game stops responding after a loading screen, restart the game. TRP writes a `[GPUFailure]` entry to its log when this happens, so send the log along with your report (see below).
 
-### Starting over with the default settings
+#### Starting over with the default settings
 
-Your TRP settings are saved to `SKSE\Plugins\TheosRenderPipeline.User.ini` in MO2's **Overwrite** folder. Delete that file to go back to Zenderal's defaults.
+**Save as default** writes your TRP settings to `SKSE\Plugins\TheosRenderPipeline.User.ini`, which Zenderal ships in its **Zenderal - Settings** mod. Don't delete that file: it holds Zenderal's own settings. To go back to them, run the Zenderal install in Wabbajack again over the same folder. It restores any files that were changed.
 
 ---
 
