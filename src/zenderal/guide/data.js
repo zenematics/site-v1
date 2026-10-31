@@ -564,7 +564,8 @@ export const KEYS = {
   LAlt: { cat: 'combat', action: 'Dodge', note: 'TK Dodge. Tapping Left Shift dodges too.' },
   Space: { cat: 'move', action: 'Jump' },
   Arrows: { cat: 'mod', action: 'Wheeler: move entries', note: 'Reorder slots and wheels while the wheel is open.' },
-  Ins: { cat: 'mod', action: 'Community Shaders menu', note: 'Opens the Community Shaders settings.' },
+  Ins: { cat: 'mod', action: 'Community Shaders menu', note: 'Opens Bottled Shaders (Community Shaders): upscaling and every lighting and shader setting.' },
+  NumMul: { cat: 'mod', action: 'Community Shaders on / off', note: 'Switches the shaders off and on, for a quick before-and-after.' },
 };
 
 // `part` is the button on the mouse diagram it lights up.

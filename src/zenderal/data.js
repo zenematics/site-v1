@@ -8,6 +8,7 @@ export const DOCS = [
 export const GROUPS = ['Getting Started', 'Help'];
 
 export const FAQ = [
+  { q: 'Do I need Skyrim Special Edition installed?', a: 'No. You need to own it on Steam, but only Enderal SE has to be installed. Enderal SE brings every Skyrim file the list uses.' },
   { q: 'Do I need Nexus Premium?', a: 'No. Without Premium, Wabbajack opens each download page and you click through them manually. Premium makes it fully automatic.' },
   { q: 'Can I add my own mods?', a: "Not during beta. Adding or removing mods is unsupported and bug reports from modified installs can't be investigated." },
   { q: 'The game crashes on startup.', a: 'Make sure Enderal SE has been launched once through Steam, then always start the game from Mod Organizer 2 using the provided launcher.' },

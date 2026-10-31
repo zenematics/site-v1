@@ -9,8 +9,8 @@ Everything you need to know to install, run and update Zenderal, a Wabbajack mod
 
 | Requirement   | Details                                                                     |
 | ------------- | --------------------------------------------------------------------------- |
-| Enderal SE    | Enderal: Forgotten Stories (Special Edition) on **Steam**, set to English   |
-| Skyrim SE     | You must also own Skyrim Special Edition on **Steam**                       |
+| Enderal SE    | Enderal: Forgotten Stories (Special Edition) **2.1.4** on **Steam**, set to English |
+| Skyrim SE     | Must be **owned** on **Steam**. It doesn't need to be installed             |
 | Platform      | Windows only. Steam Deck and Linux are not supported                        |
 | Installer     | The latest [Wabbajack](https://www.wabbajack.org/)                          |
 | Nexus account | Required. Premium is recommended but not needed                             |
@@ -23,7 +23,7 @@ Everything you need to know to install, run and update Zenderal, a Wabbajack mod
 
 ## Recommended specs
 
-Zenderal runs Community Shaders with a full lighting and effects stack, so the GPU matters most. These figures are a starting point while we gather data from testers.
+Zenderal's graphics run on Bottled Shaders (a Community Shaders fork) with DLSS, frame generation and Neural Rendering, so the GPU matters most. These figures are a starting point while we gather data from testers.
 
 | Component | Minimum                                    |
 | --------- | ------------------------------------------ |
@@ -41,7 +41,7 @@ A performance profile for lower-end hardware is planned.
 | --------- | -------- | ------------------------------------------- |
 | Downloads | ~150 GB  | Any drive. Keep it if you want faster updates |
 | Install   | ~200 GB  | Install on an **SSD**                       |
-| Total     | ~350 GB  | Plus your Steam installs of Enderal SE and Skyrim SE |
+| Total     | ~350 GB  | Plus about 23 GB for Enderal SE itself in Steam |
 
 You can delete the downloads folder once the game runs, but Wabbajack will then download everything again on the next update.
 
@@ -49,11 +49,20 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 ## Before you install
 
-1. **Clean install Enderal SE.** Uninstall it through Steam, delete whatever is left in its game folder, then reinstall. Leftover files from earlier mods are the most common cause of a broken install, such as the [Dismembering Framework error](#readme/troubleshooting). Zenderal runs on the latest version of Enderal SE that Steam installs, so you don't need to change versions. If you switched to **enderal_2.0.12.4** for an earlier Zenderal release, switch back to **Default Public Version** under **Properties → Game Versions & Betas**.
-2. **Set the language to English** for both Enderal SE and Skyrim SE in Steam (Properties → Language).
-3. **Launch Enderal SE from Steam once.** Start it from Steam, let it reach the main menu, then quit. This creates the game's settings files and registry entries that Wabbajack needs to find the game.
-4. **Keep your folders out of protected locations.** Don't put Wabbajack, the downloads or the install folder inside `Program Files`, `Downloads`, `Documents`, your Desktop or the game's own folder. Something like `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` works well.
-5. **Pause your antivirus** while Wabbajack runs, or add exclusions for those folders. Some antivirus programs block or quarantine files mid-install.
+Do these six things before you open Wabbajack. Tick each one off as you go. Your ticks are saved in this browser.
+
+- [ ] **Own Enderal SE and Skyrim SE on Steam**
+  Install **Enderal: Forgotten Stories (Special Edition)**. Skyrim Special Edition only has to be **owned**, not installed: Enderal SE brings every Skyrim file the list needs.
+- [ ] **Clean-install Enderal SE**
+  Uninstall it in Steam, delete whatever is left in its game folder, then reinstall. Leftover files from old mods are the most common cause of a broken install, such as the [Dismembering Framework error](#readme/troubleshooting). Stay on Steam's current version, **Enderal SE 2.1.4**, which runs on Skyrim's Anniversary Edition engine (1.7 and later). If you switched to the **enderal_2.0.12.4** beta for an older Zenderal release, switch back to **Default Public Version** under **Properties → Game Versions & Betas**.
+- [ ] **Set Enderal SE to English**
+  In Steam, **Properties → Language → English**.
+- [ ] **Launch Enderal SE once from Steam**
+  Let it reach the main menu, then quit. This creates the settings files and registry entries Wabbajack uses to find the game.
+- [ ] **Pick safe folders on an SSD**
+  Keep Wabbajack, the downloads and the install out of `Program Files`, `Downloads`, `Documents`, the Desktop and the game's own folder. `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` work well. You need about **350 GB** free (see [Disk space](#readme/disk-space)).
+- [ ] **Pause your antivirus**
+  Or add exclusions for those three folders. Some antivirus programs quarantine files halfway through the install.
 
 ---
 
@@ -82,16 +91,16 @@ When you start a new game, Zenderal runs a few setup tasks in the background. **
 
 ## DLSS and frame generation
 
-Zenderal comes with [Theo's Render Pipeline](#dlss) set up for DLSS and frame generation. It needs a few things from your PC that Wabbajack can't set for you. Check these before your first launch:
+Zenderal comes set up for DLSS (through Bottled Shaders) and frame generation (through [Theo's Render Pipeline](#dlss)). It needs a few things from your PC that Wabbajack can't set for you. Check these before your first launch:
 
 - **Update your GPU driver.** Install the latest NVIDIA Game Ready or Studio driver. Older drivers are the most common reason frame generation doesn't start.
 - **Stop the NVIDIA App overriding the game.** Set every **DLSS Override** for `SkyrimSE.exe` to **Use the 3D application setting** and turn **Smooth Motion** off, in both its program and global settings.
-- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools. Zenderal doesn't use an ENB, so don't add one: its anti-aliasing and frame generation clash with Zenderal's.
+- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools, and leave Bottled Shaders' own frame generation off on NVIDIA cards. Zenderal's look comes from Bottled Shaders, not an ENB, so don't add an ENB on top: its anti-aliasing and frame generation clash with Zenderal's.
 - **Stay in borderless windowed mode.** Zenderal ships set to borderless. Frame generation doesn't work in exclusive fullscreen.
 - **Let the game handle display scaling.** If Windows scaling is above 100%, set `SkyrimSE.exe` in the `Stock game` folder to override high DPI scaling with **Application**, and run the game at your monitor's native resolution.
 - **Turn on hardware-accelerated GPU scheduling** in Windows graphics settings, then restart your PC.
 
-Press **End** in game to open its settings. Step-by-step instructions, error messages and fixes are on the [DLSS & Frame Gen](#dlss) page.
+Press **Insert** in game for upscaling and **End** for frame generation. Step-by-step instructions, error messages and fixes are on the [DLSS & Frame Gen](#dlss) page.
 
 To get more FPS, fix stutter or set things up on an AMD or Intel GPU, see the [Performance](#performance) page.
 

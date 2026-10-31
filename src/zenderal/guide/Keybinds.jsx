@@ -32,7 +32,7 @@ function Row({ row, focus, setFocus, cat }) {
   );
 }
 
-const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys', Ins: 'Insert' };
+const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys', Ins: 'Insert', NumMul: 'Numpad *' };
 
 export default function Keybinds() {
   const [focus, setFocus] = useState('LAlt');

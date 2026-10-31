@@ -2610,6 +2610,196 @@ html {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* An image followed by an italic line: the line is its caption. */
+.md p:has(> img:only-child) + p > em:only-child {
+  display: block;
+  margin-top: -6px;
+  font-size: 13px;
+  font-style: normal;
+  color: #9b968d;
+}
+
+/* Brand logos (uploads/brands/) head the table that follows them. */
+.md p > img[src*='uploads/brands/']:only-child {
+  height: 26px;
+  width: auto;
+  margin: 8px 0 -10px;
+  border-radius: 0;
+  box-shadow: none;
+}
+.md p > img[src$='amd.svg']:only-child {
+  height: 18px;
+}
+.md p > img[src$='intel.svg']:only-child {
+  height: 24px;
+}
+
+/* Section heading icons (DocIcons.jsx) in a gold-edged tile. */
+.md h2:has(.md-h2-icon) {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.md-h2-icon {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: 1px solid rgba(201, 171, 118, 0.35);
+  background: radial-gradient(circle at 50% 40%, rgba(201, 171, 118, 0.16), rgba(201, 171, 118, 0.03));
+  color: #e8c46e;
+  stroke-width: 1.5;
+}
+
+/* Task lists (- [ ]) → numbered checklist cards the reader can tick. */
+.md ul.contains-task-list {
+  counter-reset: step;
+  gap: 10px;
+}
+.md li.md-check {
+  counter-increment: step;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  position: relative;
+  min-height: 74px;
+  padding: 16px 18px 16px 76px;
+  border: 1px solid rgba(201, 171, 118, 0.25);
+  border-left: 3px solid #c9ab76;
+  background: linear-gradient(90deg, rgba(201, 171, 118, 0.08), rgba(201, 171, 118, 0.01));
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.md li.md-check::before {
+  content: counter(step);
+  z-index: 1;
+  left: 46px;
+  top: 10px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #c9ab76;
+  border-radius: 50%;
+  transform: none;
+  background: #0d0e11;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+  color: #e8c46e;
+}
+.md-check__icon {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  border: 1px solid rgba(201, 171, 118, 0.35);
+  background: rgba(201, 171, 118, 0.08);
+  color: #e8c46e;
+}
+.md-check.is-done .md-check__icon {
+  color: #8fc47a;
+  border-color: rgba(111, 163, 92, 0.5);
+}
+.md-check__body {
+  flex: 1;
+  min-width: 0;
+}
+.md-check__body p {
+  margin: 0;
+}
+.md-check__body strong:first-child {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 17px;
+  color: #ece9e2;
+}
+.md-check__box {
+  order: 2;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  margin-top: 2px;
+  border: 1px solid rgba(201, 171, 118, 0.6);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+.md-check__box:hover {
+  border-color: #e8c46e;
+}
+.md-check.is-done {
+  opacity: 0.55;
+  border-color: rgba(255, 255, 255, 0.1);
+  border-left-color: #6fa35c;
+}
+.md-check.is-done .md-check__box {
+  border-color: #6fa35c;
+  background: rgba(111, 163, 92, 0.2);
+}
+.md-check.is-done .md-check__box::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 3px;
+  width: 7px;
+  height: 13px;
+  border-right: 2px solid #8fc47a;
+  border-bottom: 2px solid #8fc47a;
+  transform: rotate(45deg);
+}
+.md-check.is-done .md-check__body strong:first-child {
+  text-decoration: line-through;
+  text-decoration-color: rgba(236, 233, 226, 0.5);
+}
+/* Fold-outs (#### headings): one per symptom, closed until clicked. */
+.md .md-fold {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+.md .md-fold + .md-fold {
+  margin-top: -9px;
+  border-top: 0;
+}
+.md .md-fold > summary {
+  position: relative;
+  padding: 14px 44px 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  color: #ece9e2;
+  font-weight: 500;
+}
+.md .md-fold > summary::-webkit-details-marker {
+  display: none;
+}
+.md .md-fold > summary::after {
+  content: '';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -6px;
+  border-right: 1px solid #c9ab76;
+  border-bottom: 1px solid #c9ab76;
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+.md .md-fold[open] > summary::after {
+  margin-top: -2px;
+  transform: rotate(-135deg);
+}
+.md .md-fold > summary:hover {
+  color: #c9ab76;
+}
+.md .md-fold[open] {
+  padding-bottom: 6px;
+}
+.md .md-fold > :not(summary) {
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
 /* Lists use the diamond bullet from the design. */
 .md ul {
   list-style: none;
@@ -3937,6 +4127,52 @@ html {
 .g-set__art img {
   height: 260px;
   width: auto;
+}
+.g-where-map {
+  position: relative;
+  text-decoration: underline dotted rgba(201, 171, 118, 0.6);
+  text-underline-offset: 3px;
+  cursor: help;
+  outline: none;
+}
+.g-where-map:hover,
+.g-where-map:focus {
+  color: #ece9e2;
+}
+.g-mapcard {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: 300px;
+  max-width: 80vw;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  border: 1px solid rgba(201, 171, 118, 0.35);
+  background: #d9c6a4;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.g-where-map:hover .g-mapcard,
+.g-where-map:focus .g-mapcard {
+  visibility: visible;
+  opacity: 1;
+}
+.g-mapcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.g-mapcard i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #b3261e;
+  box-shadow: 0 0 0 2px #f4ead6, 0 0 8px 3px rgba(120, 10, 10, 0.55);
 }
 .g-sets {
   display: grid;

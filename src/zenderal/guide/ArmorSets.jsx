@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ARMOR_SETS } from './data.js';
+import { ARMOR_MAP } from './armormap.js';
 
 const TYPES = ['Heavy', 'Light', 'Mage'];
 
@@ -13,6 +14,25 @@ const slug = (name) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 const ROMAN = ['I', 'II', 'III', 'IV'];
+
+const MAP = `${import.meta.env.BASE_URL}uploads/guide/vyn-map.webp`;
+
+// One location line. Lines with a fixed spot show a map of Vyn with it marked on hover, focus or tap.
+function Where({ piece, text }) {
+  const pts = ARMOR_MAP[piece]?.[text];
+  if (!pts) return <span>{text}</span>;
+  return (
+    <span className="g-where-map" tabIndex={0}>
+      {text}
+      <span className="g-mapcard" role="img" aria-label={`Map of Vyn marking ${text}`}>
+        <img src={MAP} alt="" loading="lazy" />
+        {pts.map(([x, y], i) => (
+          <i key={i} style={{ left: `${x * 100}%`, top: `${y * 100}%` }} />
+        ))}
+      </span>
+    </span>
+  );
+}
 
 function SetCard({ set }) {
   const [shown, setShown] = useState(false);
@@ -45,7 +65,16 @@ function SetCard({ set }) {
           {set.pieces.map((p) => (
             <li key={p.name}>
               <span className="spells__name">{p.name}</span>
-              {shown && <span className="spells__desc">{p.where.join(' · ')}</span>}
+              {shown && (
+                <span className="spells__desc">
+                  {p.where.map((w, i) => (
+                    <span key={w}>
+                      {i > 0 && ' · '}
+                      <Where piece={p.name} text={w} />
+                    </span>
+                  ))}
+                </span>
+              )}
             </li>
           ))}
         </ul>
@@ -75,6 +104,8 @@ export default function ArmorSets() {
           Every set below exists in Zenderal. The level is the set's tier, roughly when it starts turning up. Most
           pieces have a fixed spot in the world, often several, and unique enemies wear some of them too. The level-50
           sets are crafted from blueprints. Locations are hidden until you ask, so nothing gets spoiled.
+          Hover over or tap an underlined location to see it on the map. Places inside a building or dungeon are
+          marked at the way in.
         </p>
       </div>
 
