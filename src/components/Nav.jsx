@@ -95,8 +95,13 @@ export default function Nav({ blend = false, intro = false, zenderal = null, doc
     const buttons = [...links.current.children];
     const twins = [...row.children];
     const target = docked ? 1 : 0;
-    const land = () => {
+    const icons = buttons.map((b) => b.querySelector('.nav__icon'));
+    const reset = () => {
       for (const b of buttons) b.removeAttribute('style');
+      for (const icon of icons) icon?.removeAttribute('style');
+    };
+    const land = () => {
+      reset();
       if (!target) {
         row.classList.remove('is-docked');
         setAway(true);
@@ -115,7 +120,7 @@ export default function Nav({ blend = false, intro = false, zenderal = null, doc
     }
 
     // The nav is fixed, so each button's own box and colours hold still: measure them untransformed.
-    for (const b of buttons) b.removeAttribute('style');
+    reset();
     const rgba = (c) => (c.match(/[\d.]+/g) || []).map(Number).concat(1).slice(0, 4);
     const ends = buttons.map((b, i) => {
       const own = getComputedStyle(b);
@@ -137,8 +142,18 @@ export default function Nav({ blend = false, intro = false, zenderal = null, doc
         const t = ease(Math.min(1, Math.max(0, f.p * 1.15 - i * 0.075)));
         const to = ends[i].box;
         const from = twins[i].getBoundingClientRect();
-        b.style.transform = `translate(${mix(from.left - to.left, 0, t)}px, ${mix(from.top - to.top, 0, t)}px) scale(${mix(from.width / to.width, 1, t)}, ${mix(from.height / to.height, 1, t)})`;
+        const sx = mix(from.width / to.width, 1, t);
+        const sy = mix(from.height / to.height, 1, t);
+        b.style.transform = `translate(${mix(from.left - to.left, 0, t)}px, ${mix(from.top - to.top, 0, t)}px) scale(${sx}, ${sy})`;
         b.style.transformOrigin = '0 0';
+        // Phones' icon-only buttons are much squarer than their wide twins, so the box's uneven scale
+        // would stretch the icon: undo it so the icon scales evenly, and fade it in, as the twin has none.
+        const icon = icons[i];
+        if (icon) {
+          const s = Math.min(sx, sy);
+          icon.style.transform = `scale(${s / sx}, ${s / sy})`;
+          icon.style.opacity = t;
+        }
         for (const [k, a, z] of ends[i].colours) b.style[k] = `rgba(${a.map((v, j) => mix(v, z[j], t)).join(',')})`;
       });
       if (f.p === target) land();

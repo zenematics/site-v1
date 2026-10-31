@@ -162,11 +162,13 @@ export default function Grimoire() {
       const cx = W / 2;
       const cy = H / 2;
       const D = Math.hypot(cx, cy);
+      // The backdrop hanging below the pin on phones (--skirt in zenderal.css): the hole widens past it too.
+      const skirt = parseFloat(getComputedStyle(pin).getPropertyValue('--skirt')) || 0;
       const r0 = 0.03 * Math.min(W, H);
-      const r1 = (D / 0.8) * 1.05;
+      const r1 = (Math.hypot(cx, cy + skirt) / 0.8) * 1.05;
       const R = s < 0.3 ? r0 * ease(ramp(s, 0, 0.03)) : r0 * (r1 / r0) ** ease(ramp(s, 0.3, 1));
       pin.style.visibility = '';
-      pin.style.clipPath = holeClip(W, H, cx, cy, R);
+      pin.style.clipPath = holeClip(W, H + skirt, cx, cy, R);
       const shake = 7 * (1 - ramp(s, 0.01, 0.12));
       pin.style.transform = shake > 0 ? `translate(${(shake * Math.sin(s * 900)).toFixed(1)}px, ${(shake * Math.cos(s * 1300)).toFixed(1)}px)` : '';
       shotEl.style.visibility = 'visible';

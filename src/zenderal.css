@@ -136,7 +136,7 @@ html {
   /* As wide as the column allows, but short enough on low screens (the logo is about 0.36 as tall as
      it is wide). The images are cropped to the lettering, so this is the lettering's width; the 0.92
      keeps the sizes from before the crop, when the box had 8% empty margins. */
-  --w: calc(0.92 * clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px));
+  --w: calc(0.92 * clamp(300px, min(64vw, calc((100svh - 540px) * 3)), 940px));
   position: relative;
   display: block;
   width: var(--w);
@@ -241,8 +241,13 @@ html {
 /* Crossfade into the crossroads: it starts --blend higher, over the hero's bottom. */
 .zhero--parallax {
   --blend: 260px;
-  /* A full screen plus the fade, so the full shot shows before it crossfades away; the extra
-     height goes below the content. */
+  /* Exactly a screen plus the fade, so the full shot shows before it crossfades away; the extra
+     height goes below the content, which is laid out in the first screen. svh so the iOS toolbar
+     doesn't cover the bottom of it (vh where svh isn't supported). */
+  min-height: 0;
+  height: calc(100vh + var(--blend));
+  height: calc(100svh + var(--blend));
+  align-items: stretch;
   padding-top: 0;
   padding-bottom: var(--blend);
   /* Its shot fades out under the crossroads fading in, rather than stopping at a hard edge. It's gone just above
@@ -251,52 +256,44 @@ html {
 }
 /* Centred, with the wordmark filling the space the emblem used to share. */
 .zhero--parallax .zhero__inner {
-  /* The wordmark with equal rows above and below it, with the eyebrow, links and scroll cue at the head
-     of the bottom one; both rows take the bottom one's content height. */
-  display: grid;
-  grid-template-rows: 1fr auto 1fr;
+  /* Fills the first screen: the wordmark, the line under it and the buttons centred as one group in the
+     space between the nav and the scroll cue, which is pinned to the bottom of the screen. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 0;
-  justify-items: center;
+  padding: 88px 0 clamp(96px, 14svh, 132px);
   text-align: center;
   /* The wordmark's width (.zhero__logo works it out the same way), for sizing the eyebrow to it. */
-  --w: calc(0.92 * clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px));
-}
-/* Under the wordmark, sharing the bottom row with the links (which keep their own place below it):
-   between the wordmark's foot (54px up, .zhero__title) and the buttons, 122.8px down, a little nearer the wordmark. */
-.zhero--parallax .eyebrow-row {
-  /* The same cell as .zhero__below, overlapping it. */
-  grid-area: 3 / 1;
-  align-self: start;
-  margin-top: -3px;
+  --w: calc(0.92 * clamp(300px, min(64vw, calc((100svh - 540px) * 3)), 940px));
 }
 .zhero--parallax .zhero__title {
-  grid-area: 2 / 1;
+  order: 1;
+}
+/* Under the wordmark. */
+.zhero--parallax .eyebrow-row {
+  order: 2;
+  margin-top: clamp(14px, 2.6svh, 28px);
 }
 .zhero--parallax .zhero__below {
-  grid-area: 3 / 1;
-  align-self: start;
+  order: 3;
   align-items: center;
-  /* The buttons' gap below the wordmark is in .zhero__links. */
-  margin-top: 0;
 }
-/* Raised above the centre. With `top`, not a transform: a transform would make it a stacking
-   context and cut the logo video's screen blend off from the background. */
-.zhero--parallax .zhero__title {
-  position: relative;
-  top: -54px;
-}
-/* Where they sat under the two-line intro the hero used to have (its 77px, the 24px gap and 22px). */
 .zhero--parallax .zhero__links {
-  margin-top: 122.8px;
+  margin-top: clamp(28px, 6svh, 64px);
 }
 /* The same size as the eyebrow above them. */
 .zhero--parallax .zhero__links .btn {
   font-size: calc(var(--w) * 0.0243);
 }
-/* Less than usual by however much taller the larger button text makes them (about 1.2x its extra
-   size over the usual 12px), so the cue stays put. */
+/* Always at the bottom of the screen, whatever the content above it takes. */
 .zhero--parallax .zhero__scroll {
-  margin-top: calc(36px - (var(--w) * 0.0243 - 12px) * 1.2);
+  position: absolute;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  translate: -50% 0;
+  margin: 0;
 }
 /* Sized to the wordmark, so the line runs just short of its lettering, and never wider than it: if the
    text and badge don't fit side by side, the badge wraps under. */
@@ -4933,18 +4930,20 @@ html {
   .zhero--parallax .zhero__desc {
     font-size: 17px;
   }
-  /* The eyebrow at its usual size, so it fits on one line above the badge; a little nearer the
-     wordmark than the buttons here too (they're 138px down, and it's two lines). */
+  /* The eyebrow at its usual size, so it fits on one line above the badge. */
   .zhero--parallax .eyebrow-row {
-    margin-top: -3px;
-    gap: 18px;
+    gap: 12px 18px;
   }
-  /* The buttons at the eyebrow's size too. */
+  /* The buttons at the eyebrow's size too, narrow enough that all three fit on one row. */
+  .zhero--parallax .zhero__links {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
   .zhero--parallax .zhero__links .btn {
-    font-size: 12px;
-  }
-  .zhero--parallax .zhero__scroll {
-    margin-top: 36px;
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
   }
   /* 12px is about the lettering's full width, so a touch under it to keep it short of the logo. */
   .zhero--parallax .eyebrow {
@@ -4953,15 +4952,6 @@ html {
   .zhero--parallax .stage-badge {
     padding: 5px 10px;
     font-size: 11px;
-  }
-  /* The intro keeps its size here, so 10px more space goes either side of it (51px each), the
-     buttons staying where they were. */
-  .zhero--parallax .zhero__below {
-    margin-top: 5px;
-  }
-  /* Where they sat under the old three-line intro (its 82px, the 24px gap and 27px). */
-  .zhero--parallax .zhero__links {
-    margin-top: 133px;
   }
   /* A taller crop of the shots, centred on the character, so they aren't a thin strip. */
   .zcompare {
@@ -5010,6 +5000,57 @@ html {
   }
   .zcta__body {
     padding-bottom: 150px;
+  }
+}
+
+/* On iPhones the screen can run past a 100vh pin's foot (behind Safari's see-through bottom toolbar), where the
+   section pulled up under the end of the run would show scrolling past. So the pinned sections' backdrops hang
+   --skirt below the pin, outside its layout: the content keeps its place and only the background fills that strip.
+   The cut-aways at the ends of the runs (Sword.jsx, Grimoire.jsx) read --skirt to clear it too. */
+@media (max-width: 860px) and (prefers-reduced-motion: no-preference) {
+  .zcompare__pin,
+  .zsword__pin,
+  .zmagic__pin {
+    --skirt: 200px;
+  }
+  .zcompare__stage {
+    bottom: calc(-1 * var(--skirt));
+  }
+  .zcompare__pin .zcompare__tag {
+    bottom: calc(18px + var(--skirt));
+  }
+  .zsword__pin,
+  .zmagic__pin {
+    overflow: visible;
+    clip-path: inset(0 0 calc(-1 * var(--skirt)) 0);
+  }
+  .zsword__back,
+  .zsword__clips {
+    bottom: calc(-1 * var(--skirt));
+  }
+  /* The caption's fade, ending at the screen's foot as before and staying dark below it. */
+  .zsword__clip::after {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 8, 10, 0.25),
+      transparent calc((100% - var(--skirt)) * 0.3),
+      transparent calc((100% - var(--skirt)) * 0.55),
+      rgba(7, 8, 10, 0.85) calc(100% - var(--skirt))
+    );
+  }
+  .zmagic__backdrop {
+    height: calc(100% + var(--skirt));
+  }
+  /* The shade's ellipse stays fitted to the screen; below it, its edge's darkness. */
+  .zmagic__pin::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: var(--skirt);
+    background: rgba(7, 8, 10, 0.4);
+    pointer-events: none;
   }
 }
 

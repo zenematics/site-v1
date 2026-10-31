@@ -67,8 +67,10 @@ export default function Sword({ label, title, text, clips }) {
     const draw = (t) => {
       const W = pin.clientWidth;
       const H = pin.clientHeight;
-      // How far the cut line must travel from the middle to clear the screen with the sword's crossguard.
-      const reach = Math.hypot(W, H) / 2 + 0.12 * W;
+      // How far the cut line must travel from the middle to clear the screen with the sword's crossguard, and the
+      // backdrop hanging below the pin on phones (--skirt in zenderal.css).
+      const skirt = parseFloat(getComputedStyle(pin).getPropertyValue('--skirt')) || 0;
+      const reach = Math.hypot(W, H + 2 * skirt) / 2 + 0.12 * W;
       const { k, s, up } = swingAt(t);
       const out = reduce ? 0 : ease(ramp(t, 1, 1 + tail()));
       const swinging = t >= CLIPS_AT;
