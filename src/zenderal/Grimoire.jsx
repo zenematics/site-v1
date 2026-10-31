@@ -16,7 +16,7 @@ const PACKS = ['KataPUMB Spell Pack', 'Apocalypse', 'Triumvirate', 'xxOpenSpells
 const UNDER = 1;
 // Screens at the end of the run for the shot: a bullet hole cracks the middle and widens to show firearms, pinned under
 // it by then (.zmagic + .zmusket, UNDER in Musket.jsx).
-const SHOT = 1;
+const SHOT = 2;
 const SCHOOLS = [
   { id: 'Elementalism', color: '#e0896a' },
   { id: 'Light Magic', color: '#e8c46e' },
@@ -56,9 +56,10 @@ const HOLE = Array.from({ length: 30 }, (_, i) => {
   return [r * Math.cos(a), r * Math.sin(a)];
 });
 const HOLE_PATH = `M${HOLE.map(([x, y]) => `${x.toFixed(3)} ${y.toFixed(3)}`).join('L')}Z`;
-const HOLE_MASK = `url("data:image/svg+xml,${encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2"><path d="${HOLE_PATH}"/></svg>`,
-)}")`;
+// The pin with the hole cut out of it, centred at cx, cy with radius r: a clip path rather than a mask, which would
+// re-rasterise its image at every new size.
+const holeClip = (W, H, cx, cy, r) =>
+  `path(evenodd, 'M0 0H${W}V${H}H0Z M${HOLE.map(([x, y]) => `${(cx + x * r).toFixed(1)} ${(cy + y * r).toFixed(1)}`).join('L')}Z')`;
 const CRACKS = Array.from({ length: 11 }, (_, i) => {
   let a = (i / 11) * 2 * Math.PI + (shotRand() - 0.5) * 0.4;
   const len = 0.3 + shotRand() * 0.5;
@@ -138,17 +139,17 @@ export default function Grimoire() {
     const base = count(BASE);
     const shotEl = pin.querySelector('.zmagic__shot');
     const cracks = shotEl.querySelector('.zmagic__cracks');
-    const rim = shotEl.querySelector('.zmagic__rim');
+    const rim = shotEl.querySelector('.zmagic__burn');
     const flash = shotEl.querySelector('.zmagic__flash');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
     let frame = 0;
-    // The shot, s 0 → 1 over its screen: a flash and a small hole at the middle, cracks running out from it and a
+    // The shot, s 0 → 1 over its screens: a flash and a small hole at the middle, cracks running out from it and a
     // shudder, then the hole widens (in proportion, so it keeps an even pace) until it passes the farthest corner,
     // its rim burning, and firearms shows through it. The pin goes once it has.
     const shoot = (s) => {
       if (s <= 0) {
-        pin.style.maskImage = pin.style.transform = pin.style.visibility = '';
+        pin.style.clipPath = pin.style.transform = pin.style.visibility = '';
         shotEl.style.visibility = 'hidden';
         return;
       }
@@ -165,9 +166,7 @@ export default function Grimoire() {
       const r1 = (D / 0.8) * 1.05;
       const R = s < 0.3 ? r0 * ease(ramp(s, 0, 0.03)) : r0 * (r1 / r0) ** ease(ramp(s, 0.3, 1));
       pin.style.visibility = '';
-      pin.style.maskImage = `linear-gradient(#000, #000), ${HOLE_MASK}`;
-      pin.style.maskSize = `100% 100%, ${(2 * R).toFixed(1)}px ${(2 * R).toFixed(1)}px`;
-      pin.style.maskPosition = `0 0, ${(cx - R).toFixed(1)}px ${(cy - R).toFixed(1)}px`;
+      pin.style.clipPath = holeClip(W, H, cx, cy, R);
       const shake = 7 * (1 - ramp(s, 0.01, 0.12));
       pin.style.transform = shake > 0 ? `translate(${(shake * Math.sin(s * 900)).toFixed(1)}px, ${(shake * Math.cos(s * 1300)).toFixed(1)}px)` : '';
       shotEl.style.visibility = 'visible';
@@ -261,15 +260,16 @@ export default function Grimoire() {
                 <stop offset="1" stopColor="#d66e28" stopOpacity="0" />
               </radialGradient>
             </defs>
-            {/* The glows are on unscaled groups, so they keep their size as the shapes inside are scaled. */}
-            <g className="zmagic__glow">
-              <g className="zmagic__cracks">
-                {CRACKS.map((pts) => (
-                  <polyline key={pts} points={pts} pathLength="1" />
-                ))}
-              </g>
+            <g className="zmagic__cracks">
+              {CRACKS.map((pts) => (
+                <polyline key={pts} points={pts} pathLength="1" />
+              ))}
             </g>
+            {/* The rim's glow is wider, fainter strokes under it rather than a blur filter, which costs too much
+                redrawn every frame at this size. */}
             <g className="zmagic__burn">
+              <path className="zmagic__rim zmagic__rim--outer" d={HOLE_PATH} />
+              <path className="zmagic__rim zmagic__rim--glow" d={HOLE_PATH} />
               <path className="zmagic__rim" d={HOLE_PATH} />
             </g>
             <circle className="zmagic__flash" fill="url(#zmagic-flash)" />

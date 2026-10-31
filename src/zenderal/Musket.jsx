@@ -14,7 +14,11 @@ const SHOT = 0.5; // where in the run the gun fires
 const WHITE = 0.64; // where the white is full; the CSS pulls the next section up to pin here
 // Screens at the start of the run spent pinned under expanded magic as its bullet hole opens (SHOT in Grimoire.jsx);
 // the run's fractions above are of the rest.
-const UNDER = 1;
+const UNDER = 2;
+// The opening (the gun out of the word, level, and the heading up, to 0.38 of the run's 300vh) plays SLOW times slower,
+// over (SLOW - 1) × 0.38 × 300vh of extra run, so the rest keeps its pace and the white still ends where it did.
+const OPEN = 0.38;
+const SLOW = 2;
 // The label's cap height, and the middle of its caps, as fractions of its line box (line-height 1, Futura PT).
 const CAP = 0.69;
 const CAP_MID = 0.525;
@@ -47,7 +51,9 @@ export default function Musket({ label, title, text }) {
     const target = () => {
       if (reduce) return 0.45;
       const under = UNDER * innerHeight;
-      return ramp(-run.getBoundingClientRect().top - under, 0, run.offsetHeight - pin.offsetHeight - under);
+      // u runs over the whole run in units of the unslowed one, then maps back to its fractions.
+      const u = (1 + (SLOW - 1) * OPEN) * ramp(-run.getBoundingClientRect().top - under, 0, run.offsetHeight - pin.offsetHeight - under);
+      return u < SLOW * OPEN ? u / SLOW : u - (SLOW - 1) * OPEN;
     };
 
     const draw = (t) => {
