@@ -242,8 +242,9 @@ html {
   min-height: calc(62vh + var(--blend));
   padding-top: 140px;
   padding-bottom: calc(80px + var(--blend));
-  /* Its shot fades out under the crossroads fading in, rather than stopping at a hard edge. */
-  mask-image: linear-gradient(180deg, #000 calc(100% - var(--blend) * 0.6), transparent calc(100% - var(--blend) * 0.05));
+  /* Its shot fades out under the crossroads fading in, rather than stopping at a hard edge. It's gone just above
+     the shot's straight waterline (93.6% down, as the layers fill the height), which would show through the fade. */
+  mask-image: linear-gradient(180deg, #000 calc(92% - var(--blend) * 0.55), transparent 92%);
 }
 /* Centred, with the wordmark filling the space the emblem used to share. */
 .zhero--parallax .zhero__inner {
@@ -338,7 +339,7 @@ html {
   position: absolute;
   inset: 0;
   transform-origin: var(--road-x) var(--road-y);
-  transition: scale 1.6s cubic-bezier(0.6, 0, 0.2, 1), filter 1.2s ease, transform-origin 0.8s ease;
+  transition: scale 1.6s cubic-bezier(0.6, 0, 0.2, 1), filter 1.2s ease, opacity 0.8s ease, transform-origin 0.8s ease;
 }
 /* Only as much extra height as the drift needs, so the scene isn't cropped tighter than the shot. */
 .zfork .zlayer {
@@ -364,19 +365,38 @@ html {
   --drift: 0;
   --push: 2;
 }
+/* Dimmed all over at rest, so its bright misty sky doesn't show as a strip where it fades in under the hero.
+   Pointing at a sign lights it back up, and the side shade keeps the other road dark, so only that side brightens. */
+.zfork__scene {
+  opacity: 0.55;
+}
 .zfork.is-leaning .zfork__scene {
   scale: 1.05;
+  opacity: 1;
 }
 .zfork.is-taken .zfork__scene {
   scale: 1.9;
+  opacity: 1;
   filter: brightness(0.65) blur(1.5px);
 }
-/* A ceiling for the heading, a floor for the signs, and a darkening over whichever side isn't leaned towards (or both, under a road's panels). */
+/* A ceiling for the heading, a floor for the signs, and a darkening over whichever side isn't leaned towards (or both, under a road's panels).
+   The ceiling holds until the scene has fully faded in, so the bright misty sky doesn't peak in a strip partway through the fade,
+   then eases out over a fixed distance (a percentage stop could land right on top of it and cut it off in a hard line). */
 .zfork__shade {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(7, 8, 10, 0.85) 10%, rgba(7, 8, 10, 0.5) 30%, transparent 45%, transparent 50%, rgba(7, 8, 10, 0.65));
+  background:
+    /* The sky's brightest fog, top left, still shows as a light patch where the hero gives way. */
+    radial-gradient(60% 180px at 22% calc(var(--blend) - 30px), rgba(7, 8, 10, 0.5), transparent),
+    linear-gradient(
+      180deg,
+      rgba(7, 8, 10, 0.7) var(--blend),
+      rgba(7, 8, 10, 0.35) calc(var(--blend) + 160px),
+      transparent calc(var(--blend) + 340px),
+      transparent 50%,
+      rgba(7, 8, 10, 0.65)
+    );
 }
 .zfork__shade::before,
 .zfork__shade::after {
@@ -2015,7 +2035,8 @@ html {
 }
 /* The Zenematics portal (Zenderal.jsx): the pin sticks over the scroll run below it while the
    scene opens out of the mark. Reduced motion keeps the plain section. */
-.zcta__logo {
+.zcta__logo,
+.zcta__byline {
   display: none;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -2049,6 +2070,20 @@ html {
     max-width: none;
     height: auto;
     transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .zcta__byline {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    white-space: nowrap;
+    font-size: clamp(16px, 5vw, 26px);
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: #ece9e2;
     opacity: 0;
     pointer-events: none;
   }

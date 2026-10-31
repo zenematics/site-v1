@@ -22,7 +22,7 @@ const ART_W = 1000;
 // scene, which grows until the head (the largest solid circle in it, as fractions of the square art)
 // covers the screen; top and boxCy are the top and middle of the mark itself. LOGO_W is the logo <img>'s unscaled CSS width.
 const ZEN_LOGO = `${import.meta.env.BASE_URL}uploads/zen-logo-white.png`;
-const ZEN = { cx: 0.491, cy: 0.446, radius: 0.125, top: 0.21, boxCy: 0.529 };
+const ZEN = { cx: 0.491, cy: 0.446, radius: 0.125, top: 0.21, boxCy: 0.529, bottom: 0.848 };
 const LOGO_W = 1000;
 // Build crafting: the perk screen zooms into its stone floor circle, which opens into the Prophecy radial art with
 // the circles matched. SHOT is the screenshot's aspect, its circle's centre (fractions of width/height) and radius
@@ -331,6 +331,7 @@ export default function Zenderal() {
     const portal = pin.querySelector('.zcta__portal');
     const body = pin.querySelector('.zcta__body');
     const art = pin.querySelector('.zcta__logo');
+    const byline = pin.querySelector('.zcta__byline');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
     const last = document.querySelector('.zbuild');
@@ -363,7 +364,7 @@ export default function Zenderal() {
       if (t === 1) {
         portal.style.maskImage = portal.style.maskSize = portal.style.maskPosition = '';
         body.style.opacity = '';
-        art.style.opacity = '0';
+        art.style.opacity = byline.style.opacity = '0';
         return;
       }
       // In the pin's own coordinates, so the mark scrolls in with it before it sticks. From its
@@ -381,6 +382,9 @@ export default function Zenderal() {
       portal.style.maskPosition = `${x}px ${y}px`;
       art.style.opacity = 0.9 * (1 - ease(ramp(t, 0.06, 0.28)));
       art.style.transform = `translate(${x}px, ${y}px) scale(${w / LOGO_W})`;
+      // The byline sits centred under the mark and goes with its art.
+      byline.style.opacity = art.style.opacity;
+      byline.style.transform = `translate(${ax}px, ${y + ZEN.bottom * w + 48}px) translateX(-50%)`;
       body.style.opacity = ramp(t, 0.85, 1);
     };
     const onScroll = () => {
@@ -685,6 +689,7 @@ export default function Zenderal() {
             </div>
           </div>
           <img src={ZEN_LOGO} alt="" className="zcta__logo" />
+          <p className="zcta__byline eyebrow">A Modlist By Zen</p>
           <div className="zcta__body">
             <h2 className="zcta__title">Ready to play?</h2>
             <p className="zcta__text">Read the install guide before you start, then dive into the gameplay guide.</p>
