@@ -95,6 +95,11 @@ a:hover {
   gap: 10px;
   margin-left: auto;
 }
+/* Hidden while the same links show on the page (Nav's `dock`), which flies them in and out. */
+.nav__links.is-away {
+  opacity: 0;
+  pointer-events: none;
+}
 .nav__btn {
   padding: 9px 18px;
   font-size: 11px;

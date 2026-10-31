@@ -262,6 +262,56 @@ html {
   max-width: 760px;
   font-size: 21px;
 }
+/* Install / Guides / Support under the intro. */
+.zhero__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+/* Kept solid rather than fading with the text: they fly up into the nav (Nav.jsx), which hides this row meanwhile. */
+.zhero__links.is-docked {
+  visibility: hidden;
+}
+/* "Scroll" and a bobbing chevron under the buttons, gone after the first bit of scrolling. */
+.zhero__scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #9b968d;
+  opacity: max(0, calc(1 - var(--s) / 160));
+  transition: color 0.2s ease;
+}
+.zhero__scroll:hover {
+  color: #ece9e2;
+}
+.zhero__scroll svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: zhero-bob 1.8s ease-in-out infinite;
+}
+@keyframes zhero-bob {
+  50% {
+    translate: 0 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zhero__scroll svg {
+    animation: none;
+  }
+}
 /* Darkest behind the centred text, lighter towards the edges. */
 .zhero--parallax .zhero__shade {
   background:

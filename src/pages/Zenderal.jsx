@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Nav from '../components/Nav.jsx';
+import Nav, { ZenLinks } from '../components/Nav.jsx';
 import { OVERVIEW } from '../zenderal/data.js';
 import ZenHero from '../zenderal/ZenHero.jsx';
 import Grimoire from '../zenderal/Grimoire.jsx';
@@ -410,14 +410,30 @@ export default function Zenderal() {
 
   return (
     <div className="zen-page">
-      <Nav zenderal="overview" />
+      <Nav zenderal="overview" dock=".zhero__links" />
 
       <ZenHero
         live
         emblem={false}
         eyebrow="Wabbajack Modlist · Enderal SE"
         desc="A Wabbajack modlist for Enderal: Forgotten Stories — installed in one click and playable on keyboard or controller."
-      />
+      >
+        <ZenLinks page="overview" hero />
+        {/* For anyone who doesn't think to scroll: goes once the page moves. */}
+        <a
+          href="#znew"
+          className="zhero__scroll"
+          onClick={(e) => {
+            e.preventDefault();
+            document.querySelector('.znew').scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          Scroll
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </a>
+      </ZenHero>
 
       <section className="znew">
         {/* The crossroads, full width: the heading sits on the scene over the two roads' signs, and both go
