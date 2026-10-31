@@ -12,6 +12,9 @@ import { useEffect, useRef } from 'react';
 
 const SHOT = 0.5; // where in the run the gun fires
 const WHITE = 0.64; // where the white is full; the CSS pulls the next section up to pin here
+// Screens at the start of the run spent pinned under expanded magic as its bullet hole opens (SHOT in Grimoire.jsx);
+// the run's fractions above are of the rest.
+const UNDER = 1;
 // The label's cap height, and the middle of its caps, as fractions of its line box (line-height 1, Futura PT).
 const CAP = 0.69;
 const CAP_MID = 0.525;
@@ -41,7 +44,11 @@ export default function Musket({ label, title, text }) {
     let shown = 0;
     let live = false;
     // With reduced motion the pin doesn't stick, so it rests with the gun settled and the heading up.
-    const target = () => (reduce ? 0.45 : ramp(-run.getBoundingClientRect().top, 0, run.offsetHeight - pin.offsetHeight));
+    const target = () => {
+      if (reduce) return 0.45;
+      const under = UNDER * innerHeight;
+      return ramp(-run.getBoundingClientRect().top - under, 0, run.offsetHeight - pin.offsetHeight - under);
+    };
 
     const draw = (t) => {
       // Read before writing, so the frame doesn't force a second layout.

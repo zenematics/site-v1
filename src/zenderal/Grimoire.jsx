@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { SPELL_SOURCES } from './guide/data.js';
 
 // The overview's expanded-magic section. A pinned "grimoire": the spell count starts at the base game's and climbs as
-// each spell pack lights up and its spells' names fade in around it.
+// each spell pack lights up and its spells' names fade in around it. It ends on a shot: a bullet hole cracks the middle
+// and widens to show the firearms section, pinned under it.
 
 // Loaded on mount, in its own chunk, so the rest of the page doesn't wait for it (the Magic guide loads it the same way).
 const loadSpells = () => import('../../content/zenderal/spells.json').then((m) => m.default);
@@ -11,6 +12,11 @@ const BACKDROP = `${import.meta.env.BASE_URL}uploads/zenderal/screenshots/backgr
 // Base Enderal and EGO count as the starting point; the packs light up in this order.
 const BASE = ['Enderal', 'EGO'];
 const PACKS = ['KataPUMB Spell Pack', 'Apocalypse', 'Triumvirate', 'xxOpenSpells'];
+// Screens at the start of the run spent pinned under the combat section as its last swing cuts it away (EXIT in Sword.jsx).
+const UNDER = 1;
+// Screens at the end of the run for the shot: a bullet hole cracks the middle and widens to show firearms, pinned under
+// it by then (.zmagic + .zmusket, UNDER in Musket.jsx).
+const SHOT = 1;
 const SCHOOLS = [
   { id: 'Elementalism', color: '#e0896a' },
   { id: 'Light Magic', color: '#e8c46e' },
@@ -39,6 +45,30 @@ function box(x, y, anchor, name, size, em, line) {
   return { x0, x1: x0 + w, y0: y - line / 2, y1: y + line / 2 };
 }
 const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+
+// The bullet hole and its cracks, seeded so they're the same on every visit. The hole is a jagged ring of points 0.8
+// to 1 from its middle (a unit circle, scaled to its radius); each crack is a jagged line out from the middle, in
+// fractions of the distance to the farthest corner.
+const shotRand = rng(31);
+const HOLE = Array.from({ length: 30 }, (_, i) => {
+  const a = (i / 30) * 2 * Math.PI + (shotRand() - 0.5) * 0.15;
+  const r = 0.8 + shotRand() * 0.2;
+  return [r * Math.cos(a), r * Math.sin(a)];
+});
+const HOLE_PATH = `M${HOLE.map(([x, y]) => `${x.toFixed(3)} ${y.toFixed(3)}`).join('L')}Z`;
+const HOLE_MASK = `url("data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2"><path d="${HOLE_PATH}"/></svg>`,
+)}")`;
+const CRACKS = Array.from({ length: 11 }, (_, i) => {
+  let a = (i / 11) * 2 * Math.PI + (shotRand() - 0.5) * 0.4;
+  const len = 0.3 + shotRand() * 0.5;
+  const pts = [[0, 0]];
+  for (let k = 1; k <= 6; k++) {
+    a += (shotRand() - 0.5) * 0.5;
+    pts.push([((len * k) / 6) * Math.cos(a), ((len * k) / 6) * Math.sin(a)]);
+  }
+  return pts.map(([x, y]) => `${x.toFixed(3)},${y.toFixed(3)}`).join(' ');
+});
 // The counter and the pack steps, at desktop size and on phones.
 const CENTER = { x0: 0.25, x1: 0.75, y0: 0.3, y1: 0.75 };
 const PHONE_MID = { x0: 0, x1: 1, y0: 0.27, y1: 0.78 };
@@ -106,12 +136,61 @@ export default function Grimoire() {
     const groups = PACKS.map((id) => [...pin.querySelectorAll(`[data-pack="${id}"]`)]);
     const sizes = PACKS.map((id) => count([id]));
     const base = count(BASE);
+    const shotEl = pin.querySelector('.zmagic__shot');
+    const cracks = shotEl.querySelector('.zmagic__cracks');
+    const rim = shotEl.querySelector('.zmagic__rim');
+    const flash = shotEl.querySelector('.zmagic__flash');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
     let frame = 0;
+    // The shot, s 0 → 1 over its screen: a flash and a small hole at the middle, cracks running out from it and a
+    // shudder, then the hole widens (in proportion, so it keeps an even pace) until it passes the farthest corner,
+    // its rim burning, and firearms shows through it. The pin goes once it has.
+    const shoot = (s) => {
+      if (s <= 0) {
+        pin.style.maskImage = pin.style.transform = pin.style.visibility = '';
+        shotEl.style.visibility = 'hidden';
+        return;
+      }
+      if (s >= 1) {
+        pin.style.visibility = shotEl.style.visibility = 'hidden';
+        return;
+      }
+      const W = pin.clientWidth;
+      const H = pin.clientHeight;
+      const cx = W / 2;
+      const cy = H / 2;
+      const D = Math.hypot(cx, cy);
+      const r0 = 0.03 * Math.min(W, H);
+      const r1 = (D / 0.8) * 1.05;
+      const R = s < 0.3 ? r0 * ease(ramp(s, 0, 0.03)) : r0 * (r1 / r0) ** ease(ramp(s, 0.3, 1));
+      pin.style.visibility = '';
+      pin.style.maskImage = `linear-gradient(#000, #000), ${HOLE_MASK}`;
+      pin.style.maskSize = `100% 100%, ${(2 * R).toFixed(1)}px ${(2 * R).toFixed(1)}px`;
+      pin.style.maskPosition = `0 0, ${(cx - R).toFixed(1)}px ${(cy - R).toFixed(1)}px`;
+      const shake = 7 * (1 - ramp(s, 0.01, 0.12));
+      pin.style.transform = shake > 0 ? `translate(${(shake * Math.sin(s * 900)).toFixed(1)}px, ${(shake * Math.cos(s * 1300)).toFixed(1)}px)` : '';
+      shotEl.style.visibility = 'visible';
+      shotEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      // Scaled strokes, so the dash that draws them out follows each crack's length; 1.2px wide on screen.
+      cracks.setAttribute('transform', `translate(${cx} ${cy}) scale(${D})`);
+      cracks.setAttribute('stroke-width', (1.2 / D).toFixed(5));
+      cracks.style.strokeDashoffset = (1 - ease(ramp(s, 0.01, 0.22))).toFixed(3);
+      cracks.style.opacity = (1 - ramp(s, 0.6, 0.9)).toFixed(3);
+      rim.setAttribute('transform', `translate(${cx} ${cy}) scale(${R.toFixed(2)})`);
+      rim.style.opacity = (ramp(s, 0, 0.03) * (1 - ramp(s, 0.85, 1))).toFixed(3);
+      flash.setAttribute('cx', cx);
+      flash.setAttribute('cy', cy);
+      flash.setAttribute('r', 0.3 * Math.min(W, H));
+      flash.style.opacity = (ramp(s, 0, 0.02) * (1 - ramp(s, 0.02, 0.14))).toFixed(3);
+    };
     const update = () => {
       frame = 0;
-      const t = reduce ? 1 : ramp(-run.getBoundingClientRect().top, 0, run.offsetHeight - pin.offsetHeight);
+      const vh = innerHeight;
+      const span = run.offsetHeight - pin.offsetHeight - (UNDER + SHOT) * vh;
+      const at = -run.getBoundingClientRect().top - UNDER * vh;
+      const t = reduce ? 1 : ramp(at, 0, span);
+      if (!reduce) shoot(ramp(at - span, 0, SHOT * vh));
       pin.style.setProperty('--t', t.toFixed(4));
       let total = base;
       PACKS.forEach((_, i) => {
@@ -173,6 +252,28 @@ export default function Grimoire() {
               ))}
             </ul>
           </div>
+          {/* The shot that ends the section: its flash, the cracks and the hole's burning rim (placed by the run). */}
+          <svg className="zmagic__shot" aria-hidden="true">
+            <defs>
+              <radialGradient id="zmagic-flash">
+                <stop offset="0" stopColor="#fffaf0" />
+                <stop offset="0.25" stopColor="#ffdc96" stopOpacity="0.8" />
+                <stop offset="1" stopColor="#d66e28" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            {/* The glows are on unscaled groups, so they keep their size as the shapes inside are scaled. */}
+            <g className="zmagic__glow">
+              <g className="zmagic__cracks">
+                {CRACKS.map((pts) => (
+                  <polyline key={pts} points={pts} pathLength="1" />
+                ))}
+              </g>
+            </g>
+            <g className="zmagic__burn">
+              <path className="zmagic__rim" d={HOLE_PATH} />
+            </g>
+            <circle className="zmagic__flash" fill="url(#zmagic-flash)" />
+          </svg>
         </div>
       </div>
     </section>

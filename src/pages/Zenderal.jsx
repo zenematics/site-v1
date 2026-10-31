@@ -19,6 +19,8 @@ const LAYERS = ['back', 'mid', 'front'];
 const EMBLEM_MASK = `${import.meta.env.BASE_URL}uploads/zenderal/emblem-mask.png`;
 const EMBLEM = { ratio: 1141 / 1378, cx: 0.494, cy: 0.486, radius: 0.22 };
 const ART_W = 1000;
+// Screens of its run spent wiping back to the combat section; the CSS pulls that section up under it to match.
+const WIPE = 1;
 // The closing section opens out of the Zenematics mark the same way in reverse: its alpha masks the
 // scene, which grows until the head (the largest solid circle in it, as fractions of the square art)
 // covers the screen; top and boxCy are the top and middle of the mark itself. LOGO_W is the logo <img>'s unscaled CSS width.
@@ -103,21 +105,30 @@ export default function Zenderal() {
   // crossroads and scrolls up with the pin; once the pin sticks at the top (over the run below it,
   // .zcompare::after) the art fades as the section shows through its silhouette, which grows until the
   // sphere covers the pin, and the heading fades in. Then the divider sweeps right to left, uncovering
-  // Zenderal's shot over base Enderal's. The mask is on from the start, so its image has loaded before it
-  // shows. Reduced motion leaves a plain section split down the middle.
+  // Zenderal's shot over base Enderal's. Over the last screen of the run (WIPE) it sweeps back left to right, cutting
+  // the section away to the combat section, pinned under it by then (.zcompare + .zsword). The mask is on from the
+  // start, so its image has loaded before it shows. Reduced motion leaves a plain section split down the middle.
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const section = document.querySelector('.zcompare');
     const pin = section.querySelector('.zcompare__pin');
     const head = pin.querySelector('.zcompare__head');
     const art = pin.querySelector('.zcompare__emblem');
+    const divider = pin.querySelector('.zcompare__divider');
     const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
     const ease = (x) => x * x * (3 - 2 * x);
     let frame = 0;
     const update = () => {
       frame = 0;
-      const t = ramp(-section.getBoundingClientRect().top, 0, section.offsetHeight - pin.offsetHeight);
+      const scrolled = -section.getBoundingClientRect().top;
+      const end = section.offsetHeight - pin.offsetHeight;
+      const wipeAt = end - WIPE * innerHeight;
+      const t = ramp(scrolled, 0, wipeAt);
+      const wipe = ease(ramp(scrolled, wipeAt, end));
       pin.style.setProperty('--split', `${(100 * (1 - ease(ramp(t, 0.42, 0.95)))).toFixed(2)}%`);
+      pin.style.setProperty('--wipe', `${(100 * wipe).toFixed(2)}%`);
+      // Gone at the right-hand edge, so it doesn't scroll up over the combat section with the pin.
+      divider.style.opacity = 1 - ramp(wipe, 0.94, 1);
       head.style.opacity = ease(ramp(t, 0.28, 0.4));
       const open = ease(ramp(t, 0.02, 0.34));
       if (open === 1) {
@@ -416,7 +427,6 @@ export default function Zenderal() {
         live
         emblem={false}
         eyebrow="Wabbajack Modlist · Enderal SE"
-        desc="A Wabbajack modlist for Enderal: Forgotten Stories — installed in one click and playable on keyboard or controller."
       >
         <ZenLinks page="overview" hero />
         {/* For anyone who doesn't think to scroll: goes once the page moves. */}
@@ -600,8 +610,9 @@ export default function Zenderal() {
                 />
                 <span className="zcompare__tag zcompare__tag--after" aria-hidden="true">{OVERVIEW.compare.after.label}</span>
               </div>
-              <span className="zcompare__divider" aria-hidden="true" />
             </figure>
+            {/* Outside the frame, so it isn't cut away with it as it wipes back to the combat section. */}
+            <span className="zcompare__divider" aria-hidden="true" />
           </div>
         </div>
       </section>

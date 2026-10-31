@@ -66,7 +66,7 @@ export default function ZenHero({ eyebrow, desc, compact = false, live = false, 
         </h1>
         {/* Grouped so the overview can centre the wordmark on the screen, with this below it. */}
         <div className="zhero__below">
-          <p className="zhero__desc">{desc}</p>
+          {desc && <p className="zhero__desc">{desc}</p>}
           {children}
         </div>
       </div>
