@@ -1,46 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { PROPHECY_EXTENT, PROPHECY_TREES } from './prophecy.js';
+import { useEffect, useRef, useState } from 'react';
+import { PROPHECY_EXTENT } from './prophecy.js';
+import { BG, EDGES, TREES } from './prophecyLayout.js';
 
 const ART = `${import.meta.env.BASE_URL}uploads/guide/prophecy/`;
 const MAX_POINTS = 30;
 const GOLD = '#e8c46e';
-// The art spans more than the talents, as in game (extent × 1.45 on a square canvas).
-const BG = PROPHECY_EXTENT * 1.45;
 const HOME = { cx: 0, cy: 0, s: PROPHECY_EXTENT + 15 };
 const MIN_S = 4;
 const MAX_S = BG;
 const STORE = 'zen-prophecy-build';
-
-// Every tree's root sits on one circle this far from the start point. The game places them anywhere from 19 to 36
-// units out; each tree slides along its own spoke, so it keeps its angle and stays over its wedge of the art.
-const RING = 26;
-
-function onRing(t) {
-  const root = t.nodes.find((n) => n.parents.length === 0);
-  const d = Math.hypot(root.x, root.y);
-  const [dx, dy] = [(root.x / d) * (RING - d), (root.y / d) * (RING - d)];
-  return {
-    ...t,
-    routes: t.routes.map((r) => ({ ...r, via: r.via.map(([x, y]) => [x + dx, y + dy]) })),
-    nodes: t.nodes.map((n) => ({ ...n, x: n.x + dx, y: n.y + dy })),
-  };
-}
-
-// Each tree's name sits just clear of its stars: above them for the top and sideways trees, on the outer side for the
-// upper diagonals (so it doesn't run into the next tree), below them for the lower ones. The game's own label spots
-// overlap the stars once eleven trees share the circle.
-const TREES = PROPHECY_TREES.map(onRing).map((t) => {
-  const xs = t.nodes.map((n) => n.x);
-  const ys = t.nodes.map((n) => n.y);
-  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
-  const root = t.nodes.find((n) => n.parents.length === 0);
-  const d = Math.hypot(root.x, root.y);
-  const [cos, sin] = [root.x / d, root.y / d];
-  if (sin < -0.3) return { ...t, anchor: 'middle', baseline: 'hanging', label: [(x0 + x1) / 2, y0 - 2.2] };
-  if (Math.abs(cos) > 0.3 && Math.abs(cos) < 0.9)
-    return { ...t, anchor: cos < 0 ? 'end' : 'start', baseline: 'alphabetic', label: [cos < 0 ? x0 - 1 : x1 + 1, y1] };
-  return { ...t, anchor: 'middle', baseline: 'alphabetic', label: [(x0 + x1) / 2, y1 + 2.2] };
-});
 
 // Every node, keyed `<tree id>:<node id>`, with its tree attached.
 const NODES = new Map();
@@ -230,27 +198,6 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
   // The panel opens on the side away from the star, so it never covers what you're pointing at.
   const panelLeft = active && active.x > view.cx;
 
-  const edges = useMemo(() => {
-    const out = [];
-    for (const t of TREES) {
-      const root = t.nodes.find((n) => n.parents.length === 0);
-      out.push({ key: `${t.id}:spoke`, tree: t, pts: [[0, 0], [root.x, root.y]], a: null, b: `${t.id}:${root.id}`, spoke: true });
-      for (const n of t.nodes)
-        for (const p of n.parents) {
-          const from = t.nodes.find((m) => m.id === p);
-          const route = t.routes.find((r) => r.from === p && r.to === n.id);
-          out.push({
-            key: `${t.id}:${p}-${n.id}`,
-            tree: t,
-            pts: [[from.x, from.y], ...(route ? route.via : []), [n.x, n.y]],
-            a: `${t.id}:${p}`,
-            b: `${t.id}:${n.id}`,
-          });
-        }
-    }
-    return out;
-  }, []);
-
   const vb = `${view.cx - view.s} ${-view.cy - view.s} ${2 * view.s} ${2 * view.s}`;
 
   return (
@@ -289,7 +236,7 @@ export default function ProphecyMap({ treeId, focus, onTree }) {
             <image href={`${ART}trees/radial.webp`} x={-BG} y={-BG} width={2 * BG} height={2 * BG} />
             <rect x={-BG} y={-BG} width={2 * BG} height={2 * BG} fill="rgba(7, 8, 10, 0.38)" />
 
-            {edges.map((e) => {
+            {EDGES.map((e) => {
               const on = (e.a === null || learned.has(e.a)) && learned.has(e.b);
               return (
                 <polyline

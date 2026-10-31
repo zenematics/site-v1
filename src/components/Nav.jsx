@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LINKS } from '../config.js';
 import Emblem from '../zenderal/Emblem.jsx';
 
@@ -19,13 +19,18 @@ const ICONS = {
   ),
 };
 
-function NavLink({ href, icon, children, external }) {
+function NavLink({ href, icon, children, external, hero }) {
+  const ext = external && { target: '_blank', rel: 'noopener noreferrer' };
+  // The hero's version is larger, with no icons (there's room for the labels on phones).
+  if (hero) {
+    return (
+      <a href={href} className="btn btn--light-outline" {...ext}>
+        {children}
+      </a>
+    );
+  }
   return (
-    <a
-      href={href}
-      className="btn btn--light-outline nav__btn"
-      {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
-    >
+    <a href={href} className="btn btn--light-outline nav__btn" {...ext}>
       <svg className="nav__icon" viewBox="0 0 24 24" aria-hidden="true">
         {ICONS[icon]}
       </svg>
@@ -34,19 +39,114 @@ function NavLink({ href, icon, children, external }) {
   );
 }
 
+// The Zenderal Install / Guides / Support links, minus the page you're on ('overview', 'install'
+// or 'guides'). `hero` is the larger row under the overview hero's intro (see Nav's `dock`).
+export function ZenLinks({ page, hero = false, className = '', ...rest }) {
+  return (
+    <div className={`${hero ? 'zhero__links' : 'nav__links'} ${className}`.trim()} {...rest}>
+      {page !== 'install' && (
+        <NavLink href={`${import.meta.env.BASE_URL}zenderal/docs/#readme`} icon="install" hero={hero}>Install</NavLink>
+      )}
+      {page !== 'guides' && (
+        <NavLink href={`${import.meta.env.BASE_URL}zenderal/guide/`} icon="guides" hero={hero}>Guides</NavLink>
+      )}
+      <NavLink href={LINKS.discord} icon="support" external hero={hero}>Support</NavLink>
+    </div>
+  );
+}
+
 // `blend`: invert against the content behind it until the page is scrolled (home hero).
 // `intro`: fade in after the home hero panels have landed.
 // `zenderal`: show the Zenderal emblem (linking to the overview) and links, minus the page
 // you're on ('overview', 'install' or 'guides').
-export default function Nav({ blend = false, intro = false, zenderal = null }) {
+// `dock`: a selector for a row of the same links on the page (the overview hero's). The nav's
+// own links stay hidden until the nav's background comes in (on the first scroll), then fly up
+// out of it into place (and back down into it when you scroll back up).
+export default function Nav({ blend = false, intro = false, zenderal = null, dock = null }) {
   const [scrolled, setScrolled] = useState(false);
+  const [docked, setDocked] = useState(false);
+  // The nav's links are hidden: docking, and not yet back from undocking.
+  const [away, setAway] = useState(!!dock);
+  const links = useRef(null);
+  const first = useRef(true);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      if (dock) setDocked(window.scrollY > 40);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [dock]);
+
+  // Fly each nav button between its own box and its twin's in the page row: it's drawn in the nav,
+  // transformed to sit over the twin, with the twin's colours. The twin is re-measured every frame
+  // so the flight keeps hold of it while the page scrolls, and `p` (0 in the row, 1 in the nav)
+  // just turns round if you change direction mid-flight. The page row is hidden while the nav's
+  // buttons show, so there's only ever one of each.
+  const flight = useRef({ p: 0, frame: 0 });
+  useLayoutEffect(() => {
+    const row = dock && document.querySelector(dock);
+    if (!row) return;
+    const f = flight.current;
+    const buttons = [...links.current.children];
+    const twins = [...row.children];
+    const target = docked ? 1 : 0;
+    const land = () => {
+      for (const b of buttons) b.removeAttribute('style');
+      if (!target) {
+        row.classList.remove('is-docked');
+        setAway(true);
+      }
+    };
+    if (docked) {
+      row.classList.add('is-docked');
+      setAway(false);
+    }
+    cancelAnimationFrame(f.frame);
+    if (first.current || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      first.current = false;
+      f.p = target;
+      land();
+      return;
+    }
+
+    // The nav is fixed, so each button's own box and colours hold still: measure them untransformed.
+    for (const b of buttons) b.removeAttribute('style');
+    const rgba = (c) => (c.match(/[\d.]+/g) || []).map(Number).concat(1).slice(0, 4);
+    const ends = buttons.map((b, i) => {
+      const own = getComputedStyle(b);
+      const look = getComputedStyle(twins[i]);
+      return {
+        box: b.getBoundingClientRect(),
+        colours: ['backgroundColor', 'borderColor', 'color'].map((k) => [k, rgba(look[k]), rgba(own[k])]),
+      };
+    });
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+    const mix = (a, b, t) => a + (b - a) * t;
+    let last = performance.now();
+    const step = (now) => {
+      const dt = (now - last) / 550;
+      last = now;
+      f.p = target ? Math.min(1, f.p + dt) : Math.max(0, f.p - dt);
+      buttons.forEach((b, i) => {
+        // A slight stagger: later buttons leave a little after the first.
+        const t = ease(Math.min(1, Math.max(0, f.p * 1.15 - i * 0.075)));
+        const to = ends[i].box;
+        const from = twins[i].getBoundingClientRect();
+        b.style.transform = `translate(${mix(from.left - to.left, 0, t)}px, ${mix(from.top - to.top, 0, t)}px) scale(${mix(from.width / to.width, 1, t)}, ${mix(from.height / to.height, 1, t)})`;
+        b.style.transformOrigin = '0 0';
+        for (const [k, a, z] of ends[i].colours) b.style[k] = `rgba(${a.map((v, j) => mix(v, z[j], t)).join(',')})`;
+      });
+      if (f.p === target) land();
+      else f.frame = requestAnimationFrame(step);
+    };
+    step(last);
+    return () => cancelAnimationFrame(f.frame);
+  }, [docked, dock]);
 
   return (
     <nav className={`nav${intro ? ' nav--intro' : ''}`} style={{ mixBlendMode: blend && !scrolled ? 'difference' : 'normal' }}>
@@ -60,17 +160,7 @@ export default function Nav({ blend = false, intro = false, zenderal = null }) {
           <Emblem live className="nav__emblem" />
         </a>
       )}
-      {zenderal && (
-        <div className="nav__links">
-          {zenderal !== 'install' && (
-            <NavLink href={`${import.meta.env.BASE_URL}zenderal/docs/#readme`} icon="install">Install</NavLink>
-          )}
-          {zenderal !== 'guides' && (
-            <NavLink href={`${import.meta.env.BASE_URL}zenderal/guide/`} icon="guides">Guides</NavLink>
-          )}
-          <NavLink href={LINKS.discord} icon="support" external>Support</NavLink>
-        </div>
-      )}
+      {zenderal && <ZenLinks ref={links} page={zenderal} className={away ? 'is-away' : ''} inert={away ? true : undefined} />}
     </nav>
   );
 }

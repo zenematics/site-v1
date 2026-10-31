@@ -95,6 +95,11 @@ a:hover {
   gap: 10px;
   margin-left: auto;
 }
+/* Hidden while the same links show on the page (Nav's `dock`), which flies them in and out. */
+.nav__links.is-away {
+  opacity: 0;
+  pointer-events: none;
+}
 .nav__btn {
   padding: 9px 18px;
   font-size: 11px;
@@ -391,8 +396,11 @@ a:hover {
 .panel__logo {
   position: relative;
   display: block;
-  /* The PNG has ~5% transparent padding on the left; line the Z up with the text. */
-  margin-left: -5%;
+  /* The images are cropped to the lettering (100px off the left of the original 2048, 64 off the
+     right). Sized and placed so the lettering sits where it did before: the uncropped box ran 5% past
+     the slot's left edge to line the Z up with the text, so it was 105% wide. */
+  width: calc(105% * 1884 / 2048);
+  margin-left: calc(105% * 100 / 2048 - 5%);
 }
 .panel__logo img {
   display: block;
@@ -981,7 +989,9 @@ a:hover {
   white-space: normal;
 }
 .mband__logo {
-  width: min(80%, 320px);
+  /* The same lettering as the uncropped min(80%, 320px), placed as before (see .panel__logo). */
+  width: calc(min(80%, 320px) * 1884 / 2048);
+  margin-left: calc(min(80%, 320px) * 100 / 2048 - 5%);
   mix-blend-mode: screen;
 }
 .mband__full .btn {

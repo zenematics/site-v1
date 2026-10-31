@@ -65,7 +65,7 @@ html {
 .zhero__layer {
   /* Taller than the hero so sinking layers never show an edge; all share one box so they line up.
      Set low enough that the shot's waterline falls in the crossfade into the next section. */
-  top: -8%;
+  top: -12.5%;
   height: 120%;
   bottom: auto;
   transform-origin: 50% 85%;
@@ -126,16 +126,20 @@ html {
 .zhero__title {
   margin: 0;
 }
+.zhero__below {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 /* The wordmark title. */
 .zhero__logo {
-  /* As wide as the column allows, but short enough on low screens that the intro still
-     peeks above the fold (the logo is about a third as tall as it is wide). */
-  --w: clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px);
+  /* As wide as the column allows, but short enough on low screens (the logo is about 0.36 as tall as
+     it is wide). The images are cropped to the lettering, so this is the lettering's width; the 0.92
+     keeps the sizes from before the crop, when the box had 8% empty margins. */
+  --w: calc(0.92 * clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px));
   position: relative;
   display: block;
   width: var(--w);
-  /* The PNG has ~5% transparent padding on the left; line the Z up with the text. */
-  margin-left: calc(var(--w) * -0.05);
 }
 .zhero__logo img {
   display: block;
@@ -175,12 +179,13 @@ html {
   width: min(30vh, 24%);
 }
 .zhero--compact .zhero__logo {
-  --w: clamp(260px, 36vw, 480px);
+  --w: calc(0.92 * clamp(260px, 36vw, 480px));
 }
 
 /* ---------- Overview ---------- */
-.zintro,
 .zexplore,
+.zclips,
+.znew,
 .zcta__body {
   max-width: 1240px;
   margin: 0 auto;
@@ -188,10 +193,6 @@ html {
   display: flex;
   flex-direction: column;
 }
-.zintro {
-  gap: 24px;
-}
-.zintro__title,
 .zcta__title {
   margin: 0;
   font-family: inherit;
@@ -203,50 +204,6 @@ html {
   color: #ece9e2;
   text-wrap: balance;
 }
-.zintro__lede {
-  margin: 0;
-  max-width: 820px;
-  font-size: clamp(19px, 2vw, 24px);
-  line-height: 1.55;
-  font-weight: 300;
-  color: #c2beb6;
-  text-wrap: pretty;
-}
-.zintro__body {
-  margin: 0;
-  max-width: 620px;
-  font-size: 18px;
-  line-height: 1.7;
-  font-weight: 300;
-  color: #9b968d;
-  text-wrap: pretty;
-}
-.zintro__facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px 40px;
-  max-width: 660px;
-  margin: 24px 0 0;
-}
-.zintro__fact {
-  padding-top: 16px;
-  border-top: 1px solid rgba(201, 171, 118, 0.35);
-}
-.zintro__fact dt {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #c9ab76;
-}
-.zintro__fact dd {
-  margin: 8px 0 0;
-  font-size: 15px;
-  line-height: 1.6;
-  font-weight: 300;
-  color: #c2beb6;
-}
-
 /* Parallax backdrops (the intro and goals): a shot split into depth layers, far to near.
    --p is the backdrop's distance from the viewport centre in px (Zenderal.jsx); at 0 the
    layers line up as the original shot. Far layers sink with the page (look slower), near
@@ -281,81 +238,135 @@ html {
   --push: 1;
 }
 
-/* The intro's full-bleed backdrop. It starts --blend up, over the hero, and its scene fades in
-   from the top so the two crossfade; the text sits outside the fade so it can start up in it.
-   Its bottom --blend fades out into the page below. */
-.zstage {
-  --blend: 260px;
-  position: relative;
-  z-index: 3;
-}
-.zstage__pin {
-  position: relative;
-  overflow: hidden;
-  padding: 120px 0 calc(40px + var(--blend));
-}
-.zstage__scene {
-  position: absolute;
-  inset: 0;
-  mask-image: linear-gradient(180deg, transparent, #000 var(--blend), #000 calc(100% - var(--blend)), transparent);
-  mask-repeat: no-repeat;
-}
-/* The emblem portal (Zenderal.jsx): the scene pins while the scroll run under it plays,
-   and closes into the emblem instead of fading out. Reduced motion keeps the fade. */
-.zstage__emblem {
-  display: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
-  .zstage::after {
-    content: '';
-    display: block;
-    height: 100vh;
-  }
-  .zstage__pin {
-    position: sticky;
-    min-height: 100vh;
-  }
-  .zstage__scene {
-    mask-image: linear-gradient(180deg, transparent, #000 var(--blend));
-  }
-  .zstage__emblem {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 1000px;
-    max-width: none;
-    height: auto;
-    transform-origin: 0 0;
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-/* Crossfade into the intro: the stage starts --blend higher, over the hero's bottom. */
+/* Crossfade into the crossroads: it starts --blend higher, over the hero's bottom. */
 .zhero--parallax {
   --blend: 260px;
-  /* Taller by the fade, so the full shot shows before it crossfades away; the extra
+  /* A full screen plus the fade, so the full shot shows before it crossfades away; the extra
      height goes below the content. */
-  min-height: calc(62vh + var(--blend));
-  padding-top: 140px;
-  padding-bottom: calc(80px + var(--blend));
+  padding-top: 0;
+  padding-bottom: var(--blend);
+  /* Its shot fades out under the crossroads fading in, rather than stopping at a hard edge. It's gone just above
+     the shot's straight waterline (93.6% down, as the layers fill the height), which would show through the fade. */
+  mask-image: linear-gradient(180deg, #000 calc(92% - var(--blend) * 0.55), transparent 92%);
 }
 /* Centred, with the wordmark filling the space the emblem used to share. */
 .zhero--parallax .zhero__inner {
-  align-items: center;
+  /* The wordmark with equal rows above and below it, with the eyebrow, links and scroll cue at the head
+     of the bottom one; both rows take the bottom one's content height. */
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  gap: 0;
+  justify-items: center;
   text-align: center;
+  /* The wordmark's width (.zhero__logo works it out the same way), for sizing the eyebrow to it. */
+  --w: calc(0.92 * clamp(300px, min(64vw, calc((100vh - 540px) * 3)), 940px));
 }
+/* Under the wordmark, sharing the bottom row with the links (which keep their own place below it):
+   between the wordmark's foot (54px up, .zhero__title) and the buttons, 122.8px down, a little nearer the wordmark. */
+.zhero--parallax .eyebrow-row {
+  /* The same cell as .zhero__below, overlapping it. */
+  grid-area: 3 / 1;
+  align-self: start;
+  margin-top: -3px;
+}
+.zhero--parallax .zhero__title {
+  grid-area: 2 / 1;
+}
+.zhero--parallax .zhero__below {
+  grid-area: 3 / 1;
+  align-self: start;
+  align-items: center;
+  /* The buttons' gap below the wordmark is in .zhero__links. */
+  margin-top: 0;
+}
+/* Raised above the centre. With `top`, not a transform: a transform would make it a stacking
+   context and cut the logo video's screen blend off from the background. */
+.zhero--parallax .zhero__title {
+  position: relative;
+  top: -54px;
+}
+/* Where they sat under the two-line intro the hero used to have (its 77px, the 24px gap and 22px). */
+.zhero--parallax .zhero__links {
+  margin-top: 122.8px;
+}
+/* The same size as the eyebrow above them. */
+.zhero--parallax .zhero__links .btn {
+  font-size: calc(var(--w) * 0.0243);
+}
+/* Less than usual by however much taller the larger button text makes them (about 1.2x its extra
+   size over the usual 12px), so the cue stays put. */
+.zhero--parallax .zhero__scroll {
+  margin-top: calc(36px - (var(--w) * 0.0243 - 12px) * 1.2);
+}
+/* Sized to the wordmark, so the line runs just short of its lettering, and never wider than it: if the
+   text and badge don't fit side by side, the badge wraps under. */
 .zhero--parallax .eyebrow-row {
   justify-content: center;
+  gap: calc(var(--w) * 0.0294);
+  max-width: var(--w);
 }
-.zhero--parallax .zhero__logo {
-  /* The PNG has more transparent padding on the left (5.3%) than the right (3.1%). */
-  margin-left: calc(var(--w) * -0.022);
+.zhero--parallax .eyebrow {
+  font-size: calc(var(--w) * 0.0243);
+}
+.zhero--parallax .stage-badge {
+  padding: 0.45em 0.9em;
+  font-size: calc(var(--w) * 0.021);
 }
 .zhero--parallax .zhero__desc {
-  max-width: 760px;
-  font-size: 21px;
+  max-width: 860px;
+  font-size: 24px;
+}
+/* Install / Guides / Support under the intro. */
+.zhero__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+/* Kept solid rather than fading with the text: they fly up into the nav (Nav.jsx), which hides this row meanwhile. */
+.zhero__links.is-docked {
+  visibility: hidden;
+}
+/* "Scroll" and a bobbing chevron under the buttons, gone after the first bit of scrolling. */
+.zhero__scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 36px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  /* The tracking trails the last letter; indent the start to match so the word sits over the chevron. */
+  text-indent: 0.32em;
+  text-transform: uppercase;
+  color: #9b968d;
+  opacity: max(0, calc(1 - var(--s) / 160));
+  transition: color 0.2s ease;
+}
+.zhero__scroll:hover {
+  color: #ece9e2;
+}
+.zhero__scroll svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: zhero-bob 1.8s ease-in-out infinite;
+}
+@keyframes zhero-bob {
+  50% {
+    translate: 0 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zhero__scroll svg {
+    animation: none;
+  }
 }
 /* Darkest behind the centred text, lighter towards the edges. */
 .zhero--parallax .zhero__shade {
@@ -363,39 +374,1794 @@ html {
     radial-gradient(ellipse 60% 55% at 50% 42%, rgba(7, 8, 10, 0.85) 0%, rgba(7, 8, 10, 0.6) 60%, rgba(7, 8, 10, 0.35) 100%),
     linear-gradient(180deg, rgba(7, 8, 10, 0.4) 0%, transparent 30%, rgba(7, 8, 10, 0.5) 100%);
 }
-.zhero--parallax + .zstage {
+/* "What Zenderal is": a crossroads whose two roads lead to what Enderal is for new players and what Zenderal
+   changes for returning ones, with the heading on the scene. Pulled up over the hero's bottom --blend,
+   where the scene's top fades in over it. */
+.znew {
+  position: relative;
+  z-index: 3;
+  gap: 40px;
   margin-top: -260px;
+  padding-top: 0;
 }
-/* The intro's text starts inside the crossfade, so its top peeks above the fold. Padding moved
-   from the bottom to the top keeps the pin's height, so the emblem run doesn't move. */
-.zhero--parallax + .zstage .zstage__pin {
-  padding-top: 120px;
-  padding-bottom: calc(var(--blend) - 40px);
+.znew__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-/* The intro is tall, so it has room for a stronger drift (and a taller box to match). */
-.zstage .zlayer {
-  top: -18%;
-  height: 136%;
-  object-position: center 60%;
+.znew__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
 }
-.zstage .zlayer--back {
-  --drift: 0.2;
+.znew__text {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
 }
-.zstage .zlayer--mid {
-  --drift: 0.11;
+/* The crossroads, full width (Zenderal.jsx): a painted fork in the road, its left road for new players and its
+   right for returning ones. Pointing at a road's sign leans the scene towards where that road disappears
+   (--road-x/y); taking it zooms down the road, dims it and brings up the road's picture panels. Fades into the page above and below. */
+.zfork {
+  --blend: 260px;
+  position: relative;
+  display: grid;
+  /* The scene's top --blend sits under the hero's bottom, so the heading starts below it. */
+  min-height: calc(clamp(560px, 43vw, 860px) + 180px);
+  margin-inline: calc(50% - 50vw);
+  overflow: hidden;
 }
-.zstage .zlayer--front {
-  --drift: 0.02;
-}
-.zstage__shade {
+/* The scene and its shading, fading in over the hero's bottom --blend (the heading stays solid above it)
+   and out into the page at the bottom. */
+.zfork__backdrop {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(7, 8, 10, 0.92) 0%, rgba(7, 8, 10, 0.6) 40%, rgba(7, 8, 10, 0.05) 100%),
-    linear-gradient(180deg, rgba(7, 8, 10, 0.5) 0%, transparent 22%, transparent 72%, rgba(7, 8, 10, 0.5) 100%);
+  overflow: hidden;
+  background: #07080a;
+  /* Eased in (smoothstep), so there's no kink where it reaches full strength over the hero's bottom edge. */
+  mask-image: linear-gradient(
+    180deg,
+    transparent,
+    rgba(0, 0, 0, 0.1) calc(var(--blend) * 0.2),
+    rgba(0, 0, 0, 0.35) calc(var(--blend) * 0.4),
+    rgba(0, 0, 0, 0.65) calc(var(--blend) * 0.6),
+    rgba(0, 0, 0, 0.9) calc(var(--blend) * 0.8),
+    #000 calc(var(--blend) * 0.95),
+    #000 88%,
+    transparent
+  );
 }
-.zstage .zintro {
+.zfork__scene {
+  position: absolute;
+  inset: 0;
+  transform-origin: var(--road-x) var(--road-y);
+  transition: scale 1.6s cubic-bezier(0.6, 0, 0.2, 1), filter 1.2s ease, opacity 0.8s ease, transform-origin 0.8s ease;
+}
+/* Only as much extra height as the drift needs, so the scene isn't cropped tighter than the shot. */
+.zfork .zlayer {
+  top: -5%;
+  height: 110%;
+  object-position: 50% 60%;
+  filter: brightness(0.85) saturate(0.8);
+  /* The layers line up until the scene's middle passes the viewport's, then part. Before that the near ground
+     would slide down off the back layer, which still holds the same ground, and show it doubled above its edge. */
+  translate: 0 calc(max(0, var(--p)) * var(--drift) * 1px);
+  scale: calc(1.04 + min(1, max(0, var(--p) / 800)) * var(--push) * 0.04);
+}
+/* Bolder depth than the shared defaults. The far layers sink with the page, so a layer only pulls away from the
+   scene's edge on the side that's off screen (the scene is taller than the viewport). */
+.zfork .zlayer--back {
+  --drift: 0.24;
+}
+.zfork .zlayer--mid {
+  --drift: 0.12;
+  --push: 1;
+}
+.zfork .zlayer--front {
+  --drift: 0;
+  --push: 2;
+}
+/* Dimmed all over at rest, so its bright misty sky doesn't show as a strip where it fades in under the hero.
+   Pointing at a sign lights it back up, and the side shade keeps the other road dark, so only that side brightens. */
+.zfork__scene {
+  opacity: 0.55;
+}
+.zfork.is-leaning .zfork__scene {
+  scale: 1.05;
+  opacity: 1;
+}
+.zfork.is-taken .zfork__scene {
+  scale: 1.9;
+  opacity: 1;
+  filter: brightness(0.65) blur(1.5px);
+}
+/* A ceiling for the heading, a floor for the signs, and a darkening over whichever side isn't leaned towards (or both, under a road's panels).
+   The ceiling holds until the scene has fully faded in, so the bright misty sky doesn't peak in a strip partway through the fade,
+   then eases out over a fixed distance (a percentage stop could land right on top of it and cut it off in a hard line). */
+.zfork__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    /* The sky's brightest fog, top left, still shows as a light patch where the hero gives way. */
+    radial-gradient(60% 180px at 22% calc(var(--blend) - 30px), rgba(7, 8, 10, 0.5), transparent),
+    linear-gradient(
+      180deg,
+      rgba(7, 8, 10, 0.7) var(--blend),
+      rgba(7, 8, 10, 0.35) calc(var(--blend) + 160px),
+      transparent calc(var(--blend) + 340px),
+      transparent 50%,
+      rgba(7, 8, 10, 0.65)
+    );
+}
+.zfork__shade::before,
+.zfork__shade::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 65%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.zfork__shade::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(7, 8, 10, 0.85) 30%, transparent);
+}
+.zfork__shade::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(7, 8, 10, 0.85) 30%, transparent);
+}
+.zfork--veterans.is-leaning .zfork__shade::before,
+.zfork--newcomers.is-leaning .zfork__shade::after,
+.zfork.is-taken .zfork__shade::before,
+.zfork.is-taken .zfork__shade::after {
+  opacity: 1;
+}
+/* The two signs, at the bottom corners under their roads; the page's 1240px column sets their inset. */
+.zfork__roads,
+.zfork__views {
+  --inset: max(56px, calc(50vw - 564px));
+  grid-area: 1 / 1;
   position: relative;
+}
+/* The heading at the top of the scene, the two signs at the bottom corners under their roads. */
+.zfork__roads {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  padding: calc(var(--blend) + 40px) var(--inset) 72px;
+  transition: opacity 0.5s ease 0.3s, visibility 0s;
+}
+/* The heading sits over the bright, misty valley, so it gets a soft pool of shadow behind it and brighter,
+   heavier text. */
+.zfork__roads .znew__head {
+  position: relative;
+  isolation: isolate;
+  max-width: 820px;
+  text-shadow: 0 1px 3px rgba(7, 8, 10, 0.9), 0 2px 24px rgba(7, 8, 10, 0.8);
+}
+.zfork__roads .znew__head::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -90px -160px -90px -50vw;
+  background: radial-gradient(closest-side, rgba(7, 8, 10, 0.78), rgba(7, 8, 10, 0.5) 60%, transparent);
+  pointer-events: none;
+}
+.zfork__roads .docs__label {
+  color: #c9ab76;
+}
+.zfork__roads .znew__text {
+  font-weight: 400;
+  color: #e4e0d8;
+}
+.zfork__signs {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+}
+.zfork.is-taken .zfork__roads {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+.zfork__sign {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0 0 16px;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  text-shadow: 0 2px 24px rgba(7, 8, 10, 0.8);
+  cursor: pointer;
+}
+.zfork__sign--veterans {
+  align-items: flex-end;
+  text-align: right;
+}
+/* A gold rule that draws out under the sign pointed at. */
+.zfork__sign::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 48px;
+  height: 1px;
+  background: #c9ab76;
+  transition: width 0.5s ease;
+}
+.zfork__sign--veterans::after {
+  left: auto;
+  right: 0;
+}
+.zfork__sign:hover::after,
+.zfork__sign:focus-visible::after {
+  width: 100%;
+}
+.zfork__sign:focus-visible {
+  outline: 2px solid #c9ab76;
+  outline-offset: 8px;
+}
+.zfork__kicker {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zfork__label {
+  font-size: clamp(26px, 3vw, 44px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zfork__take {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9b968d;
+  transition: color 0.3s ease;
+}
+.zfork__take span {
+  display: inline-block;
+  transition: translate 0.3s ease;
+}
+.zfork__sign:hover .zfork__take,
+.zfork__sign:focus-visible .zfork__take {
+  color: #ece9e2;
+}
+.zfork__sign--newcomers:hover .zfork__take span {
+  translate: -4px 0;
+}
+.zfork__sign--veterans:hover .zfork__take span {
+  translate: 4px 0;
+}
+/* A road's view: the back link and title, then its picture panels across the width. Both roads' views share
+   one cell over the darkened scene; each arrives once the zoom is under way. */
+.zfork__views {
+  display: grid;
+  align-items: center;
+  padding: calc(var(--blend) + 24px) var(--inset) 72px;
+  pointer-events: none;
+}
+.znew__view {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 12px;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0.3s;
+}
+.znew__view.is-on {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  pointer-events: auto;
+  transition: opacity 0.6s ease 0.7s, translate 0.6s ease 0.7s, visibility 0s;
+}
+.znew__view-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.zfork__back {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #9b968d;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.zfork__back:hover {
+  color: #c9ab76;
+}
+.zfork__back:focus-visible {
+  outline: 2px solid #c9ab76;
+  outline-offset: 6px;
+}
+.znew__panel-title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+/* The picture panels: the open one takes most of the row; the others stay narrow strips of their picture
+   with a number and title. Each picture comes up from dim as its panel opens. */
+.zpanels {
+  display: flex;
+  gap: 8px;
+  height: clamp(460px, 38vw, 580px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zpanels__item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d0e11;
+  transition: flex-grow 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
+}
+.zpanels__item.is-open {
+  flex-grow: 5;
+  border-color: rgba(201, 171, 118, 0.5);
+}
+.zpanels__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) saturate(0.55);
+  scale: 1.08;
+  transition: filter 0.6s ease, scale 1.2s ease;
+}
+.zpanels__item:hover .zpanels__art {
+  filter: brightness(0.75) saturate(0.65);
+}
+.zpanels__item.is-open .zpanels__art {
+  filter: brightness(0.85) saturate(0.75);
+  scale: 1;
+}
+.zpanels__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(7, 8, 10, 0.9));
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+/* Darker under the open panel's paragraph. */
+.zpanels__item.is-open::after {
+  background: linear-gradient(180deg, transparent 20%, rgba(7, 8, 10, 0.7) 50%, rgba(7, 8, 10, 0.95));
+}
+/* The number and title, then the open panel's paragraph and links, stacked at the bottom. */
+.zpanels__foot {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zpanels__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 20px 18px;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: padding 0.5s ease;
+}
+.zpanels__item.is-open .zpanels__head {
+  padding: 24px 28px 14px;
+  cursor: default;
+}
+.zpanels__head:focus-visible {
+  outline: 2px solid #c9ab76;
+  outline-offset: -6px;
+}
+.zpanels__n {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #c9ab76;
+}
+.zpanels__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  white-space: nowrap;
+}
+/* Closed panels' titles run up the strip, like spines on a shelf. */
+.zpanels__item:not(.is-open) .zpanels__title {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+}
+.zpanels__item.is-open .zpanels__title {
+  white-space: normal;
+  font-size: clamp(22px, 2.2vw, 32px);
+  letter-spacing: 0.06em;
+}
+.zpanels__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease;
+}
+.zpanels__item.is-open .zpanels__body {
+  grid-template-rows: 1fr;
+}
+.zpanels__inner {
+  min-height: 0;
+  overflow: hidden;
+  width: max(100%, 300px);
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 28px;
+  opacity: 0;
+  transition: opacity 0.2s ease, padding 0.4s ease;
+}
+.zpanels__item.is-open .zpanels__inner {
+  padding-bottom: 24px;
+  opacity: 1;
+  transition: opacity 0.4s ease 0.45s, padding 0.4s ease;
+}
+.zpanels__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 300;
+  color: #d6d2ca;
+  text-wrap: pretty;
+}
+.zpanels__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* Links, and the button that switches roads. */
+.zpanels__link {
+  padding: 7px 12px;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid rgba(201, 171, 118, 0.5);
+  background: rgba(7, 8, 10, 0.5);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.zpanels__link:hover,
+.zpanels__link:focus-visible {
+  background: #c9ab76;
+  color: #07080a;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zfork__scene,
+  .zfork__shade::before,
+  .zfork__shade::after,
+  .zfork__roads,
+  .znew__view,
+  .znew__view.is-on,
+  .zpanels__item,
+  .zpanels__art,
+  .zpanels__head,
+  .zpanels__title,
+  .zpanels__body,
+  .zpanels__inner {
+    transition: none;
+  }
+}
+@media (max-width: 860px) {
+  .znew {
+    margin-top: -160px;
+    padding-top: 0;
+    gap: 28px;
+  }
+  .znew__text {
+    font-size: 16px;
+  }
+  /* The heading stays at the top and the signs stack at the bottom, over the middle of the scene; the lists fill the width over the darkened road. */
+  .zfork {
+    --blend: 160px;
+    min-height: 830px;
+  }
+  /* The heading runs longer here, so the dark top reaches further down behind it. */
+  .zfork__shade {
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.85) 15%, rgba(7, 8, 10, 0.6) 40%, transparent 55%, transparent 60%, rgba(7, 8, 10, 0.7));
+  }
+  /* Gentler depth: the scene is barely taller than the screen here, so the bold desktop drift would pull the
+     village clear of the near ground and show the far layer between them. */
+  .zfork .zlayer--back {
+    --drift: 0.1;
+  }
+  .zfork .zlayer--mid {
+    --drift: 0.04;
+    --push: 0.5;
+  }
+  .zfork .zlayer--front {
+    --drift: 0.01;
+    --push: 1;
+  }
+  .zfork__roads {
+    gap: 32px;
+    padding: calc(var(--blend) + 32px) 20px 40px;
+  }
+  /* The signs stay side by side under their roads, small enough that the travellers show between the heading and them. */
+  .zfork__signs {
+    gap: 16px;
+  }
+  .zfork__sign {
+    flex: 1 1 0;
+    gap: 6px;
+    padding-bottom: 12px;
+  }
+  .zfork__kicker {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+  .zfork__label {
+    font-size: clamp(17px, 4.6vw, 26px);
+    line-height: 1.15;
+  }
+  .zfork__take {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .zfork__views {
+    padding: calc(var(--blend) + 24px) 20px 48px;
+  }
+  .znew__panel-title {
+    font-size: 22px;
+  }
+  /* The panels stack as bands, each as tall as its text with the picture behind it, so the whole list fits on
+     screen; the open one grows as its paragraph and links slide open. */
+  .zpanels {
+    flex-direction: column;
+    height: auto;
+    gap: 6px;
+  }
+  .zpanels__item {
+    flex: none;
+  }
+  .zpanels__foot {
+    position: relative;
+  }
+  .zpanels__item.is-open::after {
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.35), rgba(7, 8, 10, 0.85));
+  }
+  .zpanels__head {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+    padding: 22px 16px;
+  }
+  .zpanels__item.is-open .zpanels__head {
+    padding: 18px 16px 10px;
+  }
+  .zpanels__item:not(.is-open) .zpanels__title {
+    writing-mode: horizontal-tb;
+    rotate: none;
+  }
+  .zpanels__item.is-open .zpanels__title {
+    font-size: 22px;
+  }
+  .zpanels__inner {
+    width: 100%;
+    padding-inline: 16px;
+  }
+  .zpanels__item.is-open .zpanels__inner {
+    padding-bottom: 18px;
+  }
+  .zpanels__text {
+    font-size: 15px;
+  }
+}
+
+/* Before/after: base Enderal and Zenderal from the same spot, in a frame under its heading.
+   --split is where the divider sits from the left; Zenderal's
+   shot shows right of it. Zenderal.jsx sweeps it from 100% to 0 while the pin sticks; reduced
+   motion leaves it in the middle. */
+.zcompare {
+  position: relative;
+  z-index: 3;
+  margin-top: 40px;
+}
+.zcompare__pin {
+  --split: 50%;
+  /* How far the divider has swept back across at the end, cutting the section away to the combat section. */
+  --wipe: 0%;
+  --ratio: 16 / 9;
+  padding: 120px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.zcompare__emblem {
+  display: none;
+}
+/* Centred over the frame, which is narrower than the column when the height limits it. */
+.zcompare__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-inline: 56px;
+  text-align: center;
+}
+.zcompare__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zcompare__text {
+  margin: 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zcompare__stage {
+  position: relative;
+}
+.zcompare__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--ratio);
+  margin: 0;
+  overflow: hidden;
+  border-block: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d0e11;
+}
+.zcompare__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% 50%;
+}
+.zcompare__after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--split));
+}
+.zcompare__tag {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c9c5bd;
+  background: rgba(7, 8, 10, 0.7);
+}
+.zcompare__tag--after {
+  left: auto;
+  right: 18px;
+  color: #c9ab76;
+}
+.zcompare__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* One of the two is always 0: it sweeps left with --split, then back right with --wipe. */
+  left: calc(var(--split) + var(--wipe));
+  width: 2px;
+  margin-left: -1px;
+  background: #ece9e2;
+  box-shadow: 0 0 18px rgba(201, 171, 118, 0.7);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zcompare::after {
+    content: '';
+    display: block;
+    /* The opening and the sweep, then a screen (WIPE in Zenderal.jsx) wiping back to the combat section. */
+    height: 360vh;
+  }
+  .zcompare__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    mask-repeat: no-repeat;
+  }
+  /* Cut away left of the divider as it wipes back, showing the combat section pinned underneath. */
+  .zcompare__head,
+  .zcompare__frame,
+  .zcompare__stage::after {
+    clip-path: inset(0 0 0 var(--wipe));
+  }
+  /* The combat section sits under the end of the run, pinning as the wipe starts: the pin's screen plus the wipe's. */
+  .zcompare + .zsword {
+    margin-top: -200vh;
+  }
+  /* The emblem the section opens out of (Zenderal.jsx places and fades it). */
+  .zcompare__emblem {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    max-width: none;
+    height: auto;
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+  /* The shots fill the screen behind the heading, cropped to fit, darkened at the top for the text. */
+  .zcompare__stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+  .zcompare__stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.8), rgba(7, 8, 10, 0.45) 30%, transparent 55%);
+    pointer-events: none;
+  }
+  .zcompare__frame {
+    height: 100%;
+    aspect-ratio: auto;
+    border: 0;
+  }
+  .zcompare__head {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+  }
+  .zcompare__head .zcompare__text {
+    color: #c9c5bd;
+  }
+  /* At the bottom, clear of the heading (more specific so the phone sizes keep it there). */
+  .zcompare__pin .zcompare__tag {
+    top: auto;
+    bottom: 18px;
+  }
+}
+/* Gameplay loops: short muted clips in a grid, each linking to its guide section. They play
+   only while on screen (Zenderal.jsx). Placeholder clips (the logo video) sit letterboxed. */
+.zclips {
+  gap: 40px;
+  padding-top: 80px;
+}
+.zclips--bare {
+  padding-top: 24px;
+}
+/* Relentless (Sword.jsx): the 3D sword fills the pin and turns over the run below it; the combat heading fades in
+   under it once it has settled, then the sword cuts between the combat clips. */
+.zsword {
+  position: relative;
+  /* Over expanded magic, pinned under the end of its run. */
+  z-index: 2;
+  margin-top: 40px;
+}
+.zsword__pin {
+  --head: 1;
+  --words: 1;
+  /* The clip frame's width: up to 1240px, and short enough to leave room for the nav above and the caption below. */
+  --fw: min(84vw, 1240px, (100vh - 360px) * 2.33);
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+/* A warm pool of light behind the blade on the page's colour; opaque, as expanded magic sits under it. */
+.zsword__back {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 55% 40% at 50% 42%, rgba(201, 171, 118, 0.1), transparent 70%), #07080a;
+}
+.zsword__stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.zsword__pin.is-live .zsword__stage {
+  opacity: 1;
+}
+.zsword__stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* The opening words, either side of the upright sword (its crossguard is about 18vh wide); they part and fade as
+   --words runs 0 → 1. */
+.zsword__words {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(28vh + var(--words) * 16vw);
+  opacity: calc(1 - var(--words));
+  pointer-events: none;
+}
+.zsword__word {
+  font-size: clamp(40px, 7vw, 128px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zsword__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9vh;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: var(--head);
+  translate: 0 calc((1 - var(--head)) * 20px);
+}
+/* The clips the sword cuts between, full screen under it; Sword.jsx clips the one being cut in to the side the blade
+   has passed. Darkened at the bottom for the caption. */
+/* On wide screens they sit in a frame no wider than 1240px (the clips are 960px wide, so they stay sharp), leaving
+   room for the caption below; phones show them full screen. */
+.zsword__clips {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: var(--fw);
+  aspect-ratio: 960 / 412;
+  translate: -50% -50%;
+}
+.zsword__clip {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  background: #07080a;
+  box-shadow: 0 0 0 1px rgba(201, 171, 118, 0.25), 0 30px 90px rgba(0, 0, 0, 0.7);
+}
+.zsword__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9);
+}
+/* A gold streak along the cut, centred on the blade (placed by Sword.jsx) and reaching past both its ends. */
+.zsword__slash {
+  position: absolute;
+  left: -200vmax;
+  top: -1px;
+  width: 400vmax;
+  height: 2px;
+  opacity: 0;
+  transform-origin: 200vmax 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 226, 166, 0.9) 40%, #fff3d6 50%, rgba(255, 226, 166, 0.9) 60%, transparent);
+  box-shadow: 0 0 12px 2px rgba(214, 160, 80, 0.7);
+  pointer-events: none;
+}
+/* The clip in view: its title, line and guide link, with a numbered rail to jump between them. */
+.zsword__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7vh;
+  max-width: var(--fw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.zsword__caption.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+.zsword__about {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+  opacity: 0;
+  translate: 0 10px;
+  transition: opacity 0.35s ease, translate 0.35s ease;
+  pointer-events: none;
+}
+.zsword__about.is-on {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+}
+.zsword__about .zclip__title {
+  font-size: clamp(22px, 2.4vw, 30px);
+}
+.zsword__about .zclip__text {
+  color: #c9c5bd;
+}
+.zsword__guide {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zsword__rail {
+  grid-area: 1 / 2;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zsword__step {
+  padding: 8px 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #6f6a62;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.zsword__step:hover,
+.zsword__step.is-on {
+  color: #ece9e2;
+  border-color: #c9ab76;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* A screen under "Modern visuals" as it wipes away, the turn, a slice per clip, then a screen for the last swing
+     (UNDER and EXIT in Sword.jsx). */
+  .zsword__run::after {
+    content: '';
+    display: block;
+    height: 760vh;
+  }
+  .zsword__pin {
+    position: sticky;
+    top: 0;
+  }
+  /* Expanded magic sits under the end of the run, pinning as the last swing starts: the pin's screen plus the swing's. */
+  .zclips--bare + .zmagic {
+    margin-top: calc(-1 * (max(100vh, 600px) + 100vh));
+  }
+  /* The grid only stands in for the cuts with reduced motion. */
+  .zclips--bare {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zsword__clips,
+  .zsword__slash,
+  .zsword__caption {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
+  .zsword__head {
+    padding: 0 20px;
+    bottom: 6vh;
+  }
+  .zsword__caption {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: none;
+    padding: 0 20px;
+    bottom: 5vh;
+  }
+  /* Full screen, darkened at the bottom for the caption. */
+  .zsword__clips {
+    inset: 0;
+    width: auto;
+    aspect-ratio: auto;
+    translate: none;
+  }
+  .zsword__clip {
+    box-shadow: none;
+  }
+  .zsword__clip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7, 8, 10, 0.25), transparent 30%, transparent 55%, rgba(7, 8, 10, 0.85));
+  }
+  .zsword__rail {
+    grid-area: 2 / 1;
+  }
+  /* Too narrow for a row: one word above the crossguard on the left, the other below it on the right. */
+  .zsword__words {
+    flex-direction: column;
+    justify-content: center;
+    gap: calc(30vh + var(--words) * 20vh);
+  }
+  .zsword__word {
+    font-size: 28px;
+  }
+  .zsword__word:first-child {
+    align-self: flex-start;
+    margin-left: 20px;
+  }
+  .zsword__word:last-child {
+    align-self: flex-end;
+    margin-right: 20px;
+  }
+}
+/* Firearms (Musket.jsx): the 3D gun fills the pin, aimed at the viewer over the section's label, then swings round to
+   lie level as the label fades and the heading fades in under it. Then it fires: a burst at the muzzle and a fixed
+   whiteout that thins as the build-crafting section rises into place. Musket.jsx sets their opacity and transform. */
+.zmusket {
+  position: relative;
+  margin-top: 40px;
+}
+.zmusket__pin {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: radial-gradient(ellipse 55% 40% at 50% 42%, rgba(201, 171, 118, 0.1), transparent 70%);
+}
+.zmusket__stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.zmusket__pin.is-live .zmusket__stage {
+  opacity: 1;
+}
+.zmusket__stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* A burst of fire out of the muzzle, longer along the barrel, with a hot core; placed at the muzzle by transform. */
+.zmusket__flash {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 52vmin;
+  height: 24vmin;
+  margin: -12vmin 0 0 -6vmin;
+  transform-origin: 6vmin 12vmin;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 22% 30% at 18% 50%, #fffaf0, rgba(255, 220, 150, 0.9) 45%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 40% 50%, rgba(255, 170, 70, 0.85), rgba(214, 110, 40, 0.4) 50%, transparent 72%);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+/* The whiteout, over the page under the nav; brightest towards the right, where the muzzle is, warm at its edges. */
+.zmusket__white {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  opacity: 0;
+  background: radial-gradient(circle at 72% 45%, #fffaf0, #f3e2c2 40%, #c9ab76 110%);
+  will-change: opacity;
+  pointer-events: none;
+}
+.zmusket__word {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(56px, 13vw, 240px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.zmusket__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9vh;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* The section's words, larger than a heading's line and across the full width. */
+.zmusket__head .zclips__text {
+  max-width: none;
+  font-size: clamp(19px, 1.9vw, 28px);
+  line-height: 1.55;
+  color: #c9c5bd;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .zmusket__run::after {
+    content: '';
+    display: block;
+    /* Two screens under expanded magic's bullet hole (UNDER in Musket.jsx), the turn and the shot (the white is full at
+       0.64 of the 300vh after that, WHITE), then the rest under the white; plus 114vh for the opening played at half
+       speed ((SLOW - 1) × OPEN × 300vh). */
+    height: 614vh;
+  }
+  .zmusket__pin {
+    position: sticky;
+    top: 0;
+  }
+  /* Build crafting sits behind the end of the run, pinning when the white is full: (1 - 0.64) × 300vh = 108vh before
+     the run ends. */
+  .zmusket + .zbuild {
+    margin-top: calc(-1 * (max(100vh, 600px) + 108vh));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zmusket__flash,
+  .zmusket__white {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
+  .zmusket__head {
+    padding: 0 20px;
+    bottom: 6vh;
+  }
+}
+.zclips__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zclips__text {
+  margin: 0;
+  max-width: 660px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #9b968d;
+  text-wrap: pretty;
+}
+.zclips__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.zclip {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(23, 24, 28, 0.9), rgba(13, 14, 17, 0.9));
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.zclip:hover {
+  border-color: rgba(201, 171, 118, 0.55);
+  transform: translateY(-3px);
+}
+.zclip__media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+}
+.zclip__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85);
+}
+.zclip__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 24px 24px;
+}
+.zclip__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ece9e2;
+}
+.zclip__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #b3afa7;
+  text-wrap: pretty;
+}
+@media (max-width: 860px) {
+  .zclips__text {
+    font-size: 16px;
+  }
+  .zclips__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .zclip__body {
+    padding: 16px 20px 20px;
+  }
+}
+/* Build crafting (Zenderal.jsx), in three chapters lit in turn on the rail at the left (along the bottom on phones):
+   the perk screenshot zooms into its stone circle, the trait ring turns round it, then it opens into the Prophecy
+   radial art with the tree names round it. The shot and the art are 1000px wide and placed with transforms, as are
+   the trait medallions. Reduced motion shows the end. */
+.zbuild {
+  position: relative;
+  margin-top: 120px;
+}
+.zbuild__pin {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  /* The art runs past the bottom, so it fades out rather than ending on a hard line. */
+  mask-image: linear-gradient(180deg, #000 82%, transparent);
+}
+.zbuild__shot,
+.zbuild__art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1000px;
+  max-width: none;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+.zbuild__shot {
+  height: auto;
+  filter: saturate(0.7) brightness(0.85);
+  /* Fades in from the page above and out at the bottom, so the pin has no hard edges. */
+  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+}
+.zbuild__dark {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.zbuild__art {
+  aspect-ratio: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+/* Its square edges vanish into the page. */
+.zbuild__radial {
+  display: block;
+  width: 100%;
+  height: 100%;
+  mask-image: radial-gradient(closest-side, #000 72%, transparent);
+}
+.zbuild__trees {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+}
+.zbuild__trees text {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  paint-order: stroke;
+  stroke: #07080a;
+  stroke-width: 0.35;
+  stroke-linejoin: round;
+}
+/* The trait ring: each medallion is placed by its centre (Zenderal.jsx); the one at the top grows and glows. */
+.zbuild__ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.zbuild__medal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 171, 118, 0.35);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.zbuild__medal.is-on {
+  border-color: #c9ab76;
+  box-shadow: 0 0 24px rgba(201, 171, 118, 0.45);
+}
+/* The art of the trait the ring stops on, filling the dark circle (placed and sized by Zenderal.jsx), dimmed so its
+   text reads and fading out at the circle's edge. */
+.zbuild__portrait {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: brightness(0.42) saturate(0.8);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+/* The trait the ring stops on, in the middle of the circle. */
+.zbuild__feature {
+  position: absolute;
+  translate: -50% -50%;
+  text-shadow: 0 1px 12px rgba(7, 8, 10, 0.9), 0 0 3px rgba(7, 8, 10, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  opacity: 0;
+}
+/* Blurs and darkens the trait art behind the text, strongest in the middle and fading out towards the circle's edge
+   (placed and sized by Zenderal.jsx). */
+.zbuild__veil {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(7, 8, 10, 0.4), rgba(7, 8, 10, 0) 100%);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  mask-image: radial-gradient(closest-side, #000 40%, transparent 100%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.zbuild__feature-name {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9ab76;
+}
+.zbuild__feature-up,
+.zbuild__feature-down {
+  font-size: 24px;
+  line-height: 1.45;
+  font-weight: 400;
+  text-wrap: pretty;
+}
+.zbuild__feature-up {
+  color: #ece9e2;
+}
+.zbuild__feature-down {
+  color: #bab5ac;
+}
+/* The lit edge of the iris the Prophecy art grows through, placed and sized by Zenderal.jsx. */
+.zbuild__rim {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 196, 110, 0.85);
+  box-shadow: 0 0 30px rgba(201, 171, 118, 0.6), inset 0 0 30px rgba(201, 171, 118, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, width, height;
+}
+/* Darkens the left of the pin behind the rail. */
+.zbuild__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(7, 8, 10, 0.92) 0, rgba(7, 8, 10, 0.75) 380px, transparent 640px);
+  pointer-events: none;
+}
+.zbuild__rail {
+  position: absolute;
+  left: max(56px, (100% - 1240px) / 2 + 56px);
+  top: 50%;
+  translate: 0 -50%;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.zbuild__title {
+  margin: 0 0 12px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  text-wrap: balance;
+}
+.zbuild__stages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Number and title on one row; the text opens under them while the stage is on. */
+.zbuild__stage {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.45;
+  transition: opacity 0.4s ease;
+}
+.zbuild__stage.is-on {
+  opacity: 1;
+}
+.zbuild__stage-n {
+  font-size: 15px;
+  font-weight: 600;
+  color: #c9ab76;
+  line-height: 26px;
+}
+.zbuild__stage-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ece9e2;
+  line-height: 26px;
+}
+.zbuild__stage-body {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s ease;
+}
+.zbuild__stage-body > div {
+  overflow: hidden;
+}
+.zbuild__stage.is-on .zbuild__stage-body {
+  grid-template-rows: 1fr;
+}
+.zbuild__stage-text {
+  margin: 0;
+  padding-top: 10px;
+  font-size: 19px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #c2beb6;
+  text-wrap: pretty;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  .zbuild::after {
+    content: '';
+    display: block;
+    height: 560vh;
+  }
+  .zbuild__pin {
+    position: sticky;
+    top: 0;
+  }
+}
+/* Reduced motion shows the end, so every chapter's text shows at once. */
+@media (prefers-reduced-motion: reduce) {
+  .zbuild__stage {
+    opacity: 1;
+  }
+  .zbuild__stage-body {
+    grid-template-rows: 1fr;
+  }
+}
+/* Phones: the rail is a caption along the bottom, showing only the current chapter; the visuals sit above it. */
+@media (max-width: 860px) {
+  .zbuild {
+    margin-top: 80px;
+  }
+  /* Only a short fade, so it doesn't dim the caption. */
+  .zbuild__pin {
+    mask-image: linear-gradient(180deg, #000 calc(100% - 24px), transparent);
+  }
+  .zbuild__shade {
+    background: linear-gradient(180deg, transparent calc(100% - 340px), rgba(7, 8, 10, 0.9) calc(100% - 250px));
+  }
+  .zbuild__rail {
+    left: 24px;
+    right: 24px;
+    top: auto;
+    bottom: 32px;
+    translate: none;
+    width: auto;
+    height: 220px;
+    gap: 6px;
+  }
+  .zbuild__title {
+    display: none;
+  }
+  .zbuild__stage {
+    display: none;
+    border-top: 0;
+    padding: 0;
+  }
+  .zbuild__stage.is-on {
+    display: grid;
+  }
+  .zbuild__stage-text {
+    font-size: 16px;
+  }
+  .zbuild__feature-name {
+    font-size: 18px;
+  }
+  .zbuild__feature-up,
+  .zbuild__feature-down {
+    font-size: 15px;
+  }
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) {
+  .zbuild__stage {
+    display: grid;
+  }
+}
+/* Expanded magic (Grimoire.jsx): a pinned grimoire, the spell count climbing as each pack lights up and its spells'
+   names fade in round it (--p on a pack's names and step, 0 → 1). Reduced motion shows the end. */
+.zmagic {
+  position: relative;
+  /* Over firearms, pinned under the end of its run, and under the combat section (z-index 2). */
+  z-index: 1;
+  margin-top: 40px;
+}
+/* The shot at the end of the run: hairline cracks, the hole's burning rim and the flash, drawn in the pin's pixels. */
+.zmagic__shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  visibility: hidden;
+  pointer-events: none;
+}
+.zmagic__cracks {
+  fill: none;
+  stroke: rgba(242, 228, 200, 0.9);
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+/* An ember edge, the half outside the hole showing: hot at the line, glowing orange out into the page. */
+.zmagic__rim {
+  fill: none;
+  stroke: #ffe2b0;
+  stroke-width: 5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.zmagic__rim--glow {
+  stroke: rgba(255, 154, 60, 0.45);
+  stroke-width: 16;
+}
+.zmagic__rim--outer {
+  stroke: rgba(214, 110, 40, 0.18);
+  stroke-width: 44;
+}
+.zmagic__flash {
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zmagic__shot {
+    display: none;
+  }
+}
+.zmagic__pin {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent, #000 140px, #000 calc(100% - 140px), transparent);
+}
+.zmagic__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  filter: brightness(0.5) saturate(0.55);
+  scale: calc(1.1 - var(--t, 1) * 0.08);
+}
+.zmagic__shade {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 40% 38% at 50% 53%, rgba(7, 8, 10, 0.85), rgba(7, 8, 10, 0.55) 70%, rgba(7, 8, 10, 0.4));
+}
+.zmagic__names {
+  position: absolute;
+  inset: 0;
+}
+.zmagic__name {
+  --p: 1;
+  position: absolute;
+  translate: -50% -50%;
+  white-space: nowrap;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 12px rgba(7, 8, 10, 0.9);
+  /* Each name has its own delay (--d) within its pack's slice, so they arrive one by one. */
+  opacity: calc(var(--a) * clamp(0, (var(--p) - var(--d)) / 0.35, 1));
+  filter: blur(calc((1 - clamp(0, (var(--p) - var(--d)) / 0.35, 1)) * 4px));
+}
+.zmagic__name--start {
+  translate: 0 -50%;
+}
+.zmagic__name--end {
+  translate: -100% -50%;
+}
+.zmagic__center {
+  position: absolute;
+  left: 50%;
+  top: 53%;
+  translate: -50% -50%;
+  width: min(640px, 100% - 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.zmagic__count {
+  font-size: clamp(88px, 13vw, 168px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #ece9e2;
+  text-shadow: 0 0 40px rgba(201, 171, 118, 0.25);
+}
+.zmagic__sub {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 300;
+  color: #c2beb6;
+}
+/* The base game, then each pack as it joins the count. */
+.zmagic__steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.zmagic__step {
+  --p: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(201, 171, 118, calc(0.15 + var(--p) * 0.5));
+  background: rgba(7, 8, 10, 0.6);
+  opacity: calc(0.35 + var(--p) * 0.65);
+}
+.zmagic__step.is-base {
+  --p: 1;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.zmagic__step-n {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #c9ab76;
+}
+.zmagic__step.is-base .zmagic__step-n {
+  color: #ece9e2;
+}
+.zmagic__step-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9c5bd;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The run is content, not padding: a sticky box can't move into its parent's padding. */
+  /* A screen under the combat section's last swing, the packs, then two screens for the shot (UNDER and SHOT in
+     Grimoire.jsx). */
+  .zmagic__run::after {
+    content: '';
+    display: block;
+    height: 460vh;
+  }
+  /* Revealed in place by the sword and left through the bullet hole (Grimoire.jsx clips it), so no fades. */
+  .zmagic__pin {
+    position: sticky;
+    top: 0;
+    mask-image: none;
+  }
+  /* Firearms sits under the end of the run, pinning as the shot is fired: the pin's screen plus the shot's two. */
+  .zmagic + .zmusket {
+    margin-top: calc(-1 * (max(100vh, 600px) + 200vh));
+  }
+}
+@media (max-width: 860px) {
+  .zmagic__name {
+    font-size: 11px !important;
+  }
+  /* Only the names picked to fit a phone (above and below the text, not touching) show. */
+  .zmagic__name--wide {
+    display: none;
+  }
+  .zmagic__sub {
+    font-size: 16px;
+  }
+  .zmagic__step {
+    padding: 6px 9px;
+  }
+  .zmagic__step-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
 }
 
 /* Link cards into the docs and guide, in labelled groups. Pulled up into the intro's
@@ -474,7 +2240,7 @@ html {
 }
 
 /* The closing call to action, over the crystal forest backdrop: full-bleed, fading in from
-   the page above and out into the footer, with the knight pushed right and the text on the
+   the page above and out at the page end, with the knight pushed right and the text on the
    left. The violet is toned down towards the site's palette. */
 .zcta {
   --blend: 220px;
@@ -565,7 +2331,8 @@ html {
 }
 /* The Zenematics portal (Zenderal.jsx): the pin sticks over the scroll run below it while the
    scene opens out of the mark. Reduced motion keeps the plain section. */
-.zcta__logo {
+.zcta__logo,
+.zcta__byline {
   display: none;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -586,7 +2353,7 @@ html {
   .zcta__body {
     pointer-events: auto;
   }
-  /* It opens out of the mark rather than fading in, so only the bottom fades (into the footer). */
+  /* It opens out of the mark rather than fading in, so only the bottom fades (into the page end). */
   .zcta__scene {
     mask-image: linear-gradient(180deg, #000 calc(100% - 160px), transparent);
   }
@@ -599,6 +2366,20 @@ html {
     max-width: none;
     height: auto;
     transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .zcta__byline {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    white-space: nowrap;
+    font-size: clamp(16px, 5vw, 26px);
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: #ece9e2;
     opacity: 0;
     pointer-events: none;
   }
@@ -1275,53 +3056,6 @@ html {
   }
 }
 
-/* ---------- Footer ---------- */
-.footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 40px 56px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-.footer__brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.footer__logo {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-.footer__name {
-  font-family: inherit;
-  font-size: 13px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #9b968d;
-}
-.footer__links {
-  display: flex;
-  gap: 28px;
-}
-.footer__links a {
-  font-size: 12px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #9b968d;
-  transition: color 0.2s;
-}
-.footer__links a:hover {
-  color: #ffffff;
-}
-.footer__note {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: #6f6a62;
-}
-
 /* ---------- Shared filters and tables ---------- */
 .spells__search {
   width: 100%;
@@ -1667,6 +3401,27 @@ html {
   padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.02);
+}
+/* The selected race's portrait, edge to edge across the top of its card. */
+.g-race__art {
+  display: block;
+  width: calc(100% + 48px);
+  max-width: none;
+  margin: -24px -24px 0;
+  aspect-ratio: 8 / 3;
+  object-fit: cover;
+  object-position: 60% 20%;
+  animation: g-race-in 0.4s ease;
+}
+@keyframes g-race-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-race__art {
+    animation: none;
+  }
 }
 .g-card__head {
   display: flex;
@@ -2017,6 +3772,9 @@ html {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* The stars move as the map flies or pans; if the browser anchored the page scroll to one, the page would
+     scroll along with it. */
+  overflow-anchor: none;
 }
 .pmap__bar {
   display: flex;
@@ -3000,10 +4758,10 @@ html {
 @media (max-width: 860px) {
   .zhero,
   .docs,
-  .zintro,
   .zexplore,
-  .zcta__body,
-  .footer {
+  .zclips,
+  .znew,
+  .zcta__body {
     padding-left: 24px;
     padding-right: 24px;
   }
@@ -3033,6 +4791,12 @@ html {
     gap: 8px;
     padding: 20px 20px 46px;
   }
+  .gcard {
+    padding-top: 0;
+  }
+  .gcard__art {
+    margin: 0 -20px 4px;
+  }
   .zcard__title {
     font-size: 19px;
   }
@@ -3043,33 +4807,66 @@ html {
     left: 20px;
     bottom: 16px;
   }
-  .zstage {
-    --blend: 160px;
-  }
-  .zstage__pin {
-    padding: 72px 0 calc(32px + var(--blend));
-  }
   .zhero--parallax {
     --blend: 160px;
-  }
-  .zhero--parallax + .zstage {
-    margin-top: -160px;
   }
   .zhero--parallax .zhero__desc {
     font-size: 17px;
   }
-  .zhero--parallax + .zstage .zstage__pin {
-    padding-top: 112px;
-    padding-bottom: calc(var(--blend) - 16px);
+  /* The eyebrow at its usual size, so it fits on one line above the badge; a little nearer the
+     wordmark than the buttons here too (they're 138px down, and it's two lines). */
+  .zhero--parallax .eyebrow-row {
+    margin-top: -3px;
+    gap: 18px;
   }
-  .zstage__shade {
-    background:
-      linear-gradient(90deg, rgba(7, 8, 10, 0.88) 0%, rgba(7, 8, 10, 0.6) 100%),
-      linear-gradient(180deg, rgba(7, 8, 10, 0.5) 0%, transparent 18%, transparent 78%, rgba(7, 8, 10, 0.5) 100%);
+  /* The buttons at the eyebrow's size too. */
+  .zhero--parallax .zhero__links .btn {
+    font-size: 12px;
   }
-  .zintro__facts {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+  .zhero--parallax .zhero__scroll {
+    margin-top: 36px;
+  }
+  /* 12px is about the lettering's full width, so a touch under it to keep it short of the logo. */
+  .zhero--parallax .eyebrow {
+    font-size: min(12px, calc(var(--w) * 0.0425));
+  }
+  .zhero--parallax .stage-badge {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  /* The intro keeps its size here, so 10px more space goes either side of it (51px each), the
+     buttons staying where they were. */
+  .zhero--parallax .zhero__below {
+    margin-top: 5px;
+  }
+  /* Where they sat under the old three-line intro (its 82px, the 24px gap and 27px). */
+  .zhero--parallax .zhero__links {
+    margin-top: 133px;
+  }
+  /* A taller crop of the shots, centred on the character, so they aren't a thin strip. */
+  .zcompare {
+    margin-top: 24px;
+  }
+  .zcompare__pin {
+    --ratio: 4 / 5;
+    gap: 24px;
+    padding: 96px 0 0;
+  }
+  .zcompare__head {
+    padding-inline: 24px;
+  }
+  .zcompare__text {
+    font-size: 16px;
+  }
+  .zcompare__tag {
+    top: 12px;
+    left: 12px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .zcompare__tag--after {
+    left: auto;
+    right: 12px;
   }
   /* The knight sits up top and the text over its lower part, on a dark fade. */
   .zcta {
@@ -3148,15 +4945,10 @@ html {
     gap: 8px;
   }
   .zhero--compact .zhero__logo {
-    --w: min(78vw, 420px);
+    --w: calc(0.92 * min(78vw, 420px));
   }
   .zhero .eyebrow {
     letter-spacing: 0.26em;
-  }
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
   }
 }
 
@@ -3180,4 +4972,8 @@ html {
   .ptree__detail {
     padding: 18px;
   }
+}
+/* The label's I, hidden while the gun stands in for it (Musket.jsx); eased so it crossfades with the gun as it loads. */
+.zmusket__i {
+  transition: opacity 0.6s ease;
 }

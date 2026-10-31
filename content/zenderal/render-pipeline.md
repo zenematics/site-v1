@@ -56,7 +56,7 @@ Tools that override DLSS for every game, such as global profiles in NVIDIA Profi
 
 ### 4. Turn off other frame generation
 
-Only one thing can generate frames. Close or disable **Lossless Scaling**, **AMD Fluid Motion Frames**, **NVIDIA Smooth Motion**, **OptiScaler** and any other upscaler or frame-generation injector. On NVIDIA, leave **Frame Generation** off in Bottled Shaders' Upscaling page too. TRP does it.
+Only one thing can generate frames. Close or disable **Lossless Scaling**, **AMD Fluid Motion Frames**, **NVIDIA Smooth Motion**, **OptiScaler** and any other upscaler or frame-generation injector. On NVIDIA, leave **Frame Generation** off in Bottled Shaders' Upscaling page too. TRP does it. Zenderal's look comes from Bottled Shaders, not an ENB, so don't add an ENB on top: its anti-aliasing and frame generation clash with Zenderal's.
 
 ### 5. Play in borderless or windowed mode
 
@@ -111,8 +111,8 @@ TRP explains startup problems in its error message, under **Likely causes and wh
 | The message mentions                                  | What to do                                                                                                                                         |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A frame-generation override, or frame gen unavailable | Work through steps 1 to 3 of **Before you start**: driver, GPU scheduling and NVIDIA App overrides                                                    |
-| Another mod loaded NVIDIA Streamline first            | Something else is loading DLSS. Usually an added mod, ENB's own DLAA/FSR anti-aliasing, or a DLSS injector. Disable it                             |
-| Swapchain ownership was not acquired                  | Another frame-generation tool got there first, such as ENB frame generation, OptiScaler or Lossless Scaling. Disable it                             |
+| Another mod loaded NVIDIA Streamline first            | Something else is loading DLSS. Usually an added mod, an added ENB's DLAA/FSR anti-aliasing, or a DLSS injector. Disable it                        |
+| Swapchain ownership was not acquired                  | Another frame-generation tool got there first, such as an added ENB's frame generation, OptiScaler or Lossless Scaling. Disable it                    |
 | The driver did not identify the GPU                   | Update your NVIDIA driver. On a laptop, set the game to use the NVIDIA GPU                                                                          |
 | The runtime files differ from the supported version   | Something replaced TRP's NVIDIA files, such as DLSS Swapper or a DLL copied in by hand. Undo that, or reinstall Zenderal                           |
 

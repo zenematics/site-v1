@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Nav from '../components/Nav.jsx';
-import Footer from '../components/Footer.jsx';
 import { DOCS, FAQ } from '../zenderal/data.js';
 import { readme, docSections, renderPipeline, performance } from '../zenderal/content.js';
 import Md from '../zenderal/Md.jsx';
@@ -179,7 +178,6 @@ export default function ZenderalDocs() {
         </article>
       </section>
 
-      <Footer />
     </div>
   );
 }

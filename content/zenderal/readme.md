@@ -95,7 +95,7 @@ Zenderal comes set up for DLSS (through Bottled Shaders) and frame generation (t
 
 - **Update your GPU driver.** Install the latest NVIDIA Game Ready or Studio driver. Older drivers are the most common reason frame generation doesn't start.
 - **Stop the NVIDIA App overriding the game.** Set every **DLSS Override** for `SkyrimSE.exe` to **Use the 3D application setting** and turn **Smooth Motion** off, in both its program and global settings.
-- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools, and leave Bottled Shaders' own frame generation off on NVIDIA cards.
+- **Use only one source of DLSS or frame generation.** Close Lossless Scaling, AMD Fluid Motion Frames, OptiScaler, DLSS Swapper and similar tools, and leave Bottled Shaders' own frame generation off on NVIDIA cards. Zenderal's look comes from Bottled Shaders, not an ENB, so don't add an ENB on top: its anti-aliasing and frame generation clash with Zenderal's.
 - **Stay in borderless windowed mode.** Zenderal ships set to borderless. Frame generation doesn't work in exclusive fullscreen.
 - **Let the game handle display scaling.** If Windows scaling is above 100%, set `SkyrimSE.exe` in the `Stock game` folder to override high DPI scaling with **Application**, and run the game at your monitor's native resolution.
 - **Turn on hardware-accelerated GPU scheduling** in Windows graphics settings, then restart your PC.
