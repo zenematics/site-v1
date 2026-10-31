@@ -2170,6 +2170,52 @@ html {
   height: 260px;
   width: auto;
 }
+.g-where-map {
+  position: relative;
+  text-decoration: underline dotted rgba(201, 171, 118, 0.6);
+  text-underline-offset: 3px;
+  cursor: help;
+  outline: none;
+}
+.g-where-map:hover,
+.g-where-map:focus {
+  color: #ece9e2;
+}
+.g-mapcard {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: 300px;
+  max-width: 80vw;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  border: 1px solid rgba(201, 171, 118, 0.35);
+  background: #d9c6a4;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.g-where-map:hover .g-mapcard,
+.g-where-map:focus .g-mapcard {
+  visibility: visible;
+  opacity: 1;
+}
+.g-mapcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.g-mapcard i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #b3261e;
+  box-shadow: 0 0 0 2px #f4ead6, 0 0 8px 3px rgba(120, 10, 10, 0.55);
+}
 .g-sets {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
