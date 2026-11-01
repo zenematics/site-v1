@@ -2688,7 +2688,7 @@ html {
   animation: md-tab-in 0.25s ease-out;
 }
 /* "Your card" / "Set it up": a bold line on its own labels the part below it. */
-.md .md-tabs__panel > p:has(> strong:only-child) {
+.md .md-tabs__panel > p:not(.md-tabs__found):has(> strong:only-child) {
   margin: 26px 0 6px;
   font-size: 12px;
   letter-spacing: 0.24em;
@@ -2700,6 +2700,32 @@ html {
 }
 .md .md-tabs__panel td:first-child {
   width: auto;
+}
+/* The reader's card, found from the GPU the browser reports. */
+.md .md-tabs__found {
+  margin: 18px 0 0;
+  font-size: 14px;
+  color: #9b968d;
+}
+.md .md-tabs__found strong {
+  color: #c9ab76;
+}
+.md .md-tabs__panel tr.is-yours td {
+  background: rgba(201, 171, 118, 0.09);
+}
+.md .md-tabs__panel tr.is-yours td:first-child {
+  box-shadow: inset 3px 0 0 #c9ab76;
+  padding-left: 12px;
+  color: #c9ab76;
+}
+.md .md-tabs__panel tr.is-yours td:first-child::after {
+  content: 'Your GPU';
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9ab76;
 }
 @keyframes md-tab-in {
   from {
@@ -2978,6 +3004,21 @@ html {
   text-transform: uppercase;
   font-weight: 400;
   color: #6f6a62;
+}
+.md th .md-th-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #9b968d;
+}
+/* The GPU tabs' column names stand out, since they say what to set. */
+.md .md-tabs__panel th {
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  color: #c9ab76;
 }
 .md td:first-child {
   width: 200px;

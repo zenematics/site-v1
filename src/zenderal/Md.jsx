@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { slugify } from './content.js';
@@ -78,24 +78,77 @@ function gpuName() {
   }
 }
 
+// A card model in a GPU name or a table cell: "RTX 4070 Ti", "RX 7900 XTX", "Arc B580", "6800".
+const MODEL = /([AB]?)(\d{3,4})(?:\s*(Ti|XTX|XT|Super|GRE)\b)?/i;
+const FAMILY = /\b(RTX|GTX|RX|Arc)\b/i;
+
+// The card the browser reports, as { family, num, suffix }, or null.
+function parseGpu(name) {
+  const family = name.match(FAMILY);
+  const model = family && name.slice(family.index).match(MODEL);
+  return (
+    model && {
+      family: family[1].toUpperCase(),
+      num: +model[2],
+      suffix: (model[3] ?? '').toUpperCase(),
+      name: `${family[1]} ${model[0].trim()}`,
+    }
+  );
+}
+
+// How well a card table's first cell ("RTX 5070 Ti, 5070", "RX 6950 XT to 6800", "RTX 3060 and below",
+// "Arc B580, A770 and others") fits the card: 3 same model, 2 same number or in the range, 1 covered by
+// "and below" / "and others", 0 not at all.
+function fitsRow(gpu, cell) {
+  const family = cell.match(FAMILY);
+  if (!family || family[1].toUpperCase() !== gpu.family) return 0;
+  let best = 0;
+  for (const item of cell.slice(family.index + family[0].length).split(',')) {
+    const [from, to] = item.split(/\bto\b/).map((s) => s.match(MODEL));
+    if (!from) continue;
+    const num = +from[2];
+    const suffix = (from[3] ?? '').toUpperCase();
+    if (num === gpu.num && suffix === gpu.suffix) best = Math.max(best, 3);
+    else if (num === gpu.num) best = Math.max(best, 2);
+    if (to && gpu.num <= num && gpu.num >= +to[2]) best = Math.max(best, 2);
+    if (/and below/i.test(item) && (gpu.num < num || (gpu.num === num && gpu.suffix === suffix))) best = Math.max(best, 1);
+    if (/and others/i.test(item)) best = Math.max(best, 1);
+  }
+  return best;
+}
+
 // The tabs from remarkTabs. The pick is kept in this browser; with none saved, the graphics card the browser
-// reports picks one, marked as detected so it's clear why.
+// reports picks one, marked as detected so it's clear why, and its row in the open tab's table is highlighted.
 function Tabs({ children }) {
   const panels = [children].flat().filter((c) => c?.props?.label);
   const labels = panels.map((p) => p.props.label);
   const key = `zen-tab:${slugify(labels.join(' '))}`;
   const [pick, setPick] = useState(null);
   const [detected, setDetected] = useState(null);
+  const [gpu, setGpu] = useState(null);
+  const [yours, setYours] = useState(null);
+  const panelRef = useRef(null);
   useEffect(() => {
     let saved = null;
     try {
       saved = localStorage.getItem(key);
     } catch {}
-    const gpu = gpuName().toLowerCase();
-    const found = labels.find((l) => gpu.includes(l.toLowerCase())) ?? null;
+    const name = gpuName();
+    const found = labels.find((l) => name.toLowerCase().includes(l.toLowerCase())) ?? null;
     setDetected(found);
+    setGpu(parseGpu(name));
     setPick(labels.includes(saved) ? saved : found);
   }, [key]);
+  // Mark the best-fitting row in the open tab's tables. The rows are markdown, so this tags the rendered <tr>.
+  useEffect(() => {
+    const rows = gpu && panelRef.current ? [...panelRef.current.querySelectorAll('tbody tr')] : [];
+    const scores = rows.map((tr) => fitsRow(gpu, tr.cells[0]?.textContent ?? ''));
+    const best = Math.max(0, ...scores);
+    const row = best ? rows[scores.indexOf(best)] : null;
+    row?.classList.add('is-yours');
+    setYours(row ? row.cells[0].textContent : null);
+    return () => row?.classList.remove('is-yours');
+  }, [gpu, pick]);
   const choose = (label) => {
     setPick(label);
     try {
@@ -121,7 +174,12 @@ function Tabs({ children }) {
         ))}
       </div>
       {current ? (
-        <div className="md-tabs__panel" role="tabpanel" aria-label={current.props.label}>
+        <div className="md-tabs__panel" role="tabpanel" aria-label={current.props.label} ref={panelRef}>
+          {yours && (
+            <p className="md-tabs__found">
+              Detected <strong>{gpu.name}</strong>. Your row is highlighted.
+            </p>
+          )}
           {current.props.children}
         </div>
       ) : (
@@ -164,6 +222,23 @@ function CheckItem({ children }) {
 const mdComponents = {
   'md-tabs': ({ node, children }) => <Tabs>{children}</Tabs>,
   'md-tab': ({ node, children }) => children,
+  // A bracketed part of a column header ("Frame generation (press End ...)") drops to a smaller line under it.
+  th: ({ node, children, ...props }) => {
+    const text = textOf(children);
+    const m = text.match(/^(.*?)\s*\((.+)\)$/);
+    return (
+      <th {...props}>
+        {m ? (
+          <>
+            {m[1]}
+            <span className="md-th-note">{m[2]}</span>
+          </>
+        ) : (
+          children
+        )}
+      </th>
+    );
+  },
   a: ({ node, href, ...props }) =>
     /^https?:/.test(href ?? '') ? (
       <a href={href} target="_blank" rel="noopener noreferrer" {...props} />

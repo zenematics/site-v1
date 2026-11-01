@@ -31,7 +31,7 @@ Cards below the [recommended specs](#readme/recommended-specs) may need Ultra Pe
 
 **Your card**
 
-| Card | Upscaling (Insert → Upscaling) | Frame generation (End) | Neural Rendering (End) |
+| Card | Upscaling (Insert → Upscaling) | Frame generation (press End to open Theo's mod menu) | Neural Rendering (press End to open Theo's mod menu) |
 | ---- | ------------------------------ | ---------------------- | ---------------------- |
 | **RTX 5090, 5080** | DLSS **Quality** (0.67×) | **x2**. x3 or x4 on a 240 Hz screen | **On**, one pass after upscaling |
 | **RTX 5070 Ti, 5070** | DLSS **Balanced** (0.59×) | **x2** | **On**, Placement **Before upscaling** |
@@ -48,8 +48,8 @@ Cards below the [recommended specs](#readme/recommended-specs) may need Ultra Pe
 1. **Update your driver** in the NVIDIA app.
 2. In the NVIDIA app, **turn off Smooth Motion** for the game if you've turned it on. It's a second frame generation, on top of TRP's.
 3. Insert → **Upscaling** → set **Method** to **NVIDIA DLSS** and **Upscale Preset** to your card's row. Leave Bottled Shaders' own **Frame Generation** off (TRP does it) and **Low Latency Mode** on. Press **Ctrl + S**.
-4. End → **Frame generation** → keep **Provider** on **NVIDIA DLSS-G** and set the **Multiplier** from your card's row. Leave **Reflex** on **Low latency**.
-5. End → **Neural Rendering** → set it as in your card's row. Still short of FPS? Set **Model rate** to **Every other frame** before turning it off.
+4. Press **End** to open Theo's mod menu, then **Frame generation** → keep **Provider** on **NVIDIA DLSS-G** and set the **Multiplier** from your card's row. Leave **Reflex** on **Low latency**.
+5. Press **End** to open Theo's mod menu, then **Neural Rendering** → set it as in your card's row. Still short of FPS? Set **Model rate** to **Every other frame** before turning it off.
 6. Press **Apply**, check it plays well, then **Save as default**.
 
 On RTX 20-series cards, use the RTX 30-series rows for upscaling and leave frame generation and Neural Rendering off. GTX cards can't run DLSS: follow the AMD steps with **AMD FSR**.
@@ -75,7 +75,7 @@ DLSS, NVIDIA frame generation, Reflex and Neural Rendering need an NVIDIA RTX ca
 2. In AMD Software, **turn off AMD Fluid Motion Frames (AFMF)** and **Radeon Super Resolution** for the game.
 3. Insert → **Upscaling** → set **Method** to **AMD FSR** and **Upscale Preset** to your card's row. On RX 9000-series cards, also tick **Use Runtime FSR4**.
 4. For frame generation, tick **Frame Generation** on the same page (AMD FSR, fixed x2). It needs windowed or borderless mode, and on screens under 120 Hz also tick **Allow frame generation below 120 Hz**. Press **Ctrl + S**.
-5. Use **one** frame generation only. If TRP shows Intel XeFG frame generation in its **Frame generation** tab (End), turn it off there.
+5. Use **one** frame generation only. If TRP shows Intel XeFG frame generation in its **Frame generation** tab (press End to open Theo's mod menu), turn it off there.
 6. Tune the shader features as on NVIDIA. Start with [what costs the most](#performance/bottled-shaders).
 
 ##### ![Intel](uploads/brands/intel.svg)
@@ -93,7 +93,7 @@ DLSS, NVIDIA frame generation, Reflex and Neural Rendering need an NVIDIA RTX ca
 1. **Update your driver** in Intel Graphics Software.
 2. Insert → **Upscaling** → set **Method** to **AMD FSR** and **Upscale Preset** to **Performance**. Press **Ctrl + S**.
 3. Leave frame generation **off** at first. If the game runs at 60 FPS or more, you can try Bottled Shaders' **Frame Generation** on the same page (AMD FSR, x2), in windowed or borderless mode.
-4. Use **one** frame generation only. If TRP shows Intel XeFG frame generation in its **Frame generation** tab (End), turn it off there.
+4. Use **one** frame generation only. If TRP shows Intel XeFG frame generation in its **Frame generation** tab (press End to open Theo's mod menu), turn it off there.
 5. Tune the shader features. Start with [what costs the most](#performance/bottled-shaders).
 
 ---
@@ -103,7 +103,7 @@ DLSS, NVIDIA frame generation, Reflex and Neural Rendering need an NVIDIA RTX ca
 Low FPS? Try these in order. Each one gains more than the next.
 
 1. **Lower the upscale preset.** Insert → **Upscaling** → **Upscale Preset**: Balanced → Performance.
-2. **Make Neural Rendering cheaper.** End → **Neural Rendering** → set **Placement** to **Before upscaling**, or untick it.
+2. **Make Neural Rendering cheaper.** Press **End** to open Theo's mod menu, then **Neural Rendering** → set **Placement** to **Before upscaling**, or untick it.
 3. **Turn off a heavy shader feature.** See [what costs the most](#performance/bottled-shaders).
 4. **Keep frame generation at x2**, and only use it when the game already runs at about 60 FPS.
 
