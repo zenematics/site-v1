@@ -136,9 +136,11 @@ Press **Ctrl + S** (or **Save Settings**) to keep your changes. Keep the game it
 
 ## Theo's Render Pipeline
 
+Press `End` to open Theo's mod menu
+
 ![Theo's Render Pipeline menu, Neural Rendering tab, with the pipeline bar along the top](uploads/trp-menu.webp)
 
-*Press End. The bar along the top shows what's running: the world rendered at 1976 × 847, Bottled Shaders upscaling it (59%), one Neural Rendering pass, then frame generation x2 to the 3360 × 1440 output.*
+*The bar along the top shows what's running: the world rendered at 1976 × 847, Bottled Shaders upscaling it (59%), one Neural Rendering pass, then frame generation x2 to the 3360 × 1440 output.*
 
 - **Apply** changes settings for this session. **Save as default** keeps them.
 - The green **Healthy** in the top right means everything loaded. If it says something else, see the [DLSS & Frame Gen](#dlss/common-problems) page.
@@ -205,7 +207,9 @@ If you see tearing, set **Frame limit → Output cap** a few FPS below your scre
 
 ## Bottled Shaders
 
-Bottled Shaders, a Community Shaders fork, handles lighting, shadows, water, grass, snow and weather. It also runs Zenderal's ENB-style look through **Effects 11**. Press **Insert**. Search finds individual settings, and **Ctrl + S** saves.
+Press `Ins` (Insert) to open the Bottled Shaders menu
+
+Bottled Shaders, a Community Shaders fork, handles lighting, shadows, water, grass, snow and weather. It also runs Zenderal's ENB-style look through **Effects 11**. Search finds individual settings, and **Ctrl + S** saves.
 
 ### "Feature Issues" in red is expected
 

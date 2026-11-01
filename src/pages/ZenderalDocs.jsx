@@ -115,6 +115,9 @@ export default function ZenderalDocs() {
   useEffect(() => {
     const el = section && document.getElementById(section);
     if (!el) return;
+    // A heading that's a drop-down's button opens it (the Performance doc's sections).
+    const fold = el.closest('details.md-section');
+    if (fold) fold.open = true;
     // Measure past the doc's fade-up offset so a freshly mounted doc doesn't overshoot.
     const lift = new DOMMatrix(getComputedStyle(el.closest('.doc')).transform).m42;
     const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
@@ -152,7 +155,7 @@ export default function ZenderalDocs() {
 
           {doc === 'readme' && <Md>{readme}</Md>}
           {doc === 'dlss' && <Md>{renderPipeline}</Md>}
-          {doc === 'performance' && <Md>{performance}</Md>}
+          {doc === 'performance' && <Md sections>{performance}</Md>}
           {doc === 'faq' && <Faq key={doc} onPick={pick} />}
 
           <div className="pager">

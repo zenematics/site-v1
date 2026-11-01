@@ -189,6 +189,32 @@ function Tabs({ children }) {
   );
 }
 
+// With `sections` on, each `## ` heading and everything up to the next becomes a closed drop-down with the heading
+// as its button; `---` rules between them are dropped. The docs page opens one when a link points into it.
+function remarkSections() {
+  return (tree) => {
+    const out = [];
+    let body = null;
+    for (const node of tree.children) {
+      if (node.type === 'heading' && node.depth === 2) {
+        body = { type: 'sectionBody', data: { hName: 'div', hProperties: { className: ['md-section__body'] } }, children: [] };
+        out.push({
+          type: 'section',
+          data: { hName: 'details', hProperties: { className: ['md-section'] } },
+          children: [{ type: 'sectionSummary', data: { hName: 'summary' }, children: [node] }, body],
+        });
+      } else if (node.type === 'thematicBreak' && (body || out.length)) {
+        continue;
+      } else if (body) {
+        body.children.push(node);
+      } else {
+        out.push(node);
+      }
+    }
+    tree.children = out;
+  };
+}
+
 // A task-list item (`- [ ] ...`) the reader can tick; the tick is kept in this browser, keyed by the item's text.
 function CheckItem({ children }) {
   const key = `zen-check:${slugify(textOf(children)).slice(0, 60)}`;
@@ -222,6 +248,19 @@ function CheckItem({ children }) {
 const mdComponents = {
   'md-tabs': ({ node, children }) => <Tabs>{children}</Tabs>,
   'md-tab': ({ node, children }) => children,
+  // "Press `End` to ..." on its own line is a key callout: the key shows as a big keycap.
+  p: ({ node, children, ...props }) => {
+    const parts = [children].flat();
+    // A line that's only bold text ("Your card", "Set it up") labels the part below it.
+    if (parts.length === 1 && parts[0]?.type === 'strong') return <p className="md-label" {...props}>{children}</p>;
+    if (parts[0] !== 'Press ' || parts[1]?.type !== 'code') return <p {...props}>{children}</p>;
+    return (
+      <p className="md-keyline" {...props}>
+        Press <kbd className="md-keyline__key">{parts[1].props.children}</kbd>
+        {parts.slice(2)}
+      </p>
+    );
+  },
   // A bracketed part of a column header ("Frame generation (press End ...)") drops to a smaller line under it.
   th: ({ node, children, ...props }) => {
     const text = textOf(children);
@@ -270,10 +309,12 @@ const mdComponents = {
   },
 };
 
-export default function Md({ children }) {
+export default function Md({ children, sections }) {
+  const plugins = [remarkGfm, remarkTabs, remarkFolds];
+  if (sections) plugins.push(remarkSections);
   return (
     <div className="md">
-      <Markdown remarkPlugins={[remarkGfm, remarkTabs, remarkFolds]} components={mdComponents}>
+      <Markdown remarkPlugins={plugins} components={mdComponents}>
         {children}
       </Markdown>
     </div>
