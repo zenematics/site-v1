@@ -10,10 +10,11 @@ const BTN = {
   LB: { name: 'LB', x: 386, y: 147, side: 'l', cy: 106 },
   View: { name: 'View', x: 462, y: 222, side: 'l', cy: 162 },
   LS: { name: 'LS', x: 378, y: 250, side: 'l', cy: 218 },
+  // The D-pad callouts carry up to four lines (hold, button, double tap, tap), so they sit 92 apart.
   Up: { name: 'D-pad ↑', x: 440, y: 304, side: 'l', cy: 274 },
-  Left: { name: 'D-pad ←', x: 412, y: 332, side: 'l', cy: 330 },
-  Right: { name: 'D-pad →', x: 468, y: 332, side: 'l', cy: 402 },
-  Down: { name: 'D-pad ↓', x: 440, y: 360, side: 'l', cy: 474 },
+  Left: { name: 'D-pad ←', x: 412, y: 332, side: 'l', cy: 366 },
+  Right: { name: 'D-pad →', x: 468, y: 332, side: 'l', cy: 458 },
+  Down: { name: 'D-pad ↓', x: 440, y: 360, side: 'l', cy: 550 },
   RT: { name: 'RT', x: 620, y: 112, side: 'r', cy: 50 },
   RB: { name: 'RB', x: 614, y: 147, side: 'r', cy: 106 },
   Menu: { name: 'Menu', x: 538, y: 222, side: 'r', cy: 162 },
@@ -88,31 +89,46 @@ function Glyph({ id }) {
 }
 
 // Primary action on the first line; the button and how it's pressed underneath;
-// a second input (hold / double tap) on a third line.
+// any further inputs (hold / double tap) on the lines after. A button with a Tap
+// input (the gameplay D-pad) is stacked instead: the button is the big line, then
+// every input as "How: action" in its data order (tap, double tap, hold).
 function Callout({ id, bind, held }) {
   const { side, cy } = BTN[id];
   const [x, y] = scaled(BTN[id].x, BTN[id].y);
   const l = side === 'l';
   const tx = l ? 236 : 764;
   const elbow = l ? 262 : 738;
-  const [first, second] = bind?.in ?? [];
+  const inputs = bind?.in ?? [];
+  const stacked = !held && inputs.some(([h]) => h === 'Tap');
+  const [first, ...rest] = inputs;
   const how = first && !['Press', 'Click', 'B +', 'A +'].includes(first[0]) ? ` · ${first[0]}` : '';
   return (
     <g className="pad__callout">
       <polyline className="pad__lead" points={`${l ? 244 : 756},${cy} ${elbow},${cy} ${x},${y}`} />
       <circle className="pad__dot" cx={x} cy={y} r={3} />
-      <text x={tx} y={cy + 5} textAnchor={l ? 'end' : 'start'}>
-        <tspan className="pad__act">{held ? 'Hold down' : first[1]}</tspan>
-        <tspan className="pad__sub" x={tx} dy={24}>
-          {BTN[id].name}
-          {held ? ' · modifier' : how}
-        </tspan>
-        {second && (
-          <tspan className="pad__sub pad__sub--alt" x={tx} dy={19}>
-            {second[0]}: {second[1]}
+      {stacked ? (
+        <text x={tx} y={cy + 5} textAnchor={l ? 'end' : 'start'}>
+          <tspan className="pad__act">{BTN[id].name}</tspan>
+          {inputs.map(([how2, action], i) => (
+            <tspan key={how2 + action} className="pad__sub pad__sub--alt" x={tx} dy={i ? 19 : 24}>
+              {how2}: {action}
+            </tspan>
+          ))}
+        </text>
+      ) : (
+        <text x={tx} y={cy + 5} textAnchor={l ? 'end' : 'start'}>
+          <tspan className="pad__act">{held ? 'Hold down' : first[1]}</tspan>
+          <tspan className="pad__sub" x={tx} dy={24}>
+            {BTN[id].name}
+            {held ? ' · modifier' : how}
           </tspan>
-        )}
-      </text>
+          {rest.map(([how2, action]) => (
+            <tspan key={how2 + action} className="pad__sub pad__sub--alt" x={tx} dy={19}>
+              {how2}: {action}
+            </tspan>
+          ))}
+        </text>
+      )}
     </g>
   );
 }
@@ -149,7 +165,7 @@ export default function Gamepad() {
       <p className="g-note">{L.desc} Hover or tap a button to see what it does.</p>
 
       <div className="pad__scroll">
-        <svg className="pad" viewBox="-70 0 1140 520" role="group" aria-label={`Controller layout: ${L.label}`}>
+        <svg className="pad" viewBox="-70 0 1140 600" role="group" aria-label={`Controller layout: ${L.label}`}>
           <g transform={PAD_TRANSFORM}>
             <path className="pad__body" d={BODY} />
             <circle className="pad__logo" cx={500} cy={196} r={14} />
@@ -241,7 +257,7 @@ export function GamepadLists() {
                   <kbd className="g-kbd">
                     {l.hold ? `${l.hold} + ` : ''}
                     {BTN[id].name}
-                    {['Hold', 'Double tap'].includes(how) ? ` (${how.toLowerCase()})` : ''}
+                    {['Hold', 'Double tap', 'Tap'].includes(how) ? ` (${how.toLowerCase()})` : ''}
                   </kbd>
                   <span>{action}</span>
                 </li>

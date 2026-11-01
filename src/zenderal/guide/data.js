@@ -549,7 +549,7 @@ export const KEYS = {
   G: { cat: 'mod', action: 'Wheeler: previous wheel', note: 'Only while the wheel is open.' },
   H: { cat: 'menu', action: 'Hero Menu' },
   J: { cat: 'menu', action: 'Journal' },
-  L: { cat: 'mod', action: 'Lantern on / off' },
+  L: { cat: 'mod', action: 'Quick Light · call horse', note: "Quick Light (a lantern on your hip) and Enderal's horse call share L; the horse comes once you own the horse flute. With the Controller Layout mod on, Quick Light moves to K." },
   LShift: { cat: 'move', action: 'Sprint', note: 'Hold to sprint. Tap to dodge.' },
   Z: { cat: 'mod', action: 'Toggle first / third person' },
   X: { cat: 'combat', action: 'Talents and powers' },
