@@ -241,7 +241,7 @@ export function GamepadLists() {
                   <kbd className="g-kbd">
                     {l.hold ? `${l.hold} + ` : ''}
                     {BTN[id].name}
-                    {['Hold', 'Double tap'].includes(how) ? ` (${how.toLowerCase()})` : ''}
+                    {['Hold', 'Double tap', 'Tap'].includes(how) ? ` (${how.toLowerCase()})` : ''}
                   </kbd>
                   <span>{action}</span>
                 </li>

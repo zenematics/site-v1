@@ -130,8 +130,11 @@ export default function Keybinds() {
             <strong>Changing keys</strong>
             Rebind the vanilla controls in the game's own Controls menu. Mod hotkeys live in each mod's MCM page. For
             dodge and dual-wield parry, enable the <strong>Custom Keybinds</strong> mod in Mod Organizer 2: it holds
-            those config files with instructions at the top. Using a controller? See{' '}
-            <a href={`${import.meta.env.BASE_URL}zenderal/guide/controller/`}>Controller Support</a>.
+            those config files with instructions at the top. Using a controller? Enable the{' '}
+            <strong>Zenderal - Controller Layout</strong> mod (see{' '}
+            <a href={`${import.meta.env.BASE_URL}zenderal/guide/controller/`}>Controller Support</a>). While it's on,
+            Quick Light moves to <kbd className="g-kbd">K</kbd>, the Ammo Wheel to <kbd className="g-kbd">U</kbd>, and
+            Controls-menu rebinds don't survive a restart.
           </p>
         </blockquote>
       </div>
