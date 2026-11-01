@@ -10,10 +10,11 @@ const BTN = {
   LB: { name: 'LB', x: 386, y: 147, side: 'l', cy: 106 },
   View: { name: 'View', x: 462, y: 222, side: 'l', cy: 162 },
   LS: { name: 'LS', x: 378, y: 250, side: 'l', cy: 218 },
+  // The D-pad callouts carry three lines (action, button, double tap), so they sit 76 apart.
   Up: { name: 'D-pad ↑', x: 440, y: 304, side: 'l', cy: 274 },
-  Left: { name: 'D-pad ←', x: 412, y: 332, side: 'l', cy: 330 },
-  Right: { name: 'D-pad →', x: 468, y: 332, side: 'l', cy: 402 },
-  Down: { name: 'D-pad ↓', x: 440, y: 360, side: 'l', cy: 474 },
+  Left: { name: 'D-pad ←', x: 412, y: 332, side: 'l', cy: 350 },
+  Right: { name: 'D-pad →', x: 468, y: 332, side: 'l', cy: 426 },
+  Down: { name: 'D-pad ↓', x: 440, y: 360, side: 'l', cy: 502 },
   RT: { name: 'RT', x: 620, y: 112, side: 'r', cy: 50 },
   RB: { name: 'RB', x: 614, y: 147, side: 'r', cy: 106 },
   Menu: { name: 'Menu', x: 538, y: 222, side: 'r', cy: 162 },
@@ -149,7 +150,7 @@ export default function Gamepad() {
       <p className="g-note">{L.desc} Hover or tap a button to see what it does.</p>
 
       <div className="pad__scroll">
-        <svg className="pad" viewBox="-70 0 1140 520" role="group" aria-label={`Controller layout: ${L.label}`}>
+        <svg className="pad" viewBox="-70 0 1140 560" role="group" aria-label={`Controller layout: ${L.label}`}>
           <g transform={PAD_TRANSFORM}>
             <path className="pad__body" d={BODY} />
             <circle className="pad__logo" cx={500} cy={196} r={14} />
