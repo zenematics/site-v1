@@ -21,8 +21,8 @@ export const FAQ = [
 // Controller layout of the opt-in `Zenderal - Controller Layout` mod (zenderal-patches
 // src/ControllerLayout/; its readme and arch-docs/zenderal-controller-setup.md list the
 // same). Each layer relabels the pad: `hold` is the button kept down for that layer. Per
-// button, `in` lists its inputs ([how, action, keyboard equivalent]); the first two show
-// in the pad's callout. `cat` matches the keyboard page's colours
+// button, `in` lists its inputs ([how, action, keyboard equivalent]); a button with a Tap
+// input (the gameplay D-pad) shows them all in its callout, in this order. `cat` matches the keyboard page's colours
 // (src/zenderal/guide/data.js KEY_CATS).
 export const PAD_LAYERS = [
   { id: 'play', label: 'Gameplay', desc: 'Out of menus, in the world.' },
@@ -56,16 +56,16 @@ export const PAD = {
     Y: { cat: 'move', in: [['Press', 'Jump', 'Space']] },
     Up: {
       cat: 'combat',
-      in: [['Hold', 'High stance', 'F1'], ['Double tap', 'Magicka potion', 'Up arrow'], ['Tap', 'Favourite 2', '2']],
+      in: [['Tap', 'Favourite 2', '2'], ['Double tap', 'Magicka potion', 'Up arrow'], ['Hold', 'High stance', 'F1']],
     },
-    Down: { cat: 'combat', in: [['Hold', 'Low stance', 'F3'], ['Tap', 'Favourite 4', '4']] },
+    Down: { cat: 'combat', in: [['Tap', 'Favourite 4', '4'], ['Hold', 'Low stance', 'F3']] },
     Left: {
       cat: 'combat',
-      in: [['Hold', 'Neutral stance', 'F4'], ['Double tap', 'Health potion', 'Left arrow'], ['Tap', 'Favourite 1', '1']],
+      in: [['Tap', 'Favourite 1', '1'], ['Double tap', 'Health potion', 'Left arrow'], ['Hold', 'Neutral stance', 'F4']],
     },
     Right: {
       cat: 'combat',
-      in: [['Hold', 'Mid stance', 'F2'], ['Double tap', 'Stamina potion', 'Right arrow'], ['Tap', 'Favourite 3', '3']],
+      in: [['Tap', 'Favourite 3', '3'], ['Double tap', 'Stamina potion', 'Right arrow'], ['Hold', 'Mid stance', 'F2']],
     },
   },
   b: {

@@ -89,31 +89,46 @@ function Glyph({ id }) {
 }
 
 // Primary action on the first line; the button and how it's pressed underneath;
-// a second input (hold / double tap) on a third line.
+// any further inputs (hold / double tap) on the lines after. A button with a Tap
+// input (the gameplay D-pad) is stacked instead: the button is the big line, then
+// every input as "How: action" in its data order (tap, double tap, hold).
 function Callout({ id, bind, held }) {
   const { side, cy } = BTN[id];
   const [x, y] = scaled(BTN[id].x, BTN[id].y);
   const l = side === 'l';
   const tx = l ? 236 : 764;
   const elbow = l ? 262 : 738;
-  const [first, ...rest] = bind?.in ?? [];
+  const inputs = bind?.in ?? [];
+  const stacked = !held && inputs.some(([h]) => h === 'Tap');
+  const [first, ...rest] = inputs;
   const how = first && !['Press', 'Click', 'B +', 'A +'].includes(first[0]) ? ` · ${first[0]}` : '';
   return (
     <g className="pad__callout">
       <polyline className="pad__lead" points={`${l ? 244 : 756},${cy} ${elbow},${cy} ${x},${y}`} />
       <circle className="pad__dot" cx={x} cy={y} r={3} />
-      <text x={tx} y={cy + 5} textAnchor={l ? 'end' : 'start'}>
-        <tspan className="pad__act">{held ? 'Hold down' : first[1]}</tspan>
-        <tspan className="pad__sub" x={tx} dy={24}>
-          {BTN[id].name}
-          {held ? ' · modifier' : how}
-        </tspan>
-        {rest.map(([how2, action]) => (
-          <tspan key={how2 + action} className="pad__sub pad__sub--alt" x={tx} dy={19}>
-            {how2}: {action}
+      {stacked ? (
+        <text x={tx} y={cy + 5} textAnchor={l ? 'end' : 'start'}>
+          <tspan className="pad__act">{BTN[id].name}</tspan>
+          {inputs.map(([how2, action], i) => (
+            <tspan key={how2 + action} className="pad__sub pad__sub--alt" x={tx} dy={i ? 19 : 24}>
+              {how2}: {action}
+            </tspan>
+          ))}
+        </text>
+      ) : (
+        <text x={tx} y={cy + 5} textAnchor={l ? 'end' : 'start'}>
+          <tspan className="pad__act">{held ? 'Hold down' : first[1]}</tspan>
+          <tspan className="pad__sub" x={tx} dy={24}>
+            {BTN[id].name}
+            {held ? ' · modifier' : how}
           </tspan>
-        ))}
-      </text>
+          {rest.map(([how2, action]) => (
+            <tspan key={how2 + action} className="pad__sub pad__sub--alt" x={tx} dy={19}>
+              {how2}: {action}
+            </tspan>
+          ))}
+        </text>
+      )}
     </g>
   );
 }
