@@ -32,6 +32,9 @@ function Row({ row, focus, setFocus, cat }) {
   );
 }
 
+// AI-painted case texture behind the keys.
+const CASE = `url(${import.meta.env.BASE_URL}uploads/guide/keyboard/case.webp)`;
+
 const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys', Ins: 'Insert', NumMul: 'Numpad *' };
 
 export default function Keybinds() {
@@ -73,7 +76,7 @@ export default function Keybinds() {
       </div>
 
       <div className="kb__scroll">
-        <div className="kb" role="group" aria-label="Keyboard layout">
+        <div className="kb" role="group" aria-label="Keyboard layout" style={{ '--case': CASE }}>
           <div className="kb__main">
             {KEYBOARD.map((row, r) => (
               <Row key={r} row={row} focus={focus} setFocus={setFocus} cat={cat} />

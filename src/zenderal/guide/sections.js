@@ -17,7 +17,7 @@ export const SECTIONS = [
   { id: 'firearms', title: 'Firearms', group: 'Combat', img: 'zenderal/screenshots/backgrounds/musket.webp', bg: 'musket.webp', desc: 'Pistols and rifles: damage, how Archery scales them, and their recipes.' },
   { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat', img: 'zenderal/screenshots/backgrounds/mage-cast-lightning.webp', bg: 'mage-cast-lightning.webp', bgPos: 'center 38%', desc: 'The spell packs, every tome-taught spell and the vendors that sell them.' },
   { id: 'armor-sets', title: 'Unique Armor', subtitle: 'Set Bonuses', group: 'Gear', img: 'zenderal/screenshots/backgrounds/armor.webp', bg: 'armor.webp', bgPos: 'center 25%', desc: 'Heavy, light and mage sets, their pieces and their set bonuses.' },
-  { id: 'keybindings', title: 'Keybindings', group: 'Controls', img: 'zenderal/screenshots/backgrounds/keybindings.webp', bg: 'keybindings.webp', desc: 'The keyboard and mouse layout, on a map you can hover or tap.' },
+  { id: 'keybindings', title: 'Keybindings', group: 'Controls', img: 'zenderal/screenshots/backgrounds/keybindings.webp', bg: 'keybindings.webp', video: 'keybindings-loop', desc: 'The keyboard and mouse layout, on a map you can hover or tap.' },
   { id: 'controller', title: 'Controller Support', group: 'Controls', img: 'zenderal/screenshots/backgrounds/controller.webp', bg: 'controller.webp', video: 'controller-loop', desc: 'Turn on the Controller Layout mod and play on a controller, with the full button layout.' },
 ];
 

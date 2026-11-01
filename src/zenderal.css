@@ -4456,8 +4456,12 @@ html {
   gap: calc(var(--u) * 0.4);
   width: max-content;
   padding: 16px;
-  background: #0d0e11;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* Painted case texture (--case, set in Keybinds.jsx); the keys are see-through so it shows. */
+  background: #0d0e11 var(--case, none) center / cover;
+  border: 1px solid rgba(201, 171, 118, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(236, 233, 226, 0.06),
+    inset 0 0 40px rgba(0, 0, 0, 0.6);
 }
 .kb__main,
 .kb__nav {
@@ -4484,7 +4488,7 @@ html {
   flex-direction: column;
   justify-content: space-between;
   padding: 4px 5px;
-  background: #17181c;
+  background: rgba(13, 14, 17, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-bottom-width: 3px;
   border-radius: 4px;
@@ -4502,12 +4506,12 @@ html {
 .kb__key[class*='kb__key--'] {
   cursor: pointer;
   color: #ece9e2;
-  background: color-mix(in srgb, var(--kc) 16%, #17181c);
+  background: color-mix(in srgb, var(--kc) 18%, rgba(13, 14, 17, 0.7));
   border-color: color-mix(in srgb, var(--kc) 45%, transparent);
 }
 .kb__key[class*='kb__key--']:hover,
 .kb__key.is-focus {
-  background: color-mix(in srgb, var(--kc) 34%, #17181c);
+  background: color-mix(in srgb, var(--kc) 34%, rgba(13, 14, 17, 0.8));
   border-color: var(--kc);
 }
 .kb__key.is-focus {
@@ -4567,16 +4571,15 @@ html {
   height: auto;
   overflow: visible;
 }
-.ms__body {
-  fill: #121317;
-  stroke: rgba(255, 255, 255, 0.14);
-  stroke-width: 1.5;
+/* The painted mouse shows through its buttons: a tinted ring that fills in on hover/focus. */
+.ms__art {
+  pointer-events: none;
 }
 .ms__part {
   cursor: pointer;
   outline: none;
-  fill: color-mix(in srgb, var(--kc) 18%, #17181c);
-  stroke: color-mix(in srgb, var(--kc) 55%, transparent);
+  fill: color-mix(in srgb, var(--kc) 14%, transparent);
+  stroke: color-mix(in srgb, var(--kc) 80%, transparent);
   stroke-width: 1.5;
   transition:
     fill 0.15s,
@@ -4586,21 +4589,21 @@ html {
 .ms__part:hover,
 .ms__part:focus-visible,
 .ms__part.is-focus {
-  fill: color-mix(in srgb, var(--kc) 40%, #17181c);
+  fill: color-mix(in srgb, var(--kc) 42%, transparent);
   stroke: var(--kc);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 5px var(--kc));
 }
 .ms__part.is-dim {
   opacity: 0.25;
 }
-.ms__ridge {
-  stroke: rgba(255, 255, 255, 0.25);
-  stroke-width: 1.5;
-  pointer-events: none;
-}
 .ms__tag {
   font-family: inherit;
   font-size: 11px;
-  fill: #9b968d;
+  fill: #c9c5bd;
+  stroke: #07080a;
+  stroke-width: 3px;
+  paint-order: stroke;
   text-anchor: middle;
   pointer-events: none;
 }
