@@ -5,24 +5,27 @@ import { KEY_CATS } from './guide/data.js';
 // Pad geometry: buttons are drawn in pad units, then the whole pad is scaled by
 // PAD_SCALE about (CX, CY) to leave room for the callout columns. `side`/`cy`
 // place each button's callout; leader lines run from the callout to the button.
+// The pad itself is a painted image (ART, AI image-to-image from a render of the
+// old vector pad); x/y are measured off the painting, so re-measure them if the
+// image is replaced. The buttons drawn here are see-through hotspots over it.
 const BTN = {
-  LT: { name: 'LT', x: 380, y: 112, side: 'l', cy: 50 },
-  LB: { name: 'LB', x: 386, y: 147, side: 'l', cy: 106 },
-  View: { name: 'View', x: 462, y: 222, side: 'l', cy: 162 },
-  LS: { name: 'LS', x: 378, y: 250, side: 'l', cy: 218 },
+  LT: { name: 'LT', x: 387, y: 145, side: 'l', cy: 50 },
+  LB: { name: 'LB', x: 357, y: 170, side: 'l', cy: 106 },
+  View: { name: 'View', x: 462, y: 219, side: 'l', cy: 162 },
+  LS: { name: 'LS', x: 378, y: 246, side: 'l', cy: 218 },
   // The D-pad callouts carry up to four lines (hold, button, double tap, tap), so they sit 92 apart.
-  Up: { name: 'D-pad ↑', x: 440, y: 304, side: 'l', cy: 274 },
-  Left: { name: 'D-pad ←', x: 412, y: 332, side: 'l', cy: 366 },
-  Right: { name: 'D-pad →', x: 468, y: 332, side: 'l', cy: 458 },
-  Down: { name: 'D-pad ↓', x: 440, y: 360, side: 'l', cy: 550 },
-  RT: { name: 'RT', x: 620, y: 112, side: 'r', cy: 50 },
-  RB: { name: 'RB', x: 614, y: 147, side: 'r', cy: 106 },
-  Menu: { name: 'Menu', x: 538, y: 222, side: 'r', cy: 162 },
-  Y: { name: 'Y', x: 628, y: 212, side: 'r', cy: 218 },
-  B: { name: 'B', x: 660, y: 244, side: 'r', cy: 274 },
-  X: { name: 'X', x: 596, y: 244, side: 'r', cy: 346 },
-  A: { name: 'A', x: 628, y: 276, side: 'r', cy: 402 },
-  RS: { name: 'RS', x: 572, y: 338, side: 'r', cy: 458 },
+  Up: { name: 'D-pad ↑', x: 441, y: 303, side: 'l', cy: 274 },
+  Left: { name: 'D-pad ←', x: 413, y: 330, side: 'l', cy: 366 },
+  Right: { name: 'D-pad →', x: 468, y: 330, side: 'l', cy: 458 },
+  Down: { name: 'D-pad ↓', x: 441, y: 358, side: 'l', cy: 550 },
+  RT: { name: 'RT', x: 613, y: 143, side: 'r', cy: 50 },
+  RB: { name: 'RB', x: 645, y: 170, side: 'r', cy: 106 },
+  Menu: { name: 'Menu', x: 538, y: 219, side: 'r', cy: 162 },
+  Y: { name: 'Y', x: 629, y: 210, side: 'r', cy: 218 },
+  B: { name: 'B', x: 661, y: 242, side: 'r', cy: 274 },
+  X: { name: 'X', x: 595, y: 242, side: 'r', cy: 346 },
+  A: { name: 'A', x: 628, y: 272, side: 'r', cy: 402 },
+  RS: { name: 'RS', x: 568, y: 333, side: 'r', cy: 458 },
 };
 const PAD_SCALE = 0.85;
 const CX = 500;
@@ -38,23 +41,20 @@ const DPAD = {
   Right: 'M10 0 L-2 -8 V8 Z',
 };
 
-const BODY =
-  'M318 170 C350 150 430 156 470 168 L530 168 C570 156 650 150 682 170 C735 205 772 310 792 410 C804 470 778 500 742 492 C708 484 682 440 652 412 C620 400 380 400 348 412 C318 440 292 484 258 492 C222 500 196 470 208 410 C228 310 265 205 318 170 Z';
+// The painting covers this box in final (unscaled) SVG units.
+const ART = { href: `${import.meta.env.BASE_URL}uploads/controller/pad-painted.webp`, x: 180, y: 117, w: 640, h: 357.3 };
 
 // The button's own shape, drawn at its position.
 function Shape({ id }) {
   const { x, y } = BTN[id];
-  if (id === 'LT' || id === 'RT') return <rect x={x - 30} y={y - 15} width={60} height={28} rx={10} />;
+  const l = id[0] === 'L';
+  if (id === 'LT' || id === 'RT')
+    return (
+      <rect x={x - 46} y={y - 11} width={92} height={22} rx={8} transform={`rotate(${l ? -8 : 8} ${x} ${y})`} />
+    );
   if (id === 'LB' || id === 'RB')
     return (
-      <rect
-        x={x - 48}
-        y={y - 8}
-        width={96}
-        height={16}
-        rx={8}
-        transform={`rotate(${id === 'LB' ? -6 : 6} ${x} ${y})`}
-      />
+      <rect x={x - 62} y={y - 10} width={124} height={20} rx={9} transform={`rotate(${l ? -14 : 14} ${x} ${y})`} />
     );
   if (id === 'LS' || id === 'RS') return <circle cx={x} cy={y} r={34} />;
   if (id === 'View' || id === 'Menu') return <circle cx={x} cy={y} r={11} />;
@@ -166,11 +166,7 @@ export default function Gamepad() {
 
       <div className="pad__scroll">
         <svg className="pad" viewBox="-70 0 1140 600" role="group" aria-label={`Controller layout: ${L.label}`}>
-          <g transform={PAD_TRANSFORM}>
-            <path className="pad__body" d={BODY} />
-            <circle className="pad__logo" cx={500} cy={196} r={14} />
-            <rect className="pad__dpad" x={399} y={291} width={82} height={82} rx={8} />
-          </g>
+          <image className="pad__art" href={ART.href} x={ART.x} y={ART.y} width={ART.w} height={ART.h} />
           {ORDER.map((id) => {
             const b = map[id];
             const held = L.hold === id;

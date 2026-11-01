@@ -55,6 +55,13 @@ html {
   object-position: center 40%;
   filter: brightness(0.7);
 }
+.zhero__video {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.zhero__video.is-playing {
+  opacity: 1;
+}
 /* Overview: the background as depth layers that move at different rates.
    --s is the scroll offset in px (ZenHero.jsx); at 0 the layers line up as the
    original shot. Far layers sink with the page (look slower), near ones push in. */
@@ -4716,20 +4723,15 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-family: inherit;
 }
-.pad__body {
-  fill: #141519;
-  stroke: rgba(201, 171, 118, 0.45);
-  stroke-width: 1.5;
-}
-.pad__logo,
-.pad__dpad {
-  fill: #0d0e11;
-  stroke: rgba(255, 255, 255, 0.08);
+/* The painted pad (Gamepad.jsx ART) shows through the buttons: unbound ones
+   draw nothing, bound ones a tinted ring that fills in on hover/focus. */
+.pad__art {
+  pointer-events: none;
 }
 .pad__btn > rect,
 .pad__btn > circle {
-  fill: #1d1e23;
-  stroke: rgba(255, 255, 255, 0.14);
+  fill: transparent;
+  stroke: transparent;
   stroke-width: 1.5;
   transition:
     fill 0.15s,
@@ -4741,16 +4743,18 @@ html {
 }
 .pad__btn[class*='pad__btn--'] > rect,
 .pad__btn[class*='pad__btn--'] > circle {
-  fill: color-mix(in srgb, var(--kc) 22%, #1d1e23);
-  stroke: color-mix(in srgb, var(--kc) 70%, transparent);
+  fill: color-mix(in srgb, var(--kc) 14%, transparent);
+  stroke: color-mix(in srgb, var(--kc) 80%, transparent);
+  stroke-width: 2;
 }
 .pad__btn[class*='pad__btn--']:hover > rect,
 .pad__btn[class*='pad__btn--']:hover > circle,
 .pad__btn.is-focus > rect,
 .pad__btn.is-focus > circle {
-  fill: color-mix(in srgb, var(--kc) 45%, #1d1e23);
+  fill: color-mix(in srgb, var(--kc) 42%, transparent);
   stroke: var(--kc);
-  stroke-width: 2.5;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px var(--kc));
 }
 .pad__btn:focus {
   outline: none;
@@ -4760,7 +4764,7 @@ html {
 }
 .pad__btn.is-held > rect,
 .pad__btn.is-held > circle {
-  fill: #ece9e2;
+  fill: color-mix(in srgb, #ece9e2 55%, transparent);
   stroke: #ece9e2;
   animation: pad-held 1.6s ease-in-out infinite;
 }
@@ -4775,10 +4779,17 @@ html {
 }
 .pad .pad__btn > circle.pad__stick {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.12);
+  stroke: none;
 }
-.pad__glyph {
+/* Labels sit on the painted gold, so they carry a dark edge. */
+.pad__glyph,
+.pad__tag,
+.pad__face {
   fill: #ece9e2;
+  stroke: #07080a;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  paint-order: stroke;
   pointer-events: none;
 }
 .pad__tag,
@@ -4786,8 +4797,6 @@ html {
   text-anchor: middle;
   font-size: 13px;
   letter-spacing: 0.04em;
-  fill: #ece9e2;
-  pointer-events: none;
 }
 .pad__face {
   font-size: 17px;

@@ -117,6 +117,7 @@ export default function ZenderalGuide({ section }) {
         compact
         bg={cur?.bg ?? 'ark-with-jespar.webp'}
         bgPos={cur?.bg ? cur.bgPos : '45% 78%'}
+        bgVideo={cur?.video}
       />
 
       {cur ? <Section id={cur.id} /> : <Overview />}
