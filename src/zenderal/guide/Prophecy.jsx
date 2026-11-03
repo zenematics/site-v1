@@ -150,7 +150,7 @@ export default function Prophecy() {
         <p>
           Prophecy is Zenderal's own talent system, separate from Enderal's memory trees. {PROPHECY_TREES.length} trees
           sit around one starting point, each built around a playstyle, from holy light and muskets to shadow magic,
-          battle rage and the restless dead. Each tree has five to ten main talents that change how you play, joined by
+          battle rage and the restless dead. Each tree has five to eleven main talents that change how you play, joined by
           small stat talents.
         </p>
         <h2>How it works</h2>

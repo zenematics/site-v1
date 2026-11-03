@@ -8,7 +8,8 @@ const GOLD = '#e8c46e';
 const HOME = { cx: 0, cy: 0, s: PROPHECY_EXTENT + 15 };
 const MIN_S = 4;
 const MAX_S = BG;
-const STORE = 'zen-prophecy-build';
+// Keys are `<tree id>:<node id>`; bumped when the game renumbers the talents (the pistol branch, 2026-11).
+const STORE = 'zen-prophecy-build-2';
 
 // Every node, keyed `<tree id>:<node id>`, with its tree attached.
 const NODES = new Map();

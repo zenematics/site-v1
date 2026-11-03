@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "import:spells": "node scripts/import-spells.mjs",
     "import:perks": "node scripts/import-perks.mjs",
+    "import:prophecy": "node scripts/import-prophecy.mjs",
     "gen:guide": "node scripts/gen-guide-pages.mjs"
   },
   "dependencies": {
