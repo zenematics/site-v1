@@ -282,7 +282,8 @@ export const PROPHECY_TREES = [
     ],
     "x": 22.33,
     "y": 29.17,
-    "side": 2
+    "side": 2,
+    "img": "ricochetrounds.webp"
    },
    {
     "id": 15,
@@ -318,7 +319,8 @@ export const PROPHECY_TREES = [
     ],
     "x": 25.42,
     "y": 29.49,
-    "side": 2
+    "side": 2,
+    "img": "hairtrigger.webp"
    },
    {
     "id": 17,
@@ -365,7 +367,8 @@ export const PROPHECY_TREES = [
     ],
     "x": 27.81,
     "y": 31.25,
-    "side": 2
+    "side": 2,
+    "img": "pointblank.webp"
    },
    {
     "id": 21,
@@ -376,7 +379,8 @@ export const PROPHECY_TREES = [
     ],
     "x": 27.09,
     "y": 33.68,
-    "side": 2
+    "side": 2,
+    "img": "bladeandbarrel.webp"
    },
    {
     "id": 27,
@@ -401,7 +405,8 @@ export const PROPHECY_TREES = [
     ],
     "x": 29.61,
     "y": 33.9,
-    "side": 2
+    "side": 2,
+    "img": "coupdegrace.webp"
    },
    {
     "id": 23,
@@ -413,7 +418,8 @@ export const PROPHECY_TREES = [
     "x": 30.37,
     "y": 36.76,
     "side": 2,
-    "level": 30
+    "level": 30,
+    "img": "fanthehammer.webp"
    }
   ]
  },
