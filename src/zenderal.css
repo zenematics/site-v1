@@ -2488,6 +2488,100 @@ html {
   font-weight: 300;
   color: #c2beb6;
 }
+
+/* Small screens: the sidebar becomes a bar pinned under the nav, its rows
+   scrolling sideways (Sidebar.jsx's DocBar). */
+.docbar {
+  display: none;
+}
+@media (max-width: 860px) {
+  .side {
+    display: none;
+  }
+  .docbar {
+    --nav-h: 79px;
+    display: block;
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 5;
+    flex: 0 0 auto;
+    width: calc(100% + 48px);
+    margin: 0 -24px;
+    background: rgba(7, 8, 10, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .docbar__row {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Fade the clipped ends so the row reads as scrollable. */
+    mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 24px), transparent);
+  }
+  .docbar__row::-webkit-scrollbar {
+    display: none;
+  }
+  .docbar__link {
+    position: relative;
+    flex: none;
+    padding: 14px 12px 12px;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    color: #9b968d;
+    transition: color 0.2s;
+  }
+  .docbar__link:hover,
+  .docbar__link.is-active {
+    color: #ffffff;
+  }
+  .docbar__link.is-active::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    height: 2px;
+    background: #c9ab76;
+  }
+  .docbar__row--subs {
+    gap: 6px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .docbar__sub {
+    flex: none;
+    padding: 5px 11px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    color: #6f6a62;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .docbar__sub.is-active {
+    color: #ece9e2;
+    border-color: rgba(201, 171, 118, 0.6);
+    background: rgba(201, 171, 118, 0.1);
+  }
+  /* Headings land below the nav and both rows of the bar. */
+  .md h2 {
+    scroll-margin-top: 180px;
+  }
+}
+@media (max-width: 759px) {
+  .docbar {
+    --nav-h: 66px;
+  }
+  .md h2 {
+    scroll-margin-top: 160px;
+  }
+}
 .doc p {
   margin: 0;
   text-wrap: pretty;
@@ -5034,10 +5128,6 @@ html {
   .zhero__emblem {
     opacity: 0.3;
   }
-  .side {
-    position: static;
-    flex-basis: 100%;
-  }
   .docs {
     gap: 40px;
   }
@@ -5203,7 +5293,7 @@ html {
   }
 }
 
-/* Phones: the sidebar becomes a sticky, horizontally scrolling tab row. */
+/* Phones: tighter docs spacing (the sidebar is DocBar from 860px down). */
 @media (max-width: 759px) {
   .zcta {
     --nav-h: 60px;
@@ -5215,44 +5305,6 @@ html {
   .zhero--compact {
     padding-top: 112px;
     padding-bottom: 40px;
-  }
-  .side {
-    position: sticky;
-    top: 60px;
-    z-index: 5;
-    flex-direction: row;
-    gap: 0;
-    flex-basis: auto;
-    width: calc(100% + 48px);
-    margin: 0 -24px;
-    padding: 0 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    background: #07080a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .side::-webkit-scrollbar {
-    display: none;
-  }
-  .side > .docs__label,
-  .side__group-name {
-    display: none;
-  }
-  .side__group {
-    flex-direction: row;
-    gap: 0;
-  }
-  .side__subs {
-    display: none;
-  }
-  .md h2 {
-    scroll-margin-top: 124px;
-  }
-  .side__link {
-    padding: 14px 12px;
-    font-size: 13px;
-    white-space: nowrap;
-    gap: 8px;
   }
   .zhero--compact .zhero__logo {
     --w: calc(0.92 * min(78vw, 420px));
