@@ -11,6 +11,8 @@ const PARTS = {
   m4: { rect: { x: 11, y: 190, width: 14, height: 36, rx: 6 } },
 };
 
+const ART = `${import.meta.env.BASE_URL}uploads/guide/keyboard/mouse-painted.webp`;
+
 // Which part a category highlight touches: a part lights up if any of its bindings is in that category.
 const partCats = (part) => MOUSE.filter((m) => m.part === part).map((m) => m.cat);
 
@@ -42,17 +44,12 @@ export default function Mouse({ cat }) {
   return (
     <div className="ms">
       <svg className="ms__svg" viewBox="0 0 200 300" role="group" aria-label="Mouse layout">
-        <path
-          className="ms__body"
-          d="M100 10 C152 10 182 46 182 112 L182 200 C182 256 146 292 100 292 C54 292 18 256 18 200 L18 112 C18 46 48 10 100 10 Z"
-        />
+        {/* Painted mouse (AI image-to-image from a render of the old vector one); PARTS
+            match its buttons, so re-check them if the image is replaced. */}
+        <image className="ms__art" href={ART} x={-0.6} y={0} width={201.3} height={300} />
         <Part id="left" cur={cur} cat={cat} pick={pick} />
         <Part id="right" cur={cur} cat={cat} pick={pick} />
         <Part id="wheel" cur={cur} cat={cat} pick={pick} />
-        {/* Wheel ridges, purely decorative. */}
-        {[50, 58, 66, 74].map((y) => (
-          <line key={y} x1="95" x2="105" y1={y} y2={y} className="ms__ridge" />
-        ))}
         <Part id="m5" cur={cur} cat={cat} pick={pick} />
         <Part id="m4" cur={cur} cat={cat} pick={pick} />
         <text x="18" y="142" className="ms__tag">5</text>

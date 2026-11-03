@@ -32,6 +32,9 @@ function Row({ row, focus, setFocus, cat }) {
   );
 }
 
+// AI-painted case texture behind the keys.
+const CASE = `url(${import.meta.env.BASE_URL}uploads/guide/keyboard/case.webp)`;
+
 const LABEL = { LShift: 'Left Shift', LCtrl: 'Left Ctrl', LAlt: 'Left Alt', CapsLock: 'Caps Lock', Arrows: 'Arrow keys', Ins: 'Insert', NumMul: 'Numpad *' };
 
 export default function Keybinds() {
@@ -73,7 +76,7 @@ export default function Keybinds() {
       </div>
 
       <div className="kb__scroll">
-        <div className="kb" role="group" aria-label="Keyboard layout">
+        <div className="kb" role="group" aria-label="Keyboard layout" style={{ '--case': CASE }}>
           <div className="kb__main">
             {KEYBOARD.map((row, r) => (
               <Row key={r} row={row} focus={focus} setFocus={setFocus} cat={cat} />
@@ -130,8 +133,11 @@ export default function Keybinds() {
             <strong>Changing keys</strong>
             Rebind the vanilla controls in the game's own Controls menu. Mod hotkeys live in each mod's MCM page. For
             dodge and dual-wield parry, enable the <strong>Custom Keybinds</strong> mod in Mod Organizer 2: it holds
-            those config files with instructions at the top. Using a controller? See{' '}
-            <a href={`${import.meta.env.BASE_URL}zenderal/guide/controller/`}>Controller Support</a>.
+            those config files with instructions at the top. Using a controller? Enable the{' '}
+            <strong>Zenderal - Controller Layout</strong> mod (see{' '}
+            <a href={`${import.meta.env.BASE_URL}zenderal/guide/controller/`}>Controller Support</a>). While it's on,
+            Quick Light moves to <kbd className="g-kbd">K</kbd>, the Ammo Wheel to <kbd className="g-kbd">U</kbd>, and
+            Controls-menu rebinds don't survive a restart.
           </p>
         </blockquote>
       </div>

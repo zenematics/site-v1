@@ -5,7 +5,7 @@
 // HTML (title and link-preview tags from `title` and `desc`). `desc` also fills the
 // guide overview's cards and the page header, and `img` (under public/uploads/) is its card art;
 // cards without one show the emblem as a placeholder. `bg` (in
-// zenderal/screenshots/backgrounds/, or a path under uploads/) and `bgPos` set the page's header shot (default: the Jespar shot).
+// zenderal/screenshots/backgrounds/, or a path under uploads/) and `bgPos` set the page's header shot (default: the Jespar shot). `video` adds a looping clip over that shot (`<name>.webm`/`.mp4` in the same folder).
 export const SECTIONS = [
   { id: 'races', title: 'Races', group: 'Character', img: 'zenderal/screenshots/backgrounds/races-collage.webp', bg: 'races-collage.webp', bgPos: 'center 15%', desc: 'The five cultures, their starting stats, regeneration and cultural bonuses.' },
   { id: 'affinities', title: 'Affinities', group: 'Character', img: 'zenderal/screenshots/backgrounds/affinities.webp', bg: 'affinities.webp', bgPos: 'center max(-2.7vw, 100%)', desc: 'What each affinity does and which skill trees unlock it.' },
@@ -17,8 +17,8 @@ export const SECTIONS = [
   { id: 'firearms', title: 'Firearms', group: 'Combat', img: 'zenderal/screenshots/backgrounds/musket.webp', bg: 'musket.webp', desc: 'Pistols and rifles: damage, how Archery scales them, and their recipes.' },
   { id: 'magic', title: 'Magic & Spell Packs', group: 'Combat', img: 'zenderal/screenshots/backgrounds/mage-cast-lightning.webp', bg: 'mage-cast-lightning.webp', bgPos: 'center 38%', desc: 'The spell packs, every tome-taught spell and the vendors that sell them.' },
   { id: 'armor-sets', title: 'Unique Armor', subtitle: 'Set Bonuses', group: 'Gear', img: 'zenderal/screenshots/backgrounds/armor.webp', bg: 'armor.webp', bgPos: 'center 25%', desc: 'Heavy, light and mage sets, their pieces and their set bonuses.' },
-  { id: 'keybindings', title: 'Keybindings', group: 'Controls', img: 'zenderal/screenshots/backgrounds/keybindings.webp', bg: 'keybindings.webp', desc: 'The keyboard and mouse layout, on a map you can hover or tap.' },
-  { id: 'controller', title: 'Controller Support', group: 'Controls', img: 'zenderal/screenshots/backgrounds/controller.webp', bg: 'controller.webp', desc: 'Play on a controller out of the box, with the full button layout.' },
+  { id: 'keybindings', title: 'Keybindings', group: 'Controls', img: 'zenderal/screenshots/backgrounds/keybindings.webp', bg: 'keybindings.webp', video: 'keybindings-loop', desc: 'The keyboard and mouse layout, on a map you can hover or tap.' },
+  { id: 'controller', title: 'Controller Support', group: 'Controls', img: 'zenderal/screenshots/backgrounds/controller.webp', bg: 'controller.webp', video: 'controller-loop', desc: 'Turn on the Controller Layout mod and play on a controller, with the full button layout.' },
 ];
 
 // Old section ids (and the folded-in Spells page), so links made before the rename still land.

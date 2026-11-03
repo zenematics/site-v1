@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ZENDERAL_STAGE, stageLabel } from '../config.js';
 import Emblem from './Emblem.jsx';
 import Logo from './Logo.jsx';
@@ -17,8 +17,16 @@ const LAYERS = ['back', 'mid', 'front'];
 // `bg` names the still background in screenshots/backgrounds/, or a path under uploads/ if it
 // has a slash (not used with `live`), and
 // `bgPos` overrides which part of it the crop keeps (CSS object-position).
-export default function ZenHero({ eyebrow, desc, compact = false, live = false, emblem = true, bg = 'ark.webp', bgPos, children }) {
+// `bgVideo` names a looping clip in screenshots/backgrounds/ (`<name>.webm` and `.mp4`) that
+// fades in over the still once it plays; reduced motion keeps the still.
+export default function ZenHero({ eyebrow, desc, compact = false, live = false, emblem = true, bg = 'ark.webp', bgPos, bgVideo, children }) {
   const hero = useRef(null);
+  const [motion, setMotion] = useState(false);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    setMotion(!matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
 
   // Feed the scroll offset (clamped to the hero's height) to the CSS as --s.
   useEffect(() => {
@@ -53,6 +61,21 @@ export default function ZenHero({ eyebrow, desc, compact = false, live = false, 
         ))
       ) : (
         <img src={`${bg.includes('/') ? UPLOADS : BACKGROUNDS}${bg}`} alt="" className="zhero__bg" style={{ objectPosition: bgPos }} />
+      )}
+      {bgVideo && motion && (
+        <video
+          className={`zhero__bg zhero__video${playing ? ' is-playing' : ''}`}
+          style={{ objectPosition: bgPos }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          onPlaying={() => setPlaying(true)}
+        >
+          <source src={`${BACKGROUNDS}${bgVideo}.webm`} type="video/webm" />
+          <source src={`${BACKGROUNDS}${bgVideo}.mp4`} type="video/mp4" />
+        </video>
       )}
       <div className="zhero__shade" />
       {emblem && <Emblem live={live} className="zhero__emblem" />}
