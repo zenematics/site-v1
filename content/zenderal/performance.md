@@ -254,6 +254,21 @@ Stutter is when the FPS looks fine but the game hitches. Open the one that match
 
 That's shader compilation. Let it finish. If it keeps stuttering after several launches, press **Clear Shader Cache** in the Bottled Shaders menu and restart.
 
+#### Stuttering on a high-end PC
+
+The FPS counter looks fine, but single frames spike. It hitches when you turn the camera quickly and at random moments, while combat stays smooth. Restarting the game or a crash brings it back. Other modlists run fine on the same PC. Do both of these steps:
+
+1. **Give the NVIDIA shader cache room.** In NVIDIA Control Panel → **Manage 3D settings** → **Global Settings**, set **Shader Cache Size** to **Unlimited** (or 100 GB). The default is too small for a list with this many shaders, so the driver throws compiled shaders away and builds them again. Keep some free space on your Windows drive, where the driver stores this cache (`%LOCALAPPDATA%\NVIDIA\DXCache`). The first launch after the change stutters once while the cache rebuilds.
+2. **Use one VSync and one frame cap.** By default the game's VSync is on and TRP's VSync is on **Auto**, which follows the game, so VSync ends up stacked on frame generation. Turn both off and cap the frame rate in TRP only:
+   - **Game VSync off:** in MO2, right-click **SSE Display Tweaks** → **Open in Explorer**, open `SKSE\Plugins\SSEDisplayTweaks.ini` and set `EnableVSync=false`. Edit that file, not `SSEDisplayTweaks_custom.ini`: Zenderal rewrites the `_custom` file at every launch.
+   - **TRP VSync off:** press **End** to open Theo's mod menu, then **Frame Generation** → **VSync** → **Off**.
+   - **One frame cap:** set it in TRP (120 works well), and don't add a second one in the NVIDIA Control Panel.
+   - Leave **Vertical sync** in the NVIDIA Control Panel on **Use the 3D application setting**. Forcing it **On** there makes this stutter worse, and so does turning frame generation off.
+
+A Wabbajack update resets `SSEDisplayTweaks.ini`, so set `EnableVSync=false` again after updating.
+
+Still stuttering? Ask in the Zenderal [Discord](https://discord.com/invite/aunT9MdevX) with your VRAM use while it hitches (Task Manager → Performance → GPU), whether a "compiling shaders" message shows in the top corner when it hitches, whether Zenderal is on an NVMe SSD, and `TheosRenderPipeline.log` and the Community Shaders log from `Documents\My Games\Skyrim Special Edition\SKSE\`.
+
 #### It hitches when entering new areas or cities
 
 - **Install on an SSD.** An NVMe drive is best. Zenderal is too big to stream from a hard drive.
