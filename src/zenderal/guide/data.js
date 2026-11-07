@@ -642,3 +642,82 @@ export const TRAITS = [
   { name: 'Radiant Soul', source: 'zen', img: 'radiant-soul.webp', up: 'Healing spells also restore Stamina.', down: 'Offensive spells cost 20% more.' },
   { name: 'Twilight Disciple', source: 'zen', img: 'twilight-disciple.webp', up: 'Light Magic is 30% stronger at night.', down: 'It is 30% weaker in daylight.' },
 ];
+
+// ---------------------------------------------------------------- Basic mechanics
+// Stamina: EGO's XionStaminaManagement scales melee damage by current Stamina (EGO SE - Dark Souls Style Movement
+// and Stamina sets the drains and regen). `from` is the lowest Stamina % of each band.
+export const STAMINA_BANDS = [
+  { from: 70, mult: 1.1, note: 'Full of breath: your hits land harder.' },
+  { from: 30, mult: 1, note: 'Normal damage.' },
+  { from: 10, mult: 0.9, note: 'Tiring: your hits start to weaken.' },
+  { from: 0, mult: 0.7, note: 'Spent: your hits barely land. Back off and recover.' },
+];
+
+// What drains Stamina, from EGO's stamina abilities, NASC and TK Dodge.
+export const STAMINA_DRAINS = [
+  { name: 'Attacking', text: 'Every swing costs Stamina, not only power attacks (Normal Attack Stamina Consumption). Unarmed swings cost less.' },
+  { name: 'Power attacks', text: 'The biggest single cost. Save them for an opening.' },
+  { name: 'Blocking', text: 'Holding a block and taking hits on it drains Stamina, and shield bashes cost it too.' },
+  { name: 'Dodging', text: 'Each dodge costs Stamina. Dodge on purpose, not out of habit.' },
+  { name: 'Sprinting', text: 'Sprint drains it steadily. Arrive at a fight with a full bar.' },
+  { name: 'Drawing a bow', text: 'Holding an arrow drawn drains it.' },
+  { name: 'Swimming', text: 'Swimming drains it too, so plan long crossings.' },
+];
+
+// Food: Enderal's Food & Harvest (records from `Enderal Food & Harvest.esp`). In Enderal, Health only regenerates
+// out of combat while you're Satiated. `sat` is how long a dish keeps you Satiated (seconds), `regen` its Health
+// regeneration bonus (%), `extra` any other effect.
+export const FOODS = [
+  { kind: 'Raw', name: 'Raw Beef', heal: '2 Health per second for 20 seconds', note: "Raw food doesn't make you Satiated." },
+  { kind: 'Raw', name: 'Red Apple', heal: '1 Health per second for 20 seconds', note: "Raw food doesn't make you Satiated." },
+  { kind: 'Cooked', name: 'Roasted Beef', sat: 540, regen: 120, extra: '+8 max Health for 2 minutes' },
+  { kind: 'Cooked', name: 'Roasted Horse', sat: 1200, regen: 120 },
+  { kind: 'Cooked', name: 'Cooked Four Tusk Boar Meat', sat: 1200, regen: 150, extra: '+16 max Health for 2 minutes' },
+  { kind: 'Cooked', name: 'Cooked Sausage', sat: 120, regen: 200 },
+  { kind: 'Baked', name: 'Endralean Sweet Bread', sat: 600, regen: 100 },
+  { kind: 'Baked', name: 'Warm Apple Pie', sat: 360, regen: 200, extra: '+4 Light Magic for 2 minutes' },
+  { kind: 'Soup', name: 'Vegetable Soup', sat: 600, regen: 100, extra: 'Cures diseases' },
+  { kind: 'Soup', name: 'Venison Stew', sat: 600, regen: 200, extra: '+12 max Stamina and 20% frost resistance' },
+  { kind: 'Soup', name: 'Apple Cabbage Stew', sat: 360, regen: 100, extra: 'Mana regenerates 12% faster' },
+  { kind: 'Drink', name: 'Honey Mead', heal: 'Restores 3 Mana per second for 170 seconds', note: 'Alcohol: you move 30% slower for a minute.' },
+  { kind: 'Drink', name: 'Village Wine', heal: 'Restores 2 Mana per second and +4 max Mana for 4 minutes', note: 'Alcohol: you move 10% slower for a minute.' },
+];
+
+// Arcane Fever: _00E_EPUpdateFunctions adds the 40 and 70 abilities (they stack) and kills you at 100; the potions
+// carry _00E_AlchIncreaseArcaneFever by tier; FlashHeal and Boon costs are the spells' own. Ambrosia: _00E_Ambrosia.
+export const FEVER_SOURCES = [
+  { name: 'Mana potion I', add: 2 },
+  { name: 'Mana potion III', add: 4 },
+  { name: 'Mana potion V', add: 6 },
+  { name: 'Flash Heal', add: 5 },
+  { name: 'Health potion', add: 0 },
+  { name: 'Ambrosia', add: -20 },
+];
+export const FEVER_STAGES = [
+  { at: 40, title: 'Worsening', effects: ['−10 max Health', '10% weaker to magic', 'Stamina regenerates 10% slower'] },
+  { at: 70, title: 'Severe', effects: ['Another −10 max Health', 'Another 15% weaker to magic', 'Mana regenerates 15% slower'] },
+  { at: 90, title: 'Critical', effects: ['The game warns you again and again'] },
+  { at: 100, title: 'Death', effects: ['The Fever kills you'] },
+];
+
+// Levelling: _00E_EPUpdateFunctions.levelUp().
+export const LEVEL_UP = {
+  points: [
+    { name: 'Memory Points', n: 1, spend: 'A perk in the memory trees', link: 'perks' },
+    { name: 'Learning Points', n: 5, spend: 'Learning Books: combat, armor, stealth and magic skills', link: 'books' },
+    { name: 'Crafting Points', n: 4, spend: 'Crafting Books: crafting and social skills', link: 'books' },
+  ],
+  stats: [
+    { name: 'Health', n: 9 },
+    { name: 'Mana', n: 8 },
+    { name: 'Stamina', n: 11 },
+  ],
+};
+
+// Bounty boards: Enderal's own "Wanted in …!" quests (The Notice Board Redefined only re-models the boards).
+export const BOUNTY_NOTES = [
+  { title: 'Where', text: 'Notice boards in Ark and Riverville post bounty contracts. Read one to take the job.' },
+  { title: 'The job', text: 'Each contract names a target and where to find it: an outlaw, a beast, a pirate captain. Find it and kill it.' },
+  { title: 'The pay', text: "Go back to the board to collect pennies and EP. Riverville's first targets pay 180 to 240 pennies and 150 to 250 EP." },
+  { title: 'More work', text: 'Collecting a reward puts new contracts on the board, and they get harder as you go.' },
+];

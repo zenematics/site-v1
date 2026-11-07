@@ -10,6 +10,7 @@ const pageUrl = (id) => `${GUIDE_URL}${id}/`;
 
 // Loaded per page, so the overview and each section only fetch their own code and data.
 const BODY = {
+  basics: lazy(() => import('../zenderal/guide/Basics.jsx')),
   races: lazy(() => import('../zenderal/guide/Races.jsx')),
   affinities: lazy(() => import('../zenderal/guide/Affinities.jsx')),
   books: lazy(() => import('../zenderal/guide/Books.jsx')),
