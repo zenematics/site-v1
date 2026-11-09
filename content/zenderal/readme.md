@@ -13,9 +13,13 @@ Everything you need to know to install, run and update Zenderal, a Wabbajack mod
 | Skyrim SE     | Must be **owned** on **Steam**. It doesn't need to be installed             |
 | Platform      | Windows only. Steam Deck and Linux are not supported                        |
 | Installer     | The latest [Wabbajack](https://www.wabbajack.org/)                          |
+| Runtimes      | [Visual C++ 2015–2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe) and the [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) |
+| Page file     | At least **40 GB** on an SSD (see [Page file](#readme/page-file))           |
 | Nexus account | Required. Premium is recommended but not needed                             |
 
 **Steam only.** GOG and other versions of Enderal or Skyrim are not supported.
+
+**Runtimes.** SKSE and most of its plugins need the Visual C++ runtime, and Wabbajack needs WebView2 for the Nexus login. Windows 10 and 11 usually have both, but install them anyway: if they're already there, the installers just repair them.
 
 **Nexus Premium** lets Wabbajack download everything automatically. On a free account, Wabbajack opens each mod's download page and you click through them one by one. It works, it just takes much longer.
 
@@ -47,9 +51,26 @@ You can delete the downloads folder once the game runs, but Wabbajack will then 
 
 ---
 
+## Page file
+
+The page file is disk space Windows uses as extra memory when your RAM is full. Zenderal loads a lot of textures, meshes and scripts, and if Windows can't grow the page file fast enough the game crashes to desktop, often after a long session or on loading a big area like Ark. A fixed, large page file stops that, even with 32 GB of RAM.
+
+1. Press **Win + R**, type `sysdm.cpl` and press **Enter**.
+2. Open the **Advanced** tab, and under **Performance** click **Settings**.
+3. Open the **Advanced** tab again, and under **Virtual memory** click **Change**.
+4. Untick **Automatically manage paging file size for all drives**.
+5. Pick your fastest SSD with at least 40 GB free (ideally the one Zenderal is on), choose **Custom size** and set **Initial size** to `40000` and **Maximum size** to `40000` (MB).
+6. Click **Set**, then **OK** on each window, and restart your PC.
+
+**One page file is enough.** Leave the other drives on **No paging file**, but keep at least a small one on `C:` (Windows needs it to save crash dumps). Never put it on a hard drive.
+
+**Not enough room?** Use `20000` as the initial size and `40000` as the maximum. A smaller page file is better than none, but crashes that mention memory in the [crash log](#readme/troubleshooting) mean it needs to be bigger.
+
+---
+
 ## Before you install
 
-Do these six things before you open Wabbajack. Tick each one off as you go. Your ticks are saved in this browser.
+Do these eight things before you open Wabbajack. Tick each one off as you go. Your ticks are saved in this browser.
 
 - [ ] **Own Enderal SE and Skyrim SE on Steam**
   Install **Enderal: Forgotten Stories (Special Edition)**. Skyrim Special Edition only has to be **owned**, not installed: Enderal SE brings every Skyrim file the list needs.
@@ -61,6 +82,10 @@ Do these six things before you open Wabbajack. Tick each one off as you go. Your
   Let it reach the main menu, then quit. This creates the settings files and registry entries Wabbajack uses to find the game.
 - [ ] **Pick safe folders on an SSD**
   Keep Wabbajack, the downloads and the install out of `Program Files`, `Downloads`, `Documents`, the Desktop and the game's own folder. `C:\Wabbajack`, `D:\WJDownloads` and `D:\Zenderal` work well. You need about **350 GB** free (see [Disk space](#readme/disk-space)).
+- [ ] **Install the runtimes**
+  Install the [Visual C++ 2015–2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe) and the [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) (the Evergreen Bootstrapper). If Windows already has them, the installers repair them.
+- [ ] **Set a 40 GB page file**
+  On an SSD, with a fixed size. The steps are in [Page file](#readme/page-file).
 - [ ] **Pause your antivirus**
   Or add exclusions for those three folders. Some antivirus programs quarantine files halfway through the install.
 

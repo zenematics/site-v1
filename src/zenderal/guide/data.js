@@ -721,3 +721,32 @@ export const BOUNTY_NOTES = [
   { title: 'The pay', text: "Go back to the board to collect pennies and EP. Riverville's first targets pay 180 to 240 pennies and 150 to 250 EP." },
   { title: 'More work', text: 'Collecting a reward puts new contracts on the board, and they get harder as you go.' },
 ];
+
+// ---------------------------------------------------------------- Zenderal Together (co-op)
+// Enderal Together, shipped from list 0.9.6 as the opt-in MO2 profile below (zenderal-patches
+// arch-docs/patches/EnderalTogether.md). Port and limits from the mod's SkyrimTogetherReborn/config/STServer.ini;
+// keys from patch 0008 (the overlay moved off F2).
+export const TOGETHER = {
+  version: '0.9.6',
+  profile: 'Ultra - Co-op (testing)',
+  exe: 'Enderal Together (co-op test)',
+  server: 'mods\\Zenderal - Enderal Together (testing)\\SkyrimTogetherReborn\\SkyrimTogetherServer.exe',
+  config: 'SkyrimTogetherReborn\\config\\STServer.ini',
+  port: 10578,
+  players: 8,
+  radmin: 'https://www.radmin-vpn.com/',
+  keys: [
+    { keys: ['Right Ctrl'], alt: 'Numpad 7', text: 'Open the co-op overlay' },
+    { keys: ['Esc'], alt: 'Right Ctrl', text: 'Close it (while it is open, the numpad types)' },
+    { keys: ['Numpad 8'], text: 'Debug view' },
+    { keys: ['Numpad 9'], text: 'Show where the other players are' },
+  ],
+  // Server settings worth knowing, from STServer.ini's [GameServer] and [Gameplay].
+  settings: [
+    { key: 'sPassword', text: 'The password friends type when they connect. Set one.' },
+    { key: 'uDifficulty', text: 'Everyone plays on this difficulty: 0 Novice up to 5 Legendary.' },
+    { key: 'bEnablePvp', text: 'Lets players hurt each other. Off by default.' },
+    { key: 'uMaxPlayerCount', text: 'How many can join. 8 is the most that is recommended.' },
+    { key: 'bAllowConsoleCommands', text: 'Turn off to stop players spawning or killing things from the console.' },
+  ],
+};

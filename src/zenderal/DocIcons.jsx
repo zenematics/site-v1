@@ -186,6 +186,47 @@ const P = {
       <path d="M10 12.5h6" />
     </>
   ),
+  users: (
+    <>
+      <circle cx="9" cy="8" r="3.5" />
+      <path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" />
+      <path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14c2.1.9 3.5 3.1 3.5 6" />
+    </>
+  ),
+  server: (
+    <>
+      <rect x="3.5" y="4" width="17" height="7" rx="1.5" />
+      <rect x="3.5" y="13" width="17" height="7" rx="1.5" />
+      <path d="M7 7.5h1M7 16.5h1M12 7.5h5M12 16.5h5" />
+    </>
+  ),
+  network: (
+    <>
+      <circle cx="12" cy="5" r="2.5" />
+      <circle cx="5" cy="19" r="2.5" />
+      <circle cx="19" cy="19" r="2.5" />
+      <path d="M10.8 7.2L6.2 16.8M13.2 7.2l4.6 9.6M7.5 19h9" />
+    </>
+  ),
+  copy: (
+    <>
+      <rect x="8.5" y="8.5" width="12" height="12" rx="1.5" />
+      <path d="M15.5 8.5V5a1.5 1.5 0 0 0-1.5-1.5H5A1.5 1.5 0 0 0 3.5 5v9A1.5 1.5 0 0 0 5 15.5h3.5" />
+    </>
+  ),
+  external: (
+    <>
+      <path d="M14 3.5h6.5V10M20.5 3.5L11 13" />
+      <path d="M18 14v5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5h5" />
+    </>
+  ),
+  plug: (
+    <>
+      <path d="M9 3v4.5M15 3v4.5" />
+      <path d="M6.5 7.5h11V11a5.5 5.5 0 0 1-11 0z" />
+      <path d="M12 16.5V21" />
+    </>
+  ),
 };
 
 export function DocIcon({ name, className }) {
@@ -203,6 +244,7 @@ export const HEADING_ICONS = {
   requirements: 'clipboard',
   'recommended-specs': 'cpu',
   'disk-space': 'drive',
+  'page-file': 'layers',
   'before-you-install': 'checklist',
   installation: 'download',
   'first-launch': 'play',
@@ -231,6 +273,8 @@ const STEP_ICONS = [
   [/english|language/i, 'globe'],
   [/launch/i, 'play'],
   [/folder/i, 'folder'],
+  [/runtime/i, 'download'],
+  [/page file/i, 'drive'],
   [/antivirus/i, 'shield'],
 ];
 export const stepIcon = (title) => STEP_ICONS.find(([re]) => re.test(title))?.[1];

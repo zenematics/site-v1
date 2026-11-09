@@ -23,6 +23,7 @@ const BODY = {
   'armor-sets': lazy(() => import('../zenderal/guide/ArmorSets.jsx')),
   keybindings: lazy(() => import('../zenderal/guide/Keybinds.jsx')),
   controller: lazy(() => import('../zenderal/guide/Controller.jsx')),
+  together: lazy(() => import('../zenderal/guide/Together.jsx')),
 };
 
 // The guide used hash routes (#<section-id>) before each section got its own page.

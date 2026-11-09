@@ -273,7 +273,7 @@ Still stuttering? Ask in the Zenderal [Discord](https://discord.com/invite/aunT9
 
 - **Install on an SSD.** An NVMe drive is best. Zenderal is too big to stream from a hard drive.
 - **Video memory.** Hitching that gets worse the longer you play usually means the GPU is full. Check **Task Manager → Performance → GPU → Dedicated GPU memory**. On 8 GB cards, turn Neural Rendering off and switch off a few [heavy features](#performance/bottled-shaders) with **Load at Boot**.
-- **System memory.** Close browsers and other heavy apps. With 16 GB of RAM, let Windows manage the page file.
+- **System memory.** Close browsers and other heavy apps, and set a fixed [page file](#readme/page-file) of at least 40 GB on an SSD.
 
 #### Motion feels uneven even at high FPS
 

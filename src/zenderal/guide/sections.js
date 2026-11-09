@@ -20,9 +20,10 @@ export const SECTIONS = [
   { id: 'armor-sets', title: 'Unique Armor', subtitle: 'Set Bonuses', group: 'Gear', img: 'zenderal/screenshots/backgrounds/armor.webp', bg: 'armor.webp', bgPos: 'center 25%', desc: 'Heavy, light and mage sets, their pieces and their set bonuses.' },
   { id: 'keybindings', title: 'Keybindings', group: 'Controls', img: 'zenderal/screenshots/backgrounds/keybindings.webp', bg: 'keybindings.webp', video: 'keybindings-loop', desc: 'The keyboard and mouse layout, on a map you can hover or tap.' },
   { id: 'controller', title: 'Controller Support', group: 'Controls', img: 'zenderal/screenshots/backgrounds/controller.webp', bg: 'controller.webp', video: 'controller-loop', desc: 'Turn on the Controller Layout mod and play on a controller, with the full button layout.' },
+  { id: 'together', title: 'Zenderal Together', group: 'Co-op', img: 'zenderal/screenshots/backgrounds/ark-with-jespar.webp', bg: 'ark-with-jespar.webp', desc: 'Play with friends: host a server, join over Radmin VPN, and what to know first.' },
 ];
 
 // Old section ids (and the folded-in Spells page), so links made before the rename still land.
 export const SECTION_ALIASES = { race: 'races', armor: 'armor-sets', keys: 'keybindings', spells: 'magic' };
 
-export const SECTION_GROUPS = ['Character', 'Combat', 'Gear', 'Controls'];
+export const SECTION_GROUPS = ['Character', 'Combat', 'Gear', 'Controls', 'Co-op'];
